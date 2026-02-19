@@ -15,10 +15,12 @@ import { SpaceWeatherPanel } from "./components/datasets/SpaceWeatherPanel";
 import {
   SearchResults,
   SearchResultsSkeleton,
-  NoResults,
   SearchHistory,
   SearchFiltersPanel,
 } from "./components/search/SearchResults";
+import { ErrorBoundary } from "./components/ui/ErrorBoundary";
+import { LoadingBar } from "./components/ui/LoadingBar";
+import { ScrollToTop } from "./components/ui/ScrollToTop";
 import { useUniversalSearch } from "./hooks/useSearch";
 import { useSearchHistory } from "./hooks/useSearchHistory";
 import type { DatasetTab } from "./lib/types";
@@ -169,6 +171,7 @@ function HomeContent() {
 
   return (
     <div className="flex min-h-screen flex-col bg-bg-primary">
+      <LoadingBar isLoading={isFetching} />
       <Header onLogoClick={handleGoHome} />
       <Tabs
         activeTab={view !== "feed" && view !== "search" ? view : null}
@@ -176,7 +179,8 @@ function HomeContent() {
         onHomeClick={handleGoHome}
       />
 
-      <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+      <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+        <ErrorBoundary>
         {/* Feed + Search views share the search bar */}
         {(view === "feed" || view === "search") && (
           <div className="space-y-4">
@@ -235,8 +239,10 @@ function HomeContent() {
 
         {/* Dataset panel views */}
         {ActivePanel && <ActivePanel />}
+        </ErrorBoundary>
       </main>
 
+      <ScrollToTop />
       <Footer />
     </div>
   );

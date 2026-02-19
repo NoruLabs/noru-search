@@ -27,9 +27,9 @@ interface TabsProps {
 
 export function Tabs({ activeTab, onTabChange, onHomeClick }: TabsProps) {
   return (
-    <nav className="border-b border-border bg-bg-primary">
+    <nav className="border-b border-border bg-bg-primary" aria-label="Dataset navigation">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="-mb-px flex gap-0.5 overflow-x-auto scrollbar-none sm:gap-1">
+        <div className="-mb-px flex gap-0.5 overflow-x-auto scrollbar-none sm:gap-1" role="tablist">
           {/* Home / Feed tab */}
           <button
             onClick={onHomeClick}

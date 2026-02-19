@@ -18,6 +18,32 @@ export const metadata: Metadata = {
   title: "Noru Search — Universal Space Data Browser",
   description:
     "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos — all in one place.",
+  keywords: [
+    "NASA",
+    "space",
+    "exoplanets",
+    "asteroids",
+    "Mars",
+    "APOD",
+    "near earth objects",
+    "space weather",
+    "astronomy",
+  ],
+  authors: [{ name: "Noru Labs", url: "https://github.com/NoruLabs" }],
+  openGraph: {
+    title: "Noru Search — Universal Space Data Browser",
+    description:
+      "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
+    type: "website",
+    siteName: "Noru Search",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Noru Search — Universal Space Data Browser",
+    description:
+      "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
+  },
+  metadataBase: new URL("https://noru-search.vercel.app"),
 };
 
 export default function RootLayout({
@@ -30,6 +56,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <a href="#main-content" className="skip-to-content">
+          Skip to content
+        </a>
         <ThemeProvider>
           <QueryProvider>{children}</QueryProvider>
         </ThemeProvider>
