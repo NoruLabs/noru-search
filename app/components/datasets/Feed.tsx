@@ -10,13 +10,13 @@ import {
 } from "lucide-react";
 import { useFeed } from "../../hooks/useFeed";
 import { DataCard } from "../ui/DataCard";
-import { Loader } from "../ui/Loader";
+import { FeedSkeleton } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
+import { FeedStats } from "../ui/StatsBar";
 import type { DatasetTab, NeoObject, MarsPhoto, SolarFlare } from "../../lib/types";
 
 interface FeedProps {
   searchQuery: string;
-  activeFilters: DatasetTab[];
   onNavigate: (tab: DatasetTab) => void;
 }
 
@@ -58,52 +58,45 @@ function SectionHeader({
   );
 }
 
-export function Feed({ searchQuery, activeFilters, onNavigate }: FeedProps) {
+export function Feed({ searchQuery, onNavigate }: FeedProps) {
   const { data, isLoading, error, refetch } = useFeed();
 
-  if (isLoading) return <Loader text="Loading your space feed..." />;
+  if (isLoading) return <FeedSkeleton />;
   if (error)
     return <ErrorState message="Failed to load feed." onRetry={() => refetch()} />;
   if (!data) return null;
 
   const { results } = data;
-  const showAll = activeFilters.length === 0;
   const q = searchQuery.toLowerCase();
 
   // Filter logic: if search query exists, filter items by text match
   const showApod =
-    (showAll || activeFilters.includes("apod")) &&
     results.apod &&
     (!q ||
       results.apod.title.toLowerCase().includes(q) ||
       results.apod.explanation.toLowerCase().includes(q));
 
-  const filteredNeo =
-    (showAll || activeFilters.includes("neo")) && results.neo
-      ? results.neo.filter(
-          (n) => !q || n.name.toLowerCase().includes(q)
-        )
-      : [];
+  const filteredNeo = results.neo
+    ? results.neo.filter((n) => !q || n.name.toLowerCase().includes(q))
+    : [];
 
-  const filteredMars =
-    (showAll || activeFilters.includes("mars")) && results.mars
-      ? results.mars.filter(
-          (p) =>
-            !q ||
-            p.camera.full_name.toLowerCase().includes(q) ||
-            p.rover.name.toLowerCase().includes(q)
-        )
-      : [];
+  const filteredMars = results.mars
+    ? results.mars.filter(
+        (p) =>
+          !q ||
+          p.camera.full_name.toLowerCase().includes(q) ||
+          p.rover.name.toLowerCase().includes(q)
+      )
+    : [];
 
-  const filteredWeather =
-    (showAll || activeFilters.includes("weather")) && results.weather
-      ? results.weather.filter(
-          (f) =>
-            !q ||
-            f.classType.toLowerCase().includes(q) ||
-            (f.sourceLocation && f.sourceLocation.toLowerCase().includes(q))
-        )
-      : [];
+  const filteredWeather = results.weather
+    ? results.weather.filter(
+        (f) =>
+          !q ||
+          f.classType.toLowerCase().includes(q) ||
+          (f.sourceLocation && f.sourceLocation.toLowerCase().includes(q))
+      )
+    : [];
 
   const hasResults =
     showApod ||
@@ -125,7 +118,17 @@ export function Feed({ searchQuery, activeFilters, onNavigate }: FeedProps) {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 animate-fade-in">
+      {/* Stats Overview */}
+      <FeedStats
+        neoCount={results.neo?.length ?? 0}
+        hazardousCount={
+          results.neo?.filter((n: NeoObject) => n.is_potentially_hazardous_asteroid).length ?? 0
+        }
+        flareCount={results.weather?.length ?? 0}
+        marsCount={results.mars?.length ?? 0}
+      />
+
       {/* APOD Section */}
       {showApod && results.apod && (
         <section className="space-y-3">
@@ -184,7 +187,7 @@ export function Feed({ searchQuery, activeFilters, onNavigate }: FeedProps) {
             tab="neo"
             onNavigate={onNavigate}
           />
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
             {filteredNeo.slice(0, 6).map((neo: NeoObject) => {
               const approach = neo.close_approach_data[0];
               const velocity = approach
@@ -243,7 +246,7 @@ export function Feed({ searchQuery, activeFilters, onNavigate }: FeedProps) {
             tab="mars"
             onNavigate={onNavigate}
           />
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 stagger-children">
             {filteredMars.slice(0, 6).map((photo: MarsPhoto) => (
               <DataCard key={photo.id} className="overflow-hidden p-0">
                 <a
@@ -282,7 +285,7 @@ export function Feed({ searchQuery, activeFilters, onNavigate }: FeedProps) {
             tab="weather"
             onNavigate={onNavigate}
           />
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
             {filteredWeather.slice(0, 6).map((flare: SolarFlare) => (
               <DataCard key={flare.flrID}>
                 <div className="space-y-2">

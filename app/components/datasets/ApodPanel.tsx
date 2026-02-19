@@ -1,15 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { RefreshCw, ExternalLink } from "lucide-react";
+import { RefreshCw, ExternalLink, Grid } from "lucide-react";
 import { useApod } from "../../hooks/useApod";
 import { DataCard } from "../ui/DataCard";
 import { Loader } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
+import { ApodGallery } from "../details/ApodGallery";
 
 export function ApodPanel() {
   const [date, setDate] = useState<string>("");
+  const [showGallery, setShowGallery] = useState(false);
   const { data, isLoading, error, refetch, isFetching } = useApod(
     date || undefined
   );
@@ -43,6 +45,13 @@ export function ApodPanel() {
         >
           <RefreshCw size={14} className={isFetching ? "animate-spin" : ""} />
           Today
+        </button>
+        <button
+          onClick={() => setShowGallery(true)}
+          className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary"
+        >
+          <Grid size={14} />
+          Gallery
         </button>
       </div>
 
@@ -100,6 +109,13 @@ export function ApodPanel() {
           )}
         </div>
       </DataCard>
+
+      {/* Gallery */}
+      <ApodGallery
+        isOpen={showGallery}
+        onClose={() => setShowGallery(false)}
+        onSelectDate={(d) => setDate(d)}
+      />
     </div>
   );
 }

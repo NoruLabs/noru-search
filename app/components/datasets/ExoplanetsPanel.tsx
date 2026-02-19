@@ -7,6 +7,7 @@ import { DataCard } from "../ui/DataCard";
 import { Loader } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
+import { ExoplanetDetail } from "../details/ExoplanetDetail";
 import type { Exoplanet } from "../../lib/types";
 
 function getHabitabilityScore(planet: Exoplanet): {
@@ -36,7 +37,7 @@ function getHabitabilityScore(planet: Exoplanet): {
   return { score, label: "Unlikely" };
 }
 
-function ExoplanetCard({ planet }: { planet: Exoplanet }) {
+function ExoplanetCard({ planet, onClick }: { planet: Exoplanet; onClick: () => void }) {
   const hab = getHabitabilityScore(planet);
   const habColor =
     hab.label === "High"
@@ -46,7 +47,7 @@ function ExoplanetCard({ planet }: { planet: Exoplanet }) {
         : "text-text-muted";
 
   return (
-    <DataCard>
+    <DataCard className="cursor-pointer transition-transform hover:scale-[1.01]" onClick={onClick}>
       <div className="space-y-3">
         <div>
           <h3 className="text-sm font-semibold text-text-primary">
@@ -108,6 +109,7 @@ function ExoplanetCard({ planet }: { planet: Exoplanet }) {
 
 export function ExoplanetsPanel() {
   const [search, setSearch] = useState("");
+  const [selectedPlanet, setSelectedPlanet] = useState<Exoplanet | null>(null);
   const { data, isLoading, error, refetch } = useExoplanets(100);
 
   if (isLoading) return <Loader text="Discovering exoplanets..." />;
@@ -149,7 +151,11 @@ export function ExoplanetsPanel() {
       {/* Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filtered.map((planet) => (
-          <ExoplanetCard key={planet.pl_name} planet={planet} />
+          <ExoplanetCard
+            key={planet.pl_name}
+            planet={planet}
+            onClick={() => setSelectedPlanet(planet)}
+          />
         ))}
       </div>
 
@@ -158,6 +164,12 @@ export function ExoplanetsPanel() {
           No exoplanets match your search.
         </p>
       )}
+
+      {/* Detail modal */}
+      <ExoplanetDetail
+        planet={selectedPlanet}
+        onClose={() => setSelectedPlanet(null)}
+      />
     </div>
   );
 }

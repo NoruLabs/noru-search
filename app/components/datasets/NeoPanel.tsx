@@ -8,13 +8,20 @@ import { Loader, CardSkeleton } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 import { NeoDistanceChart, NeoVelocityChart } from "../charts/NeoCharts";
+import { AsteroidDetail } from "../details/AsteroidDetail";
 import type { NeoObject } from "../../lib/types";
 
 function formatNumber(num: number): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(num);
 }
 
-function AsteroidCard({ asteroid }: { asteroid: NeoObject }) {
+function AsteroidCard({
+  asteroid,
+  onClick,
+}: {
+  asteroid: NeoObject;
+  onClick: () => void;
+}) {
   const approach = asteroid.close_approach_data[0];
   const diameterMin = asteroid.estimated_diameter.meters.estimated_diameter_min;
   const diameterMax = asteroid.estimated_diameter.meters.estimated_diameter_max;
@@ -26,7 +33,7 @@ function AsteroidCard({ asteroid }: { asteroid: NeoObject }) {
     : 0;
 
   return (
-    <DataCard>
+    <DataCard className="cursor-pointer transition-transform hover:scale-[1.01]" onClick={onClick}>
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-2">
           <h3 className="text-sm font-semibold text-text-primary">
@@ -82,6 +89,7 @@ export function NeoPanel() {
   const [filter, setFilter] = useState<"all" | "hazardous" | "safe">("all");
   const [search, setSearch] = useState("");
   const [showCharts, setShowCharts] = useState(true);
+  const [selectedAsteroid, setSelectedAsteroid] = useState<NeoObject | null>(null);
   const { data, isLoading, error, refetch } = useNeoFeed();
 
   if (isLoading)
@@ -180,7 +188,11 @@ export function NeoPanel() {
       {/* Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
         {filtered.map((neo) => (
-          <AsteroidCard key={neo.id} asteroid={neo} />
+          <AsteroidCard
+            key={neo.id}
+            asteroid={neo}
+            onClick={() => setSelectedAsteroid(neo)}
+          />
         ))}
       </div>
 
@@ -189,6 +201,12 @@ export function NeoPanel() {
           No asteroids match this filter.
         </p>
       )}
+
+      {/* Detail modal */}
+      <AsteroidDetail
+        asteroid={selectedAsteroid}
+        onClose={() => setSelectedAsteroid(null)}
+      />
     </div>
   );
 }

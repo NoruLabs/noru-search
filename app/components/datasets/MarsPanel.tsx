@@ -7,11 +7,13 @@ import { Loader } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 import { MARS_CAMERAS } from "../../lib/constants";
+import { MarsLightbox } from "../details/MarsLightbox";
 
 export function MarsPanel() {
   const [selectedRover, setSelectedRover] = useState("curiosity");
   const [sol, setSol] = useState<number>(1000);
   const [camera, setCamera] = useState<string>("");
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   const { data: rovers } = useMarsRovers();
   const {
@@ -108,25 +110,28 @@ export function MarsPanel() {
         <Loader text={`Loading ${selectedRover} photos...`} />
       ) : error ? (
         <ErrorState
-          message={getApiErrorMessage(error)}
+          message={
+            getApiErrorMessage(error).includes("No such app") ||
+            getApiErrorMessage(error).includes("Network Error")
+              ? "NASA's Mars Photos API is currently unavailable. This appears to be a temporary outage on NASA's side — please try again later."
+              : getApiErrorMessage(error)
+          }
           onRetry={() => refetch()}
         />
       ) : photos && photos.length > 0 ? (
         <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-          {photos.slice(0, 24).map((photo) => (
-            <DataCard key={photo.id} className="p-0 overflow-hidden">
-              <a
-                href={photo.img_src}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img
-                  src={photo.img_src}
-                  alt={`Mars - ${photo.camera.full_name}`}
-                  className="aspect-square w-full object-cover"
-                  loading="lazy"
-                />
-              </a>
+          {photos.slice(0, 24).map((photo, idx) => (
+            <DataCard
+              key={photo.id}
+              className="cursor-pointer p-0 overflow-hidden"
+              onClick={() => setLightboxIndex(idx)}
+            >
+              <img
+                src={photo.img_src}
+                alt={`Mars - ${photo.camera.full_name}`}
+                className="aspect-square w-full object-cover"
+                loading="lazy"
+              />
               <div className="p-3">
                 <p className="text-xs font-medium text-text-primary">
                   {photo.camera.full_name}
@@ -141,6 +146,16 @@ export function MarsPanel() {
           No photos found for this sol/camera combination. Try a different sol
           value.
         </p>
+      )}
+
+      {/* Lightbox */}
+      {photos && photos.length > 0 && (
+        <MarsLightbox
+          photos={photos.slice(0, 24)}
+          initialIndex={lightboxIndex ?? 0}
+          isOpen={lightboxIndex !== null}
+          onClose={() => setLightboxIndex(null)}
+        />
       )}
     </div>
   );

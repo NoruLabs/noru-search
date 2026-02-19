@@ -27,13 +27,13 @@ interface TabsProps {
 
 export function Tabs({ activeTab, onTabChange, onHomeClick }: TabsProps) {
   return (
-    <nav className="border-b border-border">
+    <nav className="border-b border-border bg-bg-primary">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
-        <div className="-mb-px flex gap-1 overflow-x-auto scrollbar-none">
+        <div className="-mb-px flex gap-0.5 overflow-x-auto scrollbar-none sm:gap-1">
           {/* Home / Feed tab */}
           <button
             onClick={onHomeClick}
-            className={`flex shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+            className={`flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-3 text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:text-sm ${
               activeTab === null
                 ? "border-accent text-text-primary"
                 : "border-transparent text-text-muted hover:text-text-secondary"
@@ -41,8 +41,8 @@ export function Tabs({ activeTab, onTabChange, onHomeClick }: TabsProps) {
             aria-selected={activeTab === null}
             role="tab"
           >
-            <Home size={16} />
-            <span className="hidden sm:inline">Feed</span>
+            <Home size={14} />
+            Feed
           </button>
 
           {TAB_CONFIG.map((tab) => {
@@ -51,7 +51,7 @@ export function Tabs({ activeTab, onTabChange, onHomeClick }: TabsProps) {
               <button
                 key={tab.id}
                 onClick={() => onTabChange(tab.id)}
-                className={`flex shrink-0 items-center gap-2 border-b-2 px-4 py-3 text-sm font-medium transition-colors ${
+                className={`flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-3 text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:text-sm ${
                   isActive
                     ? "border-accent text-text-primary"
                     : "border-transparent text-text-muted hover:text-text-secondary"
@@ -60,7 +60,7 @@ export function Tabs({ activeTab, onTabChange, onHomeClick }: TabsProps) {
                 role="tab"
               >
                 {TAB_ICONS[tab.id]}
-                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="hidden xs:inline sm:inline">{tab.label}</span>
               </button>
             );
           })}

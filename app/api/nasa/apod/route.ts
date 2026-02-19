@@ -12,6 +12,11 @@ export async function GET(request: NextRequest) {
     const params: Record<string, string> = { api_key: NASA_API_KEY };
     if (date) params.date = date;
 
+    const startDate = searchParams.get("start_date");
+    const endDate = searchParams.get("end_date");
+    if (startDate) params.start_date = startDate;
+    if (endDate) params.end_date = endDate;
+
     const { data } = await axios.get(`${NASA_BASE}/planetary/apod`, { params });
     return NextResponse.json(data);
   } catch (error) {
