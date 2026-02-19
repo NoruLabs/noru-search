@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# claude skills
+.claude/skills/senior-fullstack/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

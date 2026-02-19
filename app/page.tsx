@@ -1,65 +1,249 @@
-import Image from "next/image";
+"use client";
+
+import { Suspense, useState, useCallback, useEffect, useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Header } from "./components/Header";
+import { Tabs } from "./components/Tabs";
+import { SearchBar } from "./components/SearchBar";
+import { Feed } from "./components/datasets/Feed";
+import { Footer } from "./components/Footer";
+import { ApodPanel } from "./components/datasets/ApodPanel";
+import { NeoPanel } from "./components/datasets/NeoPanel";
+import { MarsPanel } from "./components/datasets/MarsPanel";
+import { ExoplanetsPanel } from "./components/datasets/ExoplanetsPanel";
+import { SpaceWeatherPanel } from "./components/datasets/SpaceWeatherPanel";
+import {
+  SearchResults,
+  SearchResultsSkeleton,
+  SearchHistory,
+  SearchFiltersPanel,
+} from "./components/search/SearchResults";
+import { ErrorBoundary } from "./components/ui/ErrorBoundary";
+import { LoadingBar } from "./components/ui/LoadingBar";
+import { ScrollToTop } from "./components/ui/ScrollToTop";
+import { useUniversalSearch } from "./hooks/useSearch";
+import { useSearchHistory } from "./hooks/useSearchHistory";
+import type { DatasetTab } from "./lib/types";
+
+const PANELS: Record<DatasetTab, React.ComponentType> = {
+  apod: ApodPanel,
+  neo: NeoPanel,
+  mars: MarsPanel,
+  exoplanets: ExoplanetsPanel,
+  weather: SpaceWeatherPanel,
+};
+
+type ViewMode = "feed" | "search" | DatasetTab;
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <Suspense>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+function HomeContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Initialize from URL params
+  const initialQuery = searchParams.get("q") || "";
+  const initialView: ViewMode = initialQuery
+    ? "search"
+    : (searchParams.get("tab") as DatasetTab) || "feed";
+
+  const [view, setView] = useState<ViewMode>(initialView);
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [committedQuery, setCommittedQuery] = useState(initialQuery);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+
+  // Search filters
+  const [filterTypes, setFilterTypes] = useState<DatasetTab[]>([]);
+  const [hazardousOnly, setHazardousOnly] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const { history, addToHistory, removeFromHistory, clearHistory } =
+    useSearchHistory();
+
+  // Debounce search
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const handleSearchChange = useCallback(
+    (q: string) => {
+      setSearchQuery(q);
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+
+      if (q.trim().length >= 2) {
+        debounceRef.current = setTimeout(() => {
+          setCommittedQuery(q.trim());
+          setView("search");
+        }, 400);
+      } else if (q.trim().length === 0) {
+        setCommittedQuery("");
+        if (view === "search") setView("feed");
+      }
+    },
+    [view]
+  );
+
+  // Universal search query
+  const {
+    data: searchData,
+    isLoading: isSearching,
+    isFetching,
+  } = useUniversalSearch(committedQuery, {
+    types: filterTypes.length > 0 ? filterTypes : undefined,
+    hazardousOnly,
+    startDate: startDate || undefined,
+    endDate: endDate || undefined,
+  });
+
+  // Save to history when results arrive
+  useEffect(() => {
+    if (searchData && searchData.totalResults >= 0 && committedQuery) {
+      addToHistory(committedQuery, searchData.totalResults);
+    }
+  }, [searchData, committedQuery, addToHistory]);
+
+  // Sync URL params
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (view === "search" && committedQuery) {
+      params.set("q", committedQuery);
+      if (filterTypes.length > 0) params.set("types", filterTypes.join(","));
+      if (hazardousOnly) params.set("hazardous", "true");
+      if (startDate) params.set("startDate", startDate);
+      if (endDate) params.set("endDate", endDate);
+    } else if (view !== "feed" && view !== "search") {
+      params.set("tab", view);
+    }
+    const qs = params.toString();
+    router.replace(qs ? `?${qs}` : "/", { scroll: false });
+  }, [view, committedQuery, filterTypes, hazardousOnly, startDate, endDate, router]);
+
+  const handleSubmitSearch = useCallback(() => {
+    const q = searchQuery.trim();
+    if (q.length >= 2) {
+      setCommittedQuery(q);
+      setView("search");
+      setShowHistory(false);
+    }
+  }, [searchQuery]);
+
+  const handleSelectHistory = useCallback(
+    (q: string) => {
+      setSearchQuery(q);
+      setCommittedQuery(q);
+      setView("search");
+      setShowHistory(false);
+    },
+    []
+  );
+
+  const handleNavigate = useCallback((tab: DatasetTab) => {
+    setView(tab);
+  }, []);
+
+  const handleTabChange = useCallback((tab: DatasetTab) => {
+    setView(tab);
+    setSearchQuery("");
+    setCommittedQuery("");
+    setShowFilters(false);
+  }, []);
+
+  const handleGoHome = useCallback(() => {
+    setView("feed");
+    setSearchQuery("");
+    setCommittedQuery("");
+    setShowFilters(false);
+  }, []);
+
+  const handleToggleType = useCallback((type: DatasetTab) => {
+    setFilterTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
+    );
+  }, []);
+
+  const ActivePanel = view !== "feed" && view !== "search" ? PANELS[view] : null;
+  const isSearchView = view === "search" && committedQuery.length >= 2;
+
+  return (
+    <div className="flex min-h-screen flex-col bg-bg-primary">
+      <LoadingBar isLoading={isFetching} />
+      <Header onLogoClick={handleGoHome} />
+      <Tabs
+        activeTab={view !== "feed" && view !== "search" ? view : null}
+        onTabChange={handleTabChange}
+        onHomeClick={handleGoHome}
+      />
+
+      <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+        <ErrorBoundary>
+        {/* Feed + Search views share the search bar */}
+        {(view === "feed" || view === "search") && (
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="relative flex-1">
+                <SearchBar
+                  query={searchQuery}
+                  onQueryChange={handleSearchChange}
+                  onSubmit={handleSubmitSearch}
+                  isSearching={isFetching}
+                  onFocus={() => setShowHistory(true)}
+                  onBlur={() => setShowHistory(false)}
+                />
+                {/* Search History Dropdown */}
+                {showHistory && !committedQuery && history.length > 0 && (
+                  <div className="absolute left-0 right-0 top-full z-40 mt-1">
+                    <SearchHistory
+                      history={history}
+                      onSelect={handleSelectHistory}
+                      onRemove={removeFromHistory}
+                      onClear={clearHistory}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Filters button (only show when searching) */}
+              {isSearchView && (
+                <SearchFiltersPanel
+                  activeTypes={filterTypes}
+                  onToggleType={handleToggleType}
+                  hazardousOnly={hazardousOnly}
+                  onToggleHazardous={() => setHazardousOnly((p) => !p)}
+                  startDate={startDate}
+                  endDate={endDate}
+                  onStartDateChange={setStartDate}
+                  onEndDateChange={setEndDate}
+                  isOpen={showFilters}
+                  onToggle={() => setShowFilters((p) => !p)}
+                />
+              )}
+            </div>
+
+            {/* Content area */}
+            {isSearchView ? (
+              isSearching && !searchData ? (
+                <SearchResultsSkeleton />
+              ) : searchData ? (
+                <SearchResults data={searchData} onNavigate={handleNavigate} />
+              ) : null
+            ) : (
+              <Feed searchQuery="" onNavigate={handleNavigate} />
+            )}
+          </div>
+        )}
+
+        {/* Dataset panel views */}
+        {ActivePanel && <ActivePanel />}
+        </ErrorBoundary>
       </main>
+
+      <ScrollToTop />
+      <Footer />
     </div>
   );
 }
