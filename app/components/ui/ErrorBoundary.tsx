@@ -36,9 +36,9 @@ export class ErrorBoundary extends Component<
 
       return (
         <div className="flex min-h-[40vh] items-center justify-center px-4">
-          <div className="w-full max-w-md rounded-2xl border border-border bg-bg-card p-8 text-center">
-            <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10">
-              <AlertTriangle size={24} className="text-red-400" />
+          <div className="w-full max-w-md glass-card rounded-2xl p-8 text-center">
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-accent-soft">
+              <AlertTriangle size={24} className="text-text-secondary" />
             </div>
             <h2 className="mb-2 text-lg font-semibold text-text-primary">
               Something went wrong
@@ -48,7 +48,7 @@ export class ErrorBoundary extends Component<
             </p>
             <button
               onClick={this.handleReset}
-              className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary"
+              className="inline-flex items-center gap-2 rounded-xl border border-border/60 px-5 py-2.5 text-sm font-medium text-text-secondary transition-all hover:border-border-hover hover:text-text-primary active:scale-95"
             >
               <RefreshCw size={14} />
               Try again

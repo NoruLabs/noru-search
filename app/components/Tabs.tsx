@@ -7,6 +7,10 @@ import {
   Orbit,
   Sun,
   Telescope,
+  Thermometer,
+  ImageIcon,
+  Music,
+  Rocket,
 } from "lucide-react";
 import type { DatasetTab } from "../lib/types";
 import { TAB_CONFIG } from "../lib/constants";
@@ -17,6 +21,10 @@ const TAB_ICONS: Record<DatasetTab, React.ReactNode> = {
   mars: <Camera size={16} />,
   exoplanets: <Globe size={16} />,
   weather: <Sun size={16} />,
+  insight: <Thermometer size={16} />,
+  media: <ImageIcon size={16} />,
+  sounds: <Music size={16} />,
+  techport: <Rocket size={16} />,
 };
 
 interface TabsProps {

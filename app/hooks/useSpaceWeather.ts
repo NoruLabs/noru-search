@@ -4,6 +4,8 @@ import type {
   SolarFlare,
   CoronalMassEjection,
   GeomagneticStorm,
+  SolarEnergeticParticle,
+  InterplanetaryShock,
 } from "../lib/types";
 
 function getDateRange(daysBack: number) {
@@ -54,6 +56,36 @@ export function useGeomagneticStorms(daysBack: number = 30) {
     queryFn: async () => {
       const { data } = await api.get("/weather", {
         params: { type: "GST", start_date: startDate, end_date: endDate },
+      });
+      return data;
+    },
+    meta: { errorMessage: getApiErrorMessage },
+  });
+}
+
+export function useSolarEnergeticParticles(daysBack: number = 30) {
+  const { startDate, endDate } = getDateRange(daysBack);
+
+  return useQuery<SolarEnergeticParticle[]>({
+    queryKey: ["sep", startDate, endDate],
+    queryFn: async () => {
+      const { data } = await api.get("/weather", {
+        params: { type: "SEP", start_date: startDate, end_date: endDate },
+      });
+      return data;
+    },
+    meta: { errorMessage: getApiErrorMessage },
+  });
+}
+
+export function useInterplanetaryShocks(daysBack: number = 30) {
+  const { startDate, endDate } = getDateRange(daysBack);
+
+  return useQuery<InterplanetaryShock[]>({
+    queryKey: ["ips", startDate, endDate],
+    queryFn: async () => {
+      const { data } = await api.get("/weather", {
+        params: { type: "IPS", start_date: startDate, end_date: endDate },
       });
       return data;
     },

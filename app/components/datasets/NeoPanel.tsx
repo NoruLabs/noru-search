@@ -40,12 +40,12 @@ function AsteroidCard({
             {asteroid.name.replace(/[()]/g, "")}
           </h3>
           {asteroid.is_potentially_hazardous_asteroid ? (
-            <span className="flex shrink-0 items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-xs text-red-400">
+            <span className="flex shrink-0 items-center gap-1 rounded-full bg-accent-soft px-2 py-0.5 text-xs text-text-primary font-semibold">
               <AlertTriangle size={10} />
               Hazardous
             </span>
           ) : (
-            <span className="flex shrink-0 items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-xs text-green-400">
+            <span className="flex shrink-0 items-center gap-1 rounded-full bg-accent-soft px-2 py-0.5 text-xs text-text-muted">
               <Shield size={10} />
               Safe
             </span>
@@ -132,7 +132,7 @@ export function NeoPanel() {
           objects detected
         </span>
         <span className="text-text-secondary">
-          <span className="font-semibold text-red-400">{hazardousCount}</span>{" "}
+          <span className="font-semibold text-text-primary">{hazardousCount}</span>{" "}
           potentially hazardous
         </span>
       </div>
@@ -157,7 +157,7 @@ export function NeoPanel() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search asteroids..."
-            className="w-full rounded-lg border border-border bg-bg-card py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-colors focus:border-accent"
+            className="w-full rounded-xl border border-border/60 bg-bg-card/80 py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-all focus:border-accent/50 focus:ring-2 focus:ring-accent/10"
           />
         </div>
 

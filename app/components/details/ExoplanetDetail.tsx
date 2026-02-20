@@ -75,14 +75,14 @@ function OrbitalVisual({ semiMajorAxis }: { semiMajorAxis: number | null }) {
       <div className="relative flex h-[180px] w-[180px] items-center justify-center">
         {/* Habitable zone ring */}
         <div
-          className="absolute rounded-full border border-dashed border-green-500/30"
+          className="absolute rounded-full border border-dashed border-text-muted/30"
           style={{
             width: `${20 + (0.5 / 2) * 60 * 2}px`,
             height: `${20 + (0.5 / 2) * 60 * 2}px`,
           }}
         />
         <div
-          className="absolute rounded-full border border-dashed border-green-500/30"
+          className="absolute rounded-full border border-dashed border-text-muted/30"
           style={{
             width: `${20 + (2.0 / 2) * 60 * 2}px`,
             height: `${20 + (2.0 / 2) * 60 * 2}px`,
@@ -94,7 +94,7 @@ function OrbitalVisual({ semiMajorAxis }: { semiMajorAxis: number | null }) {
           style={{ width: `${radius * 2}px`, height: `${radius * 2}px` }}
         />
         {/* Star */}
-        <div className="h-3 w-3 rounded-full bg-yellow-400 shadow-lg shadow-yellow-400/30" />
+        <div className="h-3 w-3 rounded-full bg-accent shadow-lg shadow-accent/30" />
         {/* Planet dot */}
         <div
           className="absolute h-2 w-2 rounded-full bg-accent"
@@ -103,7 +103,7 @@ function OrbitalVisual({ semiMajorAxis }: { semiMajorAxis: number | null }) {
       </div>
       <div className="mt-1 flex items-center gap-3 text-[9px] text-text-muted">
         <span className="flex items-center gap-1">
-          <span className="inline-block h-1.5 w-3 rounded border border-dashed border-green-500/50" />
+          <span className="inline-block h-1.5 w-3 rounded border border-dashed border-text-muted/50" />
           Habitable zone
         </span>
         <span className="flex items-center gap-1">
@@ -128,9 +128,9 @@ export function ExoplanetDetail({ planet, onClose }: ExoplanetDetailProps) {
 
   const habLabelColor =
     hab.label === "High"
-      ? "text-green-400"
+      ? "text-text-primary font-semibold"
       : hab.label === "Moderate"
-        ? "text-yellow-400"
+        ? "text-text-secondary font-medium"
         : "text-text-muted";
 
   return (
@@ -222,7 +222,7 @@ export function ExoplanetDetail({ planet, onClose }: ExoplanetDetailProps) {
                   <span
                     className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-[10px] ${
                       factor.met
-                        ? "bg-green-500/10 text-green-400"
+                        ? "bg-accent-soft text-text-primary"
                         : "bg-border text-text-muted"
                     }`}
                   >

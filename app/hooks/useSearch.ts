@@ -6,6 +6,8 @@ import type {
   MarsPhoto,
   Exoplanet,
   SolarFlare,
+  NasaMediaItem,
+  TechportProject,
   DatasetTab,
 } from "../lib/types";
 
@@ -24,6 +26,9 @@ export interface SearchResponse {
     mars?: MarsPhoto[];
     exoplanets?: Exoplanet[];
     weather?: SolarFlare[];
+    media?: (NasaMediaItem & { thumbnail?: string })[];
+    sounds?: (NasaMediaItem & { href?: string })[];
+    techport?: TechportProject[];
   };
   counts: Record<string, number>;
   totalResults: number;

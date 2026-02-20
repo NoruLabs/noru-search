@@ -14,6 +14,10 @@ import {
   Trash2,
   Search,
   SlidersHorizontal,
+  ImageIcon,
+  Music,
+  Rocket,
+  Thermometer,
 } from "lucide-react";
 import { DataCard } from "../ui/DataCard";
 import { CardSkeleton } from "../ui/Loader";
@@ -25,6 +29,8 @@ import type {
   MarsPhoto,
   Exoplanet,
   SolarFlare,
+  NasaMediaItem,
+  TechportProject,
   DatasetTab,
 } from "../../lib/types";
 
@@ -143,6 +149,9 @@ export function SearchFiltersPanel({
     { id: "mars", label: "Mars", icon: <Camera size={12} /> },
     { id: "exoplanets", label: "Exoplanets", icon: <Globe size={12} /> },
     { id: "weather", label: "Weather", icon: <Sun size={12} /> },
+    { id: "media", label: "Media", icon: <ImageIcon size={12} /> },
+    { id: "sounds", label: "Sounds", icon: <Music size={12} /> },
+    { id: "techport", label: "TechPort", icon: <Rocket size={12} /> },
   ];
 
   return (
@@ -157,9 +166,9 @@ export function SearchFiltersPanel({
       >
         <SlidersHorizontal size={12} />
         Filters
-        {(activeTypes.length > 0 && activeTypes.length < 5) || hazardousOnly || startDate ? (
+        {(activeTypes.length > 0 && activeTypes.length < 9) || hazardousOnly || startDate ? (
           <span className="ml-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent-text text-[9px] font-bold text-accent">
-            {(activeTypes.length > 0 && activeTypes.length < 5 ? 1 : 0) +
+            {(activeTypes.length > 0 && activeTypes.length < 9 ? 1 : 0) +
               (hazardousOnly ? 1 : 0) +
               (startDate ? 1 : 0)}
           </span>
@@ -226,11 +235,11 @@ export function SearchFiltersPanel({
             <button
               onClick={onToggleHazardous}
               className={`flex h-5 w-9 items-center rounded-full transition-colors ${
-                hazardousOnly ? "bg-red-500" : "bg-border"
+                hazardousOnly ? "bg-accent" : "bg-border"
               }`}
             >
               <span
-                className={`h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                className={`h-3.5 w-3.5 rounded-full bg-accent-text shadow-sm transition-transform ${
                   hazardousOnly ? "translate-x-[18px]" : "translate-x-[3px]"
                 }`}
               />
@@ -359,12 +368,12 @@ export function SearchResults({
                       {neo.name.replace(/[()]/g, "")}
                     </h4>
                     {neo.is_potentially_hazardous_asteroid ? (
-                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">
+                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-accent-soft px-2 py-0.5 text-[10px] text-text-primary font-semibold">
                         <AlertTriangle size={8} />
                         Hazardous
                       </span>
                     ) : (
-                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-[10px] text-green-400">
+                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-accent-soft px-2 py-0.5 text-[10px] text-text-muted">
                         <Shield size={8} />
                         Safe
                       </span>
@@ -488,10 +497,10 @@ export function SearchResults({
                   <span
                     className={`rounded-full px-2 py-0.5 text-[10px] ${
                       flare.classType.startsWith("X")
-                        ? "bg-red-500/10 text-red-400"
+                        ? "bg-accent text-accent-text font-semibold"
                         : flare.classType.startsWith("M")
-                          ? "bg-orange-500/10 text-orange-400"
-                          : "bg-yellow-500/10 text-yellow-400"
+                          ? "bg-accent-soft text-text-primary font-medium"
+                          : "bg-accent-soft text-text-secondary"
                     }`}
                   >
                     {flare.classType.startsWith("X")
@@ -521,9 +530,110 @@ export function SearchResults({
         </div>
       </ResultSection>
 
+      {/* NASA Media Results */}
+      <ResultSection
+        icon={<ImageIcon size={16} className="text-text-muted" />}
+        title="NASA Images & Videos"
+        count={counts.media || 0}
+      >
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 stagger-children">
+          {(results.media as (NasaMediaItem & { thumbnail?: string })[] | undefined)?.map(
+            (item) => (
+              <DataCard key={item.nasa_id} className="overflow-hidden p-0">
+                {item.thumbnail && (
+                  <img
+                    src={item.thumbnail}
+                    alt={item.title}
+                    className="aspect-square w-full object-cover"
+                    loading="lazy"
+                  />
+                )}
+                <div className="p-2">
+                  <p className="truncate text-[11px] font-medium text-text-primary">
+                    {item.title}
+                  </p>
+                  <p className="text-[10px] text-text-muted">
+                    {new Date(item.date_created).toLocaleDateString()}
+                  </p>
+                </div>
+              </DataCard>
+            )
+          )}
+        </div>
+      </ResultSection>
+
+      {/* Space Sounds Results */}
+      <ResultSection
+        icon={<Music size={16} className="text-text-muted" />}
+        title="Space Sounds"
+        count={counts.sounds || 0}
+      >
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
+          {(results.sounds as (NasaMediaItem & { href?: string })[] | undefined)?.map(
+            (item) => (
+              <DataCard key={item.nasa_id}>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Music size={14} className="mt-0.5 shrink-0 text-text-muted" />
+                    <div className="min-w-0">
+                      <h4 className="text-xs font-semibold text-text-primary line-clamp-2">
+                        {item.title}
+                      </h4>
+                      <p className="text-[10px] text-text-muted">
+                        {new Date(item.date_created).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  {item.description && (
+                    <p className="text-[11px] text-text-secondary line-clamp-2">
+                      {item.description}
+                    </p>
+                  )}
+                </div>
+              </DataCard>
+            )
+          )}
+        </div>
+      </ResultSection>
+
+      {/* TechPort Results */}
+      <ResultSection
+        icon={<Rocket size={16} className="text-text-muted" />}
+        title="Technology Projects"
+        count={counts.techport || 0}
+      >
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
+          {(results.techport as TechportProject[] | undefined)?.map((project) => (
+            <DataCard key={project.projectId}>
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold text-text-primary line-clamp-2">
+                  {project.title}
+                </h4>
+                {project.statusDescription && (
+                  <span
+                    className={`inline-block rounded-full px-2 py-0.5 text-[10px] ${
+                      project.statusDescription === "Active"
+                        ? "bg-accent text-accent-text font-medium"
+                        : "bg-accent-soft text-text-secondary"
+                    }`}
+                  >
+                    {project.statusDescription}
+                  </span>
+                )}
+                {project.description && (
+                  <p className="text-[11px] text-text-secondary line-clamp-2">
+                    {project.description}
+                  </p>
+                )}
+              </div>
+            </DataCard>
+          ))}
+        </div>
+      </ResultSection>
+
       {/* Error notices */}
       {Object.entries(errors).length > 0 && (
-        <div className="rounded-lg border border-border bg-bg-card p-3">
+        <div className="glass-card rounded-xl p-3">
           <p className="text-xs text-text-muted">
             Some datasets couldn&apos;t be searched:{" "}
             {Object.keys(errors).join(", ")}

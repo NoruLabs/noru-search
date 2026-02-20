@@ -81,12 +81,12 @@ export function AsteroidDetail({ asteroid, onClose }: AsteroidDetailProps) {
         {/* Status badge */}
         <div className="flex items-center gap-3">
           {asteroid.is_potentially_hazardous_asteroid ? (
-            <span className="flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-xs font-medium text-red-400">
+            <span className="flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-text-primary">
               <AlertTriangle size={12} />
               Potentially Hazardous Asteroid
             </span>
           ) : (
-            <span className="flex items-center gap-1.5 rounded-full bg-green-500/10 px-3 py-1 text-xs font-medium text-green-400">
+            <span className="flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-text-muted">
               <Shield size={12} />
               Not Hazardous
             </span>

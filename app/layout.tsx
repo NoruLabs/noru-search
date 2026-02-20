@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Sora, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { QueryProvider } from "./components/QueryProvider";
+
+const sora = Sora({
+  variable: "--font-sora",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +50,14 @@ export const metadata: Metadata = {
       "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
   },
   metadataBase: new URL("https://noru-search.vercel.app"),
+  icons: {
+    icon: [
+      { url: "/noru-icon.ico", sizes: "any" },
+      { url: "/noru-icon.png", type: "image/png" },
+    ],
+    shortcut: "/noru-icon.ico",
+    apple: "/noru-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -54,7 +68,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sora.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <a href="#main-content" className="skip-to-content">
           Skip to content
