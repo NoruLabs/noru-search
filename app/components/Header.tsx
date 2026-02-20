@@ -52,26 +52,21 @@ export function Header({
           {/* Brand */}
           <button
             onClick={onHomeClick}
-            className="flex shrink-0 items-center gap-2.5 transition-opacity hover:opacity-70"
+            className="header-tab flex shrink-0 items-center gap-2 !opacity-70 hover:!opacity-100 transition-opacity"
+            data-active={false}
           >
             <Image
               src="/noru-icon.png"
               alt="Noru Search logo"
-              width={24}
-              height={24}
-              className="rounded-lg"
+              width={20}
+              height={20}
+              className="rounded-md"
             />
             <div className="flex items-baseline gap-1">
-              <span
-                className="text-[14px] font-semibold tracking-tight"
-                style={{ color: "var(--header-text)" }}
-              >
+              <span className="text-[13px] font-semibold tracking-tight">
                 Noru
               </span>
-              <span
-                className="text-[14px] font-light tracking-tight"
-                style={{ color: "var(--header-text)", opacity: 0.45 }}
-              >
+              <span className="text-[13px] font-light tracking-tight opacity-50">
                 search
               </span>
             </div>

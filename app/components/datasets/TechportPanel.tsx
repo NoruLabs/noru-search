@@ -135,9 +135,10 @@ function TechportProjectCard({
           </p>
         )}
         {data.description && (
-          <p className="text-xs text-text-secondary line-clamp-2">
-            {data.description}
-          </p>
+          <p
+            className="text-xs text-text-secondary line-clamp-2"
+            dangerouslySetInnerHTML={{ __html: data.description.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim() }}
+          />
         )}
       </div>
     </DataCard>
@@ -227,18 +228,20 @@ function TechportDetail({
           {data.description && (
             <div>
               <p className="text-xs text-text-muted mb-1">Description</p>
-              <p className="text-sm leading-relaxed text-text-secondary">
-                {data.description}
-              </p>
+              <div
+                className="text-sm leading-relaxed text-text-secondary prose-sm [&_strong]:font-semibold [&_strong]:text-text-primary [&_a]:text-text-secondary [&_a]:underline [&_p]:mb-2"
+                dangerouslySetInnerHTML={{ __html: data.description }}
+              />
             </div>
           )}
 
           {data.benefits && (
             <div>
               <p className="text-xs text-text-muted mb-1">Benefits</p>
-              <p className="text-sm leading-relaxed text-text-secondary">
-                {data.benefits}
-              </p>
+              <div
+                className="text-sm leading-relaxed text-text-secondary prose-sm [&_strong]:font-semibold [&_strong]:text-text-primary [&_a]:text-text-secondary [&_a]:underline [&_p]:mb-2"
+                dangerouslySetInnerHTML={{ __html: data.benefits }}
+              />
             </div>
           )}
 

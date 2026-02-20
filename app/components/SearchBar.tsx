@@ -56,7 +56,7 @@ export function SearchBar({
         placeholder="Search across all NASA datasets..."
         aria-label="Search across all NASA datasets"
         autoComplete="off"
-        className={`w-full rounded-2xl border border-border/60 bg-bg-card/80 backdrop-blur-sm text-text-primary outline-none transition-all placeholder:text-text-muted/60 focus:border-accent/50 focus:ring-2 focus:ring-accent/10 focus:bg-bg-card ${
+        className={`w-full rounded-2xl border border-border bg-bg-card text-text-primary outline-none transition-all placeholder:text-text-muted/60 focus:border-accent/40 focus:ring-2 focus:ring-accent/10 ${
           isHero
             ? "py-3.5 pl-12 pr-12 text-base"
             : "py-2.5 pl-10 pr-10 text-sm"

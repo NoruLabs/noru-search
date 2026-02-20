@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Image as ImageIcon, Video, ExternalLink } from "lucide-react";
+import { Search, Image as ImageIcon, Video, Filter, X } from "lucide-react";
 import { useNasaMedia } from "../../hooks/useNasaMedia";
 import { DataCard } from "../ui/DataCard";
 import { Loader, CardSkeleton } from "../ui/Loader";
@@ -15,10 +15,17 @@ export function MediaPanel() {
   const [committedQuery, setCommittedQuery] = useState("Hubble");
   const [mediaType, setMediaType] = useState<MediaFilter>("image");
   const [page, setPage] = useState(1);
+  const [yearStart, setYearStart] = useState("");
+  const [yearEnd, setYearEnd] = useState("");
+  const [committedYearStart, setCommittedYearStart] = useState("");
+  const [committedYearEnd, setCommittedYearEnd] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   const { data, isLoading, error, refetch } = useNasaMedia(committedQuery, {
     mediaType,
     page,
+    yearStart: committedYearStart || undefined,
+    yearEnd: committedYearEnd || undefined,
   });
 
   const items = data?.collection?.items ?? [];
@@ -27,35 +34,114 @@ export function MediaPanel() {
   const handleSearch = () => {
     if (query.trim()) {
       setCommittedQuery(query.trim());
+      setCommittedYearStart(yearStart);
+      setCommittedYearEnd(yearEnd);
       setPage(1);
     }
   };
 
+  const clearFilters = () => {
+    setYearStart("");
+    setYearEnd("");
+    setCommittedYearStart("");
+    setCommittedYearEnd("");
+    setPage(1);
+  };
+
+  const hasActiveFilters = committedYearStart || committedYearEnd;
+
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Controls */}
-      <div className="flex flex-wrap items-end gap-3">
-        {/* Search input */}
-        <div className="flex-1 min-w-[200px]">
-          <label className="mb-1 block text-xs text-text-muted">Search NASA Media</label>
-          <div className="flex gap-2">
+      {/* Header */}
+      <div>
+        <h2 className="text-lg font-semibold text-text-primary">
+          NASA Media Library
+        </h2>
+        <p className="mt-1 text-sm text-text-muted">
+          Search NASA&rsquo;s vast image and video library — from Hubble deep fields to Artemis launches
+        </p>
+      </div>
+
+      {/* Search + Controls */}
+      <div className="space-y-3">
+        <div className="flex gap-2">
+          <div className="relative flex-1">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="Hubble, Artemis, Apollo, galaxies..."
-              className="flex-1 rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:border-accent/50 focus:ring-2 focus:ring-accent/10"
+              placeholder="Hubble, Artemis, Apollo, galaxies, nebula..."
+              className="w-full rounded-xl border border-border bg-bg-card py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-all focus:border-accent/40 focus:ring-2 focus:ring-accent/10"
             />
-            <button
-              onClick={handleSearch}
-              className="flex items-center gap-1.5 rounded-xl border border-border/60 px-3 py-2 text-sm text-text-secondary transition-all hover:border-border-hover hover:text-text-primary active:scale-95"
-            >
-              <Search size={14} />
-              Search
-            </button>
           </div>
+          <button
+            onClick={() => setShowFilters((p) => !p)}
+            className={`flex items-center gap-1.5 rounded-xl border px-3 py-2 text-sm transition-all ${
+              showFilters || hasActiveFilters
+                ? "border-accent bg-accent-soft text-text-primary"
+                : "border-border text-text-secondary hover:border-border-hover hover:text-text-primary"
+            }`}
+          >
+            <Filter size={14} />
+            Filters
+            {hasActiveFilters && (
+              <span className="flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-accent-text">
+                !
+              </span>
+            )}
+          </button>
+          <button
+            onClick={handleSearch}
+            className="flex items-center gap-1.5 rounded-xl border border-accent bg-accent px-4 py-2 text-sm font-medium text-accent-text transition-all hover:opacity-80 active:scale-95"
+          >
+            Search
+          </button>
         </div>
+
+        {/* Filters panel */}
+        {showFilters && (
+          <div className="flex flex-wrap items-end gap-3 rounded-xl border border-border bg-bg-card p-3">
+            <div>
+              <label className="mb-1 block text-[10px] uppercase tracking-wider text-text-muted">
+                Year from
+              </label>
+              <input
+                type="number"
+                min="1920"
+                max={new Date().getFullYear()}
+                value={yearStart}
+                onChange={(e) => setYearStart(e.target.value)}
+                placeholder="1960"
+                className="w-24 rounded-lg border border-border bg-bg-primary px-2 py-1.5 text-sm text-text-primary outline-none focus:border-accent/40"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-[10px] uppercase tracking-wider text-text-muted">
+                Year to
+              </label>
+              <input
+                type="number"
+                min="1920"
+                max={new Date().getFullYear()}
+                value={yearEnd}
+                onChange={(e) => setYearEnd(e.target.value)}
+                placeholder={new Date().getFullYear().toString()}
+                className="w-24 rounded-lg border border-border bg-bg-primary px-2 py-1.5 text-sm text-text-primary outline-none focus:border-accent/40"
+              />
+            </div>
+            {hasActiveFilters && (
+              <button
+                onClick={clearFilters}
+                className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs text-text-muted hover:text-text-primary transition-colors"
+              >
+                <X size={12} />
+                Clear
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Media type toggle */}
         <div className="flex gap-2">
