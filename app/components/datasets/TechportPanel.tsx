@@ -106,10 +106,10 @@ function TechportProjectCard({
           <span
             className={`inline-block rounded-full px-2 py-0.5 text-[10px] ${
               data.statusDescription === "Active"
-                ? "bg-green-500/10 text-green-400"
+                ? "bg-accent text-accent-text font-medium"
                 : data.statusDescription === "Completed"
-                  ? "bg-blue-500/10 text-blue-400"
-                  : "bg-yellow-500/10 text-yellow-400"
+                  ? "bg-accent-soft text-text-primary font-medium"
+                  : "bg-accent-soft text-text-secondary"
             }`}
           >
             {data.statusDescription}
@@ -183,10 +183,10 @@ function TechportDetail({
               <span
                 className={`mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs ${
                   data.statusDescription === "Active"
-                    ? "bg-green-500/10 text-green-400"
+                    ? "bg-accent text-accent-text font-medium"
                     : data.statusDescription === "Completed"
-                      ? "bg-blue-500/10 text-blue-400"
-                      : "bg-yellow-500/10 text-yellow-400"
+                      ? "bg-accent-soft text-text-primary font-medium"
+                      : "bg-accent-soft text-text-secondary"
                 }`}
               >
                 {data.statusDescription}

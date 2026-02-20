@@ -46,63 +46,70 @@ export function Header({
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-bg-primary/80 backdrop-blur-md">
-      <div className="mx-auto flex h-14 max-w-7xl items-center gap-4 px-4 sm:px-6">
-        {/* Logo + Brand (acts as Home/Feed) */}
-        <button
-          onClick={onHomeClick}
-          className="flex shrink-0 items-center gap-2 transition-opacity hover:opacity-70"
-        >
-          <Image
-            src="/noru-icon.png"
-            alt="Noru Search logo"
-            width={28}
-            height={28}
-            className="rounded"
-          />
-          <span className="text-lg font-semibold tracking-tight text-text-primary">
-            Noru
-          </span>
-          <span className="text-lg font-light tracking-tight text-text-muted">
-            search
-          </span>
-        </button>
-
-        {/* Tabs */}
-        <nav
-          className="-mb-px flex flex-1 items-center gap-0.5 overflow-x-auto scrollbar-none sm:gap-1"
-          aria-label="Dataset navigation"
-          role="tablist"
-        >
-          {TAB_CONFIG.map((tab) => {
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`flex shrink-0 items-center gap-1.5 border-b-2 px-3 py-4 text-xs font-medium transition-colors sm:gap-2 sm:px-4 sm:text-sm ${
-                  isActive
-                    ? "border-accent text-text-primary"
-                    : "border-transparent text-text-muted hover:text-text-secondary"
-                }`}
-                aria-selected={isActive}
-                role="tab"
+    <header className="header-bar sticky top-0 z-50">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="flex h-12 items-center gap-4">
+          {/* Brand */}
+          <button
+            onClick={onHomeClick}
+            className="flex shrink-0 items-center gap-2.5 transition-opacity hover:opacity-70"
+          >
+            <Image
+              src="/noru-icon.png"
+              alt="Noru Search logo"
+              width={24}
+              height={24}
+              className="rounded-lg"
+            />
+            <div className="flex items-baseline gap-1">
+              <span
+                className="text-[14px] font-semibold tracking-tight"
+                style={{ color: "var(--header-text)" }}
               >
-                {TAB_ICONS[tab.id]}
-                <span className="hidden xs:inline sm:inline">{tab.label}</span>
-              </button>
-            );
-          })}
-        </nav>
+                Noru
+              </span>
+              <span
+                className="text-[14px] font-light tracking-tight"
+                style={{ color: "var(--header-text)", opacity: 0.45 }}
+              >
+                search
+              </span>
+            </div>
+          </button>
 
-        {/* Theme Toggle */}
-        <button
-          onClick={toggleTheme}
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-border text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary"
-          aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
-        >
-          {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
-        </button>
+          {/* Tab navigation */}
+          <nav
+            className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto scrollbar-none"
+            aria-label="Dataset navigation"
+            role="tablist"
+          >
+            {TAB_CONFIG.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => onTabChange(tab.id)}
+                  className="header-tab"
+                  data-active={isActive}
+                  aria-selected={isActive}
+                  role="tab"
+                >
+                  <span className="shrink-0">{TAB_ICONS[tab.id]}</span>
+                  <span className="hidden sm:inline">{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            className="header-toggle flex h-8 w-8 shrink-0 items-center justify-center rounded-md"
+            aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} mode`}
+          >
+            {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
+          </button>
+        </div>
       </div>
     </header>
   );

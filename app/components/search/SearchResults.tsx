@@ -235,11 +235,11 @@ export function SearchFiltersPanel({
             <button
               onClick={onToggleHazardous}
               className={`flex h-5 w-9 items-center rounded-full transition-colors ${
-                hazardousOnly ? "bg-red-500" : "bg-border"
+                hazardousOnly ? "bg-accent" : "bg-border"
               }`}
             >
               <span
-                className={`h-3.5 w-3.5 rounded-full bg-white shadow-sm transition-transform ${
+                className={`h-3.5 w-3.5 rounded-full bg-accent-text shadow-sm transition-transform ${
                   hazardousOnly ? "translate-x-[18px]" : "translate-x-[3px]"
                 }`}
               />
@@ -368,12 +368,12 @@ export function SearchResults({
                       {neo.name.replace(/[()]/g, "")}
                     </h4>
                     {neo.is_potentially_hazardous_asteroid ? (
-                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-red-500/10 px-2 py-0.5 text-[10px] text-red-400">
+                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-accent-soft px-2 py-0.5 text-[10px] text-text-primary font-semibold">
                         <AlertTriangle size={8} />
                         Hazardous
                       </span>
                     ) : (
-                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-green-500/10 px-2 py-0.5 text-[10px] text-green-400">
+                      <span className="flex shrink-0 items-center gap-1 rounded-full bg-accent-soft px-2 py-0.5 text-[10px] text-text-muted">
                         <Shield size={8} />
                         Safe
                       </span>
@@ -497,10 +497,10 @@ export function SearchResults({
                   <span
                     className={`rounded-full px-2 py-0.5 text-[10px] ${
                       flare.classType.startsWith("X")
-                        ? "bg-red-500/10 text-red-400"
+                        ? "bg-accent text-accent-text font-semibold"
                         : flare.classType.startsWith("M")
-                          ? "bg-orange-500/10 text-orange-400"
-                          : "bg-yellow-500/10 text-yellow-400"
+                          ? "bg-accent-soft text-text-primary font-medium"
+                          : "bg-accent-soft text-text-secondary"
                     }`}
                   >
                     {flare.classType.startsWith("X")
@@ -574,7 +574,7 @@ export function SearchResults({
               <DataCard key={item.nasa_id}>
                 <div className="space-y-2">
                   <div className="flex items-start gap-2">
-                    <Music size={14} className="mt-0.5 shrink-0 text-purple-400" />
+                    <Music size={14} className="mt-0.5 shrink-0 text-text-muted" />
                     <div className="min-w-0">
                       <h4 className="text-xs font-semibold text-text-primary line-clamp-2">
                         {item.title}
@@ -613,8 +613,8 @@ export function SearchResults({
                   <span
                     className={`inline-block rounded-full px-2 py-0.5 text-[10px] ${
                       project.statusDescription === "Active"
-                        ? "bg-green-500/10 text-green-400"
-                        : "bg-blue-500/10 text-blue-400"
+                        ? "bg-accent text-accent-text font-medium"
+                        : "bg-accent-soft text-text-secondary"
                     }`}
                   >
                     {project.statusDescription}
@@ -633,7 +633,7 @@ export function SearchResults({
 
       {/* Error notices */}
       {Object.entries(errors).length > 0 && (
-        <div className="rounded-lg border border-border bg-bg-card p-3">
+        <div className="glass-card rounded-xl p-3">
           <p className="text-xs text-text-muted">
             Some datasets couldn&apos;t be searched:{" "}
             {Object.keys(errors).join(", ")}

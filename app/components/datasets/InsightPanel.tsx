@@ -63,7 +63,7 @@ export function InsightPanel() {
                     Sol {sol}
                   </h3>
                   {solData.Season && (
-                    <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] text-blue-400">
+                    <span className="rounded-full bg-accent-soft px-2 py-0.5 text-[10px] text-text-secondary">
                       {solData.Season}
                     </span>
                   )}

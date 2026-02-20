@@ -7,6 +7,7 @@ interface StatItem {
   label: string;
   value: string | number;
   sublabel?: string;
+  color?: string;
 }
 
 interface StatsBarProps {
@@ -15,21 +16,20 @@ interface StatsBarProps {
 
 export function StatsBar({ stats }: StatsBarProps) {
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+    <div className="flex flex-wrap items-center gap-4">
       {stats.map((stat, i) => (
         <div
           key={i}
-          className="flex items-center gap-3 rounded-xl border border-border bg-bg-card p-3 transition-colors hover:border-border-hover"
+          className="flex items-center gap-2"
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-bg-primary text-text-muted">
-            {stat.icon}
-          </div>
-          <div className="min-w-0">
-            <p className="text-lg font-semibold leading-tight text-text-primary">
-              {stat.value}
-            </p>
-            <p className="truncate text-[11px] text-text-muted">{stat.label}</p>
-          </div>
+          <span className="text-text-muted">{stat.icon}</span>
+          <span className="text-sm font-semibold text-text-primary tabular-nums">
+            {stat.value}
+          </span>
+          <span className="text-xs text-text-muted">{stat.label}</span>
+          {i < stats.length - 1 && (
+            <span className="ml-2 text-border">·</span>
+          )}
         </div>
       ))}
     </div>
@@ -49,22 +49,22 @@ export function FeedStats({
 }) {
   const stats: StatItem[] = [
     {
-      icon: <Orbit size={18} />,
+      icon: <Orbit size={14} />,
       label: "Near-Earth Objects",
       value: neoCount,
     },
     {
-      icon: <Orbit size={18} />,
+      icon: <Orbit size={14} />,
       label: "Hazardous",
       value: hazardousCount,
     },
     {
-      icon: <Sun size={18} />,
+      icon: <Sun size={14} />,
       label: "Solar Flares (30d)",
       value: flareCount,
     },
     {
-      icon: <Camera size={18} />,
+      icon: <Camera size={14} />,
       label: "Mars Photos",
       value: marsCount,
     },

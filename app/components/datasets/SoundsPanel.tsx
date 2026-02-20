@@ -48,11 +48,11 @@ export function SoundsPanel() {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           placeholder="Voyager, Saturn, plasma, radio..."
-          className="flex-1 rounded-lg border border-border bg-bg-card px-3 py-2 text-sm text-text-primary outline-none transition-colors focus:border-accent"
+          className="flex-1 rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:border-accent/50 focus:ring-2 focus:ring-accent/10"
         />
         <button
           onClick={handleSearch}
-          className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary"
+          className="flex items-center gap-1.5 rounded-xl border border-border/60 px-3 py-2 text-sm text-text-secondary transition-all hover:border-border-hover hover:text-text-primary active:scale-95"
         >
           <Search size={14} />
           Search
@@ -101,8 +101,8 @@ export function SoundsPanel() {
                 <DataCard key={meta.nasa_id}>
                   <div className="space-y-3">
                     <div className="flex items-start gap-3">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-500/10">
-                        <Music size={18} className="text-purple-400" />
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-soft">
+                        <Music size={18} className="text-text-secondary" />
                       </div>
                       <div className="min-w-0">
                         <h3 className="text-sm font-semibold text-text-primary line-clamp-2">

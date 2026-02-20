@@ -186,11 +186,11 @@ function HomeContent() {
         onHomeClick={handleGoHome}
       />
 
-      <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+      <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6">
         <ErrorBoundary>
         {/* Feed + Search views share the search bar */}
         {(view === "feed" || view === "search") && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             <div className="flex items-start gap-3">
               <div className="relative flex-1">
                 <SearchBar
@@ -200,10 +200,11 @@ function HomeContent() {
                   isSearching={isFetching}
                   onFocus={() => setShowHistory(true)}
                   onBlur={() => setShowHistory(false)}
+                  size={view === "feed" ? "hero" : "default"}
                 />
                 {/* Search History Dropdown */}
                 {showHistory && !committedQuery && history.length > 0 && (
-                  <div className="absolute left-0 right-0 top-full z-40 mt-1">
+                  <div className="absolute left-0 right-0 top-full z-40 mt-2">
                     <SearchHistory
                       history={history}
                       onSelect={handleSelectHistory}
@@ -214,7 +215,7 @@ function HomeContent() {
                 )}
               </div>
 
-              {/* Filters button (only show when searching) */}
+              {/* Filters button */}
               {isSearchView && (
                 <SearchFiltersPanel
                   activeTypes={filterTypes}
@@ -231,7 +232,7 @@ function HomeContent() {
               )}
             </div>
 
-            {/* Content area */}
+            {/* Content */}
             {isSearchView ? (
               isSearching && !searchData ? (
                 <SearchResultsSkeleton />
@@ -245,7 +246,11 @@ function HomeContent() {
         )}
 
         {/* Dataset panel views */}
-        {ActivePanel && <ActivePanel />}
+        {ActivePanel && (
+          <div className="animate-fade-in">
+            <ActivePanel />
+          </div>
+        )}
         </ErrorBoundary>
       </main>
 

@@ -40,7 +40,7 @@ export function MarsPanel() {
           <select
             value={selectedRover}
             onChange={(e) => setSelectedRover(e.target.value)}
-            className="rounded-lg border border-border bg-bg-card px-3 py-2 text-sm text-text-primary outline-none"
+            className="rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:ring-2 focus:ring-accent/10"
           >
             {(rovers || []).map((rover) => (
               <option key={rover.name} value={rover.name.toLowerCase()}>
@@ -61,7 +61,7 @@ export function MarsPanel() {
             onChange={(e) => setSol(Number(e.target.value))}
             min={0}
             max={currentRover?.max_sol || 5000}
-            className="w-24 rounded-lg border border-border bg-bg-card px-3 py-2 text-sm text-text-primary outline-none"
+            className="w-24 rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:ring-2 focus:ring-accent/10"
           />
         </div>
 
@@ -71,7 +71,7 @@ export function MarsPanel() {
           <select
             value={camera}
             onChange={(e) => setCamera(e.target.value)}
-            className="rounded-lg border border-border bg-bg-card px-3 py-2 text-sm text-text-primary outline-none"
+            className="rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:ring-2 focus:ring-accent/10"
           >
             <option value="">All Cameras</option>
             {Object.entries(MARS_CAMERAS).map(([key, name]) => (

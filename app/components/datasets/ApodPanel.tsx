@@ -33,7 +33,7 @@ export function ApodPanel() {
           onChange={(e) => setDate(e.target.value)}
           max={new Date().toISOString().split("T")[0]}
           min="1995-06-16"
-          className="rounded-lg border border-border bg-bg-card px-3 py-2 text-sm text-text-primary outline-none transition-colors focus:border-accent"
+          className="rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:border-accent/50 focus:ring-2 focus:ring-accent/10"
         />
         <button
           onClick={() => {
@@ -41,14 +41,14 @@ export function ApodPanel() {
             refetch();
           }}
           disabled={isFetching}
-          className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary disabled:opacity-50"
+          className="flex items-center gap-2 rounded-xl border border-border/60 px-4 py-2 text-sm text-text-secondary transition-all hover:border-border-hover hover:text-text-primary active:scale-95 disabled:opacity-50"
         >
           <RefreshCw size={14} className={isFetching ? "animate-spin" : ""} />
           Today
         </button>
         <button
           onClick={() => setShowGallery(true)}
-          className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary"
+          className="flex items-center gap-2 rounded-xl border border-border/60 px-4 py-2 text-sm text-text-secondary transition-all hover:border-border-hover hover:text-text-primary active:scale-95"
         >
           <Grid size={14} />
           Gallery
@@ -57,7 +57,7 @@ export function ApodPanel() {
 
       {/* Content */}
       <DataCard>
-        <div className="space-y-4">
+        <div className="space-y-5">
           {/* Title & Date */}
           <div>
             <h2 className="text-xl font-semibold text-text-primary">
@@ -71,7 +71,7 @@ export function ApodPanel() {
 
           {/* Media */}
           {data.media_type === "image" ? (
-            <div className="overflow-hidden rounded-lg">
+            <div className="overflow-hidden rounded-xl">
               <img
                 src={data.url}
                 alt={data.title}
@@ -80,7 +80,7 @@ export function ApodPanel() {
               />
             </div>
           ) : (
-            <div className="aspect-video overflow-hidden rounded-lg">
+            <div className="aspect-video overflow-hidden rounded-xl">
               <iframe
                 src={data.url}
                 title={data.title}
@@ -101,7 +101,7 @@ export function ApodPanel() {
               href={data.hdurl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-text-muted transition-colors hover:text-text-primary"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent transition-all hover:opacity-80"
             >
               View HD
               <ExternalLink size={12} />

@@ -45,11 +45,11 @@ export function MediaPanel() {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Hubble, Artemis, Apollo, galaxies..."
-              className="flex-1 rounded-lg border border-border bg-bg-card px-3 py-2 text-sm text-text-primary outline-none transition-colors focus:border-accent"
+              className="flex-1 rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:border-accent/50 focus:ring-2 focus:ring-accent/10"
             />
             <button
               onClick={handleSearch}
-              className="flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-sm text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary"
+              className="flex items-center gap-1.5 rounded-xl border border-border/60 px-3 py-2 text-sm text-text-secondary transition-all hover:border-border-hover hover:text-text-primary active:scale-95"
             >
               <Search size={14} />
               Search

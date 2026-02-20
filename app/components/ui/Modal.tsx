@@ -93,7 +93,7 @@ export function Modal({
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm animate-fade-in"
+        className="fixed inset-0 bg-[#23262A]/50 backdrop-blur-md animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -102,17 +102,17 @@ export function Modal({
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className={`relative w-full ${sizeClasses[size]} rounded-2xl border border-border bg-bg-primary shadow-2xl animate-fade-in outline-none`}
+        className={`relative w-full ${sizeClasses[size]} glass-card rounded-2xl shadow-2xl animate-fade-in-scale outline-none`}
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between border-b border-border px-6 py-4">
+          <div className="flex items-center justify-between border-b border-border/40 px-6 py-4">
             <h2 className="text-base font-semibold text-text-primary">
               {title}
             </h2>
             <button
               onClick={onClose}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-text-muted transition-colors hover:bg-bg-card hover:text-text-primary"
+              className="flex h-8 w-8 items-center justify-center rounded-xl text-text-muted transition-all hover:bg-bg-card-hover hover:text-text-primary"
               aria-label="Close dialog"
             >
               <X size={16} />
@@ -124,7 +124,7 @@ export function Modal({
         {!title && (
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-lg bg-bg-card/80 text-text-muted backdrop-blur transition-colors hover:text-text-primary"
+            className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-xl glass text-text-muted transition-all hover:text-text-primary"
             aria-label="Close dialog"
           >
             <X size={16} />

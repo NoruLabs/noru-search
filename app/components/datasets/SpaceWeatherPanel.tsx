@@ -77,7 +77,7 @@ export function SpaceWeatherPanel() {
           <select
             value={daysBack}
             onChange={(e) => setDaysBack(Number(e.target.value))}
-            className="rounded-lg border border-border bg-bg-card px-3 py-2 text-sm text-text-primary outline-none"
+            className="rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:ring-2 focus:ring-accent/10"
           >
             <option value={7}>7 days</option>
             <option value={14}>14 days</option>
@@ -126,10 +126,10 @@ export function SpaceWeatherPanel() {
                         <span
                           className={`rounded-full px-2 py-0.5 text-xs ${
                             flare.classType.startsWith("X")
-                              ? "bg-red-500/10 text-red-400"
+                              ? "bg-accent text-accent-text font-semibold"
                               : flare.classType.startsWith("M")
-                                ? "bg-orange-500/10 text-orange-400"
-                                : "bg-yellow-500/10 text-yellow-400"
+                                ? "bg-accent-soft text-text-primary font-medium"
+                                : "bg-accent-soft text-text-secondary"
                           }`}
                         >
                           {flare.classType.startsWith("X")
