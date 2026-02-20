@@ -5,6 +5,8 @@ import {
   useSolarFlares,
   useCoronalMassEjections,
   useGeomagneticStorms,
+  useSolarEnergeticParticles,
+  useInterplanetaryShocks,
 } from "../../hooks/useSpaceWeather";
 import { DataCard } from "../ui/DataCard";
 import { Loader, CardSkeleton } from "../ui/Loader";
@@ -15,7 +17,7 @@ import {
   FlareTimelineChart,
 } from "../charts/WeatherCharts";
 
-type WeatherCategory = "flares" | "cme" | "storms";
+type WeatherCategory = "flares" | "cme" | "storms" | "sep" | "ips";
 
 export function SpaceWeatherPanel() {
   const [category, setCategory] = useState<WeatherCategory>("flares");
@@ -24,9 +26,19 @@ export function SpaceWeatherPanel() {
   const flares = useSolarFlares(daysBack);
   const cmes = useCoronalMassEjections(daysBack);
   const storms = useGeomagneticStorms(daysBack);
+  const seps = useSolarEnergeticParticles(daysBack);
+  const shocks = useInterplanetaryShocks(daysBack);
 
   const currentQuery =
-    category === "flares" ? flares : category === "cme" ? cmes : storms;
+    category === "flares"
+      ? flares
+      : category === "cme"
+        ? cmes
+        : category === "sep"
+          ? seps
+          : category === "ips"
+            ? shocks
+            : storms;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -39,6 +51,8 @@ export function SpaceWeatherPanel() {
               { id: "flares", label: "Solar Flares" },
               { id: "cme", label: "CMEs" },
               { id: "storms", label: "Geomagnetic Storms" },
+              { id: "sep", label: "Energetic Particles" },
+              { id: "ips", label: "Interplanetary Shocks" },
             ] as const
           ).map((cat) => (
             <button
@@ -243,6 +257,100 @@ export function SpaceWeatherPanel() {
                               <p className="text-text-muted">Kp Index</p>
                               <p className="text-text-secondary">
                                 {storm.allKpIndex[0].kpIndex}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </DataCard>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Solar Energetic Particles */}
+          {category === "sep" && seps.data && (
+            <>
+              <p className="text-sm text-text-muted">
+                {seps.data.length} solar energetic particle events in the past{" "}
+                {daysBack} days
+              </p>
+              {seps.data.length === 0 ? (
+                <p className="py-10 text-center text-sm text-text-muted">
+                  No solar energetic particle events detected in this period.
+                </p>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {seps.data.map((sep) => (
+                    <DataCard key={sep.sepID}>
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-text-primary">
+                          SEP Event
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <p className="text-text-muted">Time</p>
+                            <p className="text-text-secondary">
+                              {new Date(sep.eventTime).toLocaleDateString()}
+                            </p>
+                          </div>
+                          {sep.instruments?.[0] && (
+                            <div>
+                              <p className="text-text-muted">Instrument</p>
+                              <p className="text-text-secondary">
+                                {sep.instruments[0].displayName}
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </DataCard>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Interplanetary Shocks */}
+          {category === "ips" && shocks.data && (
+            <>
+              <p className="text-sm text-text-muted">
+                {shocks.data.length} interplanetary shocks in the past{" "}
+                {daysBack} days
+              </p>
+              {shocks.data.length === 0 ? (
+                <p className="py-10 text-center text-sm text-text-muted">
+                  No interplanetary shocks detected in this period.
+                </p>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {shocks.data.map((shock) => (
+                    <DataCard key={shock.activityID}>
+                      <div className="space-y-2">
+                        <h3 className="text-sm font-semibold text-text-primary">
+                          Interplanetary Shock
+                        </h3>
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <p className="text-text-muted">Time</p>
+                            <p className="text-text-secondary">
+                              {new Date(shock.eventTime).toLocaleDateString()}
+                            </p>
+                          </div>
+                          {shock.location && (
+                            <div>
+                              <p className="text-text-muted">Location</p>
+                              <p className="text-text-secondary">
+                                {shock.location}
+                              </p>
+                            </div>
+                          )}
+                          {shock.instruments?.[0] && (
+                            <div>
+                              <p className="text-text-muted">Instrument</p>
+                              <p className="text-text-secondary">
+                                {shock.instruments[0].displayName}
                               </p>
                             </div>
                           )}

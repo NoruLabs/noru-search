@@ -3,7 +3,6 @@
 import { Suspense, useState, useCallback, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Header } from "./components/Header";
-import { Tabs } from "./components/Tabs";
 import { SearchBar } from "./components/SearchBar";
 import { Feed } from "./components/datasets/Feed";
 import { Footer } from "./components/Footer";
@@ -12,6 +11,10 @@ import { NeoPanel } from "./components/datasets/NeoPanel";
 import { MarsPanel } from "./components/datasets/MarsPanel";
 import { ExoplanetsPanel } from "./components/datasets/ExoplanetsPanel";
 import { SpaceWeatherPanel } from "./components/datasets/SpaceWeatherPanel";
+import { InsightPanel } from "./components/datasets/InsightPanel";
+import { MediaPanel } from "./components/datasets/MediaPanel";
+import { SoundsPanel } from "./components/datasets/SoundsPanel";
+import { TechportPanel } from "./components/datasets/TechportPanel";
 import {
   SearchResults,
   SearchResultsSkeleton,
@@ -31,6 +34,10 @@ const PANELS: Record<DatasetTab, React.ComponentType> = {
   mars: MarsPanel,
   exoplanets: ExoplanetsPanel,
   weather: SpaceWeatherPanel,
+  insight: InsightPanel,
+  media: MediaPanel,
+  sounds: SoundsPanel,
+  techport: TechportPanel,
 };
 
 type ViewMode = "feed" | "search" | DatasetTab;
@@ -172,8 +179,8 @@ function HomeContent() {
   return (
     <div className="flex min-h-screen flex-col bg-bg-primary">
       <LoadingBar isLoading={isFetching} />
-      <Header onLogoClick={handleGoHome} />
-      <Tabs
+      <Header
+        onLogoClick={handleGoHome}
         activeTab={view !== "feed" && view !== "search" ? view : null}
         onTabChange={handleTabChange}
         onHomeClick={handleGoHome}

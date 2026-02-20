@@ -30,6 +30,26 @@ export const TAB_CONFIG: {
     label: "Space Weather",
     description: "Solar Activity & Storms",
   },
+  {
+    id: "insight",
+    label: "InSight Weather",
+    description: "Mars Surface Conditions",
+  },
+  {
+    id: "media",
+    label: "NASA Media",
+    description: "Images & Videos",
+  },
+  {
+    id: "sounds",
+    label: "Space Sounds",
+    description: "Audio from Space",
+  },
+  {
+    id: "techport",
+    label: "TechPort",
+    description: "Technology Projects",
+  },
 ];
 
 export const MARS_ROVERS = ["curiosity", "opportunity", "spirit"] as const;

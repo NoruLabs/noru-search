@@ -143,10 +143,107 @@ export interface GeomagneticStorm {
   link: string;
 }
 
+// ── InSight Mars Weather ──
+export interface InsightSolData {
+  sol: string;
+  AT?: { av: number; mn: number; mx: number; ct: number };
+  PRE?: { av: number; mn: number; mx: number; ct: number };
+  HWS?: { av: number; mn: number; mx: number; ct: number };
+  WD?: Record<string, { compass_degrees: number; compass_point: string; ct: number }>;
+  First_UTC: string;
+  Last_UTC: string;
+  Season: string;
+}
+
+export interface InsightResponse {
+  sol_keys: string[];
+  [sol: string]: InsightSolData | string[];
+}
+
+// ── NASA Image & Video Library ──
+export interface NasaMediaItem {
+  nasa_id: string;
+  title: string;
+  description: string;
+  date_created: string;
+  media_type: "image" | "video" | "audio";
+  center?: string;
+  keywords?: string[];
+  photographer?: string;
+  thumbnail?: string;
+  href?: string;
+}
+
+export interface NasaMediaSearchResponse {
+  collection: {
+    items: {
+      data: NasaMediaItem[];
+      links?: { href: string; rel: string; render?: string }[];
+      href: string;
+    }[];
+    metadata: { total_hits: number };
+  };
+}
+
+// ── Sounds of Space ──
+export interface SpaceSound {
+  id: string;
+  title: string;
+  description: string;
+  duration: number;
+  stream_url?: string;
+  download_url?: string;
+  tag_list?: string;
+  last_modified: string;
+}
+
+// ── TechPort Projects ──
+export interface TechportProject {
+  projectId: number;
+  title: string;
+  description: string;
+  startDateString?: string;
+  endDateString?: string;
+  statusDescription?: string;
+  leadOrganization?: { organizationName: string };
+  supportingOrganizations?: { organizationName: string }[];
+  primaryTas?: { abbreviation: string; title: string }[];
+  program?: { title: string };
+  lastUpdated?: string;
+  benefits?: string;
+  website?: string;
+}
+
+export interface TechportListResponse {
+  projects: { projectId: number; lastUpdated: string }[];
+  totalCount: number;
+}
+
+// ── DONKI Additional Types ──
+export interface SolarEnergeticParticle {
+  sepID: string;
+  eventTime: string;
+  instruments: { displayName: string }[];
+  link: string;
+}
+
+export interface InterplanetaryShock {
+  activityID: string;
+  catalog: string;
+  location: string;
+  eventTime: string;
+  instruments: { displayName: string }[];
+  link: string;
+}
+
 // ── Tab Configuration ──
 export type DatasetTab =
   | "apod"
   | "neo"
   | "mars"
   | "exoplanets"
-  | "weather";
+  | "weather"
+  | "insight"
+  | "media"
+  | "sounds"
+  | "techport";

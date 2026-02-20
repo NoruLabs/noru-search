@@ -24,6 +24,9 @@ export async function GET(request: NextRequest) {
     "mars",
     "exoplanets",
     "weather",
+    "media",
+    "sounds",
+    "techport",
   ];
   const hazardousOnly = searchParams.get("hazardous") === "true";
   const startDate = searchParams.get("startDate");
@@ -181,6 +184,73 @@ export async function GET(request: NextRequest) {
         })
         .catch((err) => {
           errors.weather = err.message;
+        })
+    );
+  }
+
+  // ── NASA Image & Video Library ──
+  if (types.includes("media")) {
+    promises.push(
+      axios
+        .get("https://images-api.nasa.gov/search", {
+          params: { q, media_type: "image", page_size: 12 },
+          timeout: 15000,
+        })
+        .then(({ data }) => {
+          const items = (data?.collection?.items || []).map(
+            (item: { data?: Record<string, string>[]; links?: { href: string }[] }) => ({
+              ...item.data?.[0],
+              thumbnail: item.links?.[0]?.href,
+            })
+          );
+          results.media = items.slice(0, 12);
+          counts.media = data?.collection?.metadata?.total_hits || items.length;
+        })
+        .catch((err) => {
+          errors.media = err.message;
+        })
+    );
+  }
+
+  // ── Sounds of Space ──
+  if (types.includes("sounds")) {
+    promises.push(
+      axios
+        .get("https://images-api.nasa.gov/search", {
+          params: { q, media_type: "audio", page_size: 10 },
+          timeout: 15000,
+        })
+        .then(({ data }) => {
+          const items = (data?.collection?.items || []).map(
+            (item: { data?: Record<string, string>[]; href?: string }) => ({
+              ...item.data?.[0],
+              href: item.href,
+            })
+          );
+          results.sounds = items.slice(0, 10);
+          counts.sounds = data?.collection?.metadata?.total_hits || items.length;
+        })
+        .catch((err) => {
+          errors.sounds = err.message;
+        })
+    );
+  }
+
+  // ── TechPort ──
+  if (types.includes("techport")) {
+    promises.push(
+      axios
+        .get(`${NASA_BASE}/techport/api/projects/search`, {
+          params: { api_key: NASA_API_KEY, titleSearch: q },
+          timeout: 15000,
+        })
+        .then(({ data }) => {
+          const projects = data?.projects || [];
+          results.techport = projects.slice(0, 10);
+          counts.techport = projects.length;
+        })
+        .catch((err) => {
+          errors.techport = err.message;
         })
     );
   }

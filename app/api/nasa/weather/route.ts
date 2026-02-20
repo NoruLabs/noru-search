@@ -6,7 +6,7 @@ const NASA_BASE = "https://api.nasa.gov";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const type = searchParams.get("type") || "FLR"; // FLR, CME, GST
+  const type = searchParams.get("type") || "FLR"; // FLR, CME, GST, SEP, IPS
   const startDate = searchParams.get("start_date");
   const endDate = searchParams.get("end_date");
 
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     };
 
     const endpoint =
-      type === "CME" ? "CME" : type === "GST" ? "GST" : "FLR";
+      type === "CME" ? "CME" : type === "GST" ? "GST" : type === "SEP" ? "SEP" : type === "IPS" ? "IPS" : "FLR";
 
     const { data } = await axios.get(`${NASA_BASE}/DONKI/${endpoint}`, {
       params,

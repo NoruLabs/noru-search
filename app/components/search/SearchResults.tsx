@@ -14,6 +14,10 @@ import {
   Trash2,
   Search,
   SlidersHorizontal,
+  ImageIcon,
+  Music,
+  Rocket,
+  Thermometer,
 } from "lucide-react";
 import { DataCard } from "../ui/DataCard";
 import { CardSkeleton } from "../ui/Loader";
@@ -25,6 +29,8 @@ import type {
   MarsPhoto,
   Exoplanet,
   SolarFlare,
+  NasaMediaItem,
+  TechportProject,
   DatasetTab,
 } from "../../lib/types";
 
@@ -143,6 +149,9 @@ export function SearchFiltersPanel({
     { id: "mars", label: "Mars", icon: <Camera size={12} /> },
     { id: "exoplanets", label: "Exoplanets", icon: <Globe size={12} /> },
     { id: "weather", label: "Weather", icon: <Sun size={12} /> },
+    { id: "media", label: "Media", icon: <ImageIcon size={12} /> },
+    { id: "sounds", label: "Sounds", icon: <Music size={12} /> },
+    { id: "techport", label: "TechPort", icon: <Rocket size={12} /> },
   ];
 
   return (
@@ -157,9 +166,9 @@ export function SearchFiltersPanel({
       >
         <SlidersHorizontal size={12} />
         Filters
-        {(activeTypes.length > 0 && activeTypes.length < 5) || hazardousOnly || startDate ? (
+        {(activeTypes.length > 0 && activeTypes.length < 9) || hazardousOnly || startDate ? (
           <span className="ml-1 flex h-4 w-4 items-center justify-center rounded-full bg-accent-text text-[9px] font-bold text-accent">
-            {(activeTypes.length > 0 && activeTypes.length < 5 ? 1 : 0) +
+            {(activeTypes.length > 0 && activeTypes.length < 9 ? 1 : 0) +
               (hazardousOnly ? 1 : 0) +
               (startDate ? 1 : 0)}
           </span>
@@ -515,6 +524,107 @@ export function SearchResults({
                     </div>
                   )}
                 </div>
+              </div>
+            </DataCard>
+          ))}
+        </div>
+      </ResultSection>
+
+      {/* NASA Media Results */}
+      <ResultSection
+        icon={<ImageIcon size={16} className="text-text-muted" />}
+        title="NASA Images & Videos"
+        count={counts.media || 0}
+      >
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 stagger-children">
+          {(results.media as (NasaMediaItem & { thumbnail?: string })[] | undefined)?.map(
+            (item) => (
+              <DataCard key={item.nasa_id} className="overflow-hidden p-0">
+                {item.thumbnail && (
+                  <img
+                    src={item.thumbnail}
+                    alt={item.title}
+                    className="aspect-square w-full object-cover"
+                    loading="lazy"
+                  />
+                )}
+                <div className="p-2">
+                  <p className="truncate text-[11px] font-medium text-text-primary">
+                    {item.title}
+                  </p>
+                  <p className="text-[10px] text-text-muted">
+                    {new Date(item.date_created).toLocaleDateString()}
+                  </p>
+                </div>
+              </DataCard>
+            )
+          )}
+        </div>
+      </ResultSection>
+
+      {/* Space Sounds Results */}
+      <ResultSection
+        icon={<Music size={16} className="text-text-muted" />}
+        title="Space Sounds"
+        count={counts.sounds || 0}
+      >
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
+          {(results.sounds as (NasaMediaItem & { href?: string })[] | undefined)?.map(
+            (item) => (
+              <DataCard key={item.nasa_id}>
+                <div className="space-y-2">
+                  <div className="flex items-start gap-2">
+                    <Music size={14} className="mt-0.5 shrink-0 text-purple-400" />
+                    <div className="min-w-0">
+                      <h4 className="text-xs font-semibold text-text-primary line-clamp-2">
+                        {item.title}
+                      </h4>
+                      <p className="text-[10px] text-text-muted">
+                        {new Date(item.date_created).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  {item.description && (
+                    <p className="text-[11px] text-text-secondary line-clamp-2">
+                      {item.description}
+                    </p>
+                  )}
+                </div>
+              </DataCard>
+            )
+          )}
+        </div>
+      </ResultSection>
+
+      {/* TechPort Results */}
+      <ResultSection
+        icon={<Rocket size={16} className="text-text-muted" />}
+        title="Technology Projects"
+        count={counts.techport || 0}
+      >
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 stagger-children">
+          {(results.techport as TechportProject[] | undefined)?.map((project) => (
+            <DataCard key={project.projectId}>
+              <div className="space-y-2">
+                <h4 className="text-sm font-semibold text-text-primary line-clamp-2">
+                  {project.title}
+                </h4>
+                {project.statusDescription && (
+                  <span
+                    className={`inline-block rounded-full px-2 py-0.5 text-[10px] ${
+                      project.statusDescription === "Active"
+                        ? "bg-green-500/10 text-green-400"
+                        : "bg-blue-500/10 text-blue-400"
+                    }`}
+                  >
+                    {project.statusDescription}
+                  </span>
+                )}
+                {project.description && (
+                  <p className="text-[11px] text-text-secondary line-clamp-2">
+                    {project.description}
+                  </p>
+                )}
               </div>
             </DataCard>
           ))}

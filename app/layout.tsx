@@ -44,6 +44,14 @@ export const metadata: Metadata = {
       "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
   },
   metadataBase: new URL("https://noru-search.vercel.app"),
+  icons: {
+    icon: [
+      { url: "/noru-icon.ico", sizes: "any" },
+      { url: "/noru-icon.png", type: "image/png" },
+    ],
+    shortcut: "/noru-icon.ico",
+    apple: "/noru-icon.png",
+  },
 };
 
 export default function RootLayout({
