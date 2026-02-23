@@ -2,7 +2,7 @@
 
 A universal space data browser built with Next.js. Search, explore, and visualize NASA datasets from a single interface — including the Astronomy Picture of the Day, **daily space news** (articles, blogs, reports), near-Earth asteroids, Mars rover photos, exoplanets, space weather, and more.
 
-**Live:** [noru-search.vercel.app](https://noru-search.vercel.app)
+**Live:** [norusearch.live](https://www.norusearch.live)
 
 ---
 
