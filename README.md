@@ -1,6 +1,6 @@
 # Noru Search
 
-A universal space data browser built with Next.js. Search, explore, and visualize NASA datasets from a single interface -- including the Astronomy Picture of the Day, near-Earth asteroids, Mars rover photos, exoplanets, space weather, and more.
+A universal space data browser built with Next.js. Search, explore, and visualize NASA datasets from a single interface — including the Astronomy Picture of the Day, **daily space news** (articles, blogs, reports), near-Earth asteroids, Mars rover photos, exoplanets, space weather, and more.
 
 **Live:** [noru-search.vercel.app](https://noru-search.vercel.app)
 
@@ -23,20 +23,24 @@ A universal space data browser built with Next.js. Search, explore, and visualiz
 ## Features
 
 - **Universal search** across all NASA datasets with debounced input, URL-synced queries, and persistent search history.
+- **Daily space news** on the main feed: latest articles, blogs, and reports from the Space Flight News API (astronomy, astrophysics, missions, telescopes). Hero cards, grid, and sidebar layout; refreshes daily.
 - **Nine dataset panels**, each with dedicated UI, filtering, and detail views.
 - **Interactive charts** for asteroid tracking and space weather powered by Recharts.
 - **Mars rover photo browser** with camera and sol filtering, plus a fullscreen lightbox.
 - **Exoplanet explorer** with discovery method and year filters.
 - **Dark/light theme** toggle with system preference detection.
 - **Responsive design** that works across desktop, tablet, and mobile.
-- **Server-side API routes** that proxy all NASA requests, keeping your API key off the client.
+- **Server-side API routes** that proxy NASA and Space Flight News API requests; your NASA key stays off the client.
 
 ---
 
 ## Datasets
 
+The **main feed** (home) shows: stats, Astronomy Picture of the Day, **Space News**, Near-Earth Asteroids Today, Mars Rover Photos, and Recent Solar Flares. Each section can link to its full dataset panel.
+
 | Panel | Source | Description |
 |-------|--------|-------------|
+| **Feed (Space News)** | [Space Flight News API](https://api.spaceflightnewsapi.net/v4/) | Daily articles, blogs, and reports (astronomy, astrophysics, missions). No API key. |
 | APOD | NASA Planetary API | Astronomy Picture of the Day with gallery view |
 | Asteroids (NEO) | NASA NeoWs | Near-Earth object tracking with hazard indicators and charts |
 | Mars Rovers | NASA Mars Rover Photos API | Photos from Curiosity, Opportunity, and Spirit |
@@ -91,7 +95,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 |----------|-------------|---------|
 | `NASA_API_KEY` | Your NASA Open API key | `DEMO_KEY` |
 
-All external API calls are routed through Next.js API route handlers under `app/api/nasa/`. The client never sees your key.
+All NASA calls go through Next.js API routes under `app/api/nasa/`; the client never sees your key. **Space News** uses the [Space Flight News API](https://api.spaceflightnewsapi.net/v4/) and does not require an API key.
 
 ---
 
@@ -102,19 +106,21 @@ app/
   page.tsx                  # Main entry point (feed, search, dataset panels)
   layout.tsx                # Root layout with metadata, fonts, providers
   globals.css               # Global styles (Tailwind + CSS variables)
-  api/nasa/                 # Server-side route handlers for each NASA endpoint
-    apod/route.ts
-    neo/route.ts
-    mars/route.ts
-    exoplanets/route.ts
-    weather/route.ts
-    insight/route.ts
-    media/route.ts
-    sounds/route.ts
-    techport/route.ts
-    feed/route.ts
-    search/route.ts
-    mars/rovers/route.ts
+  api/
+    nasa/                   # Server-side route handlers for each NASA endpoint
+      apod/route.ts
+      neo/route.ts 
+      mars/route.ts
+      exoplanets/route.ts
+      weather/route.ts
+      insight/route.ts
+      media/route.ts
+      sounds/route.ts
+      techport/route.ts
+      feed/route.ts
+      search/route.ts
+      mars/rovers/route.ts
+    space-news/route.ts     # Space Flight News API (articles, blogs, reports); no key
   components/
     Header.tsx              # Top navigation with tabs
     Footer.tsx              # Site footer
@@ -122,16 +128,23 @@ app/
     Tabs.tsx                # Dataset tab bar
     ThemeProvider.tsx        # Dark/light mode context
     QueryProvider.tsx        # TanStack React Query provider
-    datasets/               # One panel component per dataset
+    datasets/
+      Feed.tsx              # Main feed: APOD, Space News, NEO, Mars, Weather
+      ApodPanel.tsx
+      NeoPanel.tsx
+      ...                   # One panel component per dataset
     details/                # Detail and lightbox views
     search/                 # Universal search results and filters
     charts/                 # NEO and weather chart components
     ui/                     # Shared UI primitives (cards, loaders, modals, etc.)
-  hooks/                    # Custom React Query hooks for each dataset
+  hooks/
+    useFeed.ts              # NASA feed (APOD, NEO, Mars, Weather)
+    useSpaceNews.ts         # Space Flight News API (articles, blogs, reports)
+    ...                     # One hook per dataset
   lib/
     api.ts                  # Axios client pointing at internal API routes
     constants.ts            # Tab configuration, rover/camera constants
-    types.ts                # TypeScript interfaces for all API responses
+    types.ts                # TypeScript interfaces (NASA + Space News)
 ```
 
 ---
