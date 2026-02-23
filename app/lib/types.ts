@@ -247,3 +247,38 @@ export type DatasetTab =
   | "media"
   | "sounds"
   | "techport";
+
+// ── Space Flight News API (spaceflightnewsapi.net v4) ──
+export interface SpaceNewsArticle {
+  id: number;
+  title: string;
+  url: string;
+  image_url: string | null;
+  news_site: string;
+  summary: string;
+  published_at: string;
+  updated_at?: string;
+  featured?: boolean;
+}
+
+export interface SpaceNewsBlog {
+  id: number;
+  title: string;
+  url: string;
+  image_url: string | null;
+  news_site: string;
+  summary: string;
+  published_at: string;
+  updated_at?: string;
+}
+
+export interface SpaceNewsReport {
+  id: number;
+  title: string;
+  url: string;
+  image_url: string | null;
+  news_site: string;
+  summary: string;
+  published_at: string;
+  updated_at?: string;
+}
