@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import {
   Camera,
@@ -12,6 +13,8 @@ import {
   ImageIcon,
   Music,
   Rocket,
+  Menu,
+  X,
 } from "lucide-react";
 import { Sun as SunIcon } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
@@ -44,6 +47,12 @@ export function Header({
   onHomeClick,
 }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleTabClick = (tab: DatasetTab) => {
+    onTabChange(tab);
+    setMobileMenuOpen(false);
+  };
 
   return (
     <header className="header-bar sticky top-0 z-50">
@@ -72,9 +81,9 @@ export function Header({
             </div>
           </button>
 
-          {/* Tab navigation */}
+          {/* Desktop Tab navigation */}
           <nav
-            className="flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto scrollbar-none"
+            className="hidden md:flex min-w-0 flex-1 items-center gap-0.5 overflow-x-auto scrollbar-none"
             aria-label="Dataset navigation"
             role="tablist"
           >
@@ -83,18 +92,21 @@ export function Header({
               return (
                 <button
                   key={tab.id}
-                  onClick={() => onTabChange(tab.id)}
+                  onClick={() => handleTabClick(tab.id)}
                   className="header-tab"
                   data-active={isActive}
                   aria-selected={isActive}
                   role="tab"
                 >
                   <span className="shrink-0">{TAB_ICONS[tab.id]}</span>
-                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span className="hidden lg:inline">{tab.label}</span>
                 </button>
               );
             })}
           </nav>
+
+          {/* Spacer for mobile */}
+          <div className="flex-1 md:hidden" />
 
           {/* Theme toggle */}
           <button
@@ -104,8 +116,44 @@ export function Header({
           >
             {theme === "dark" ? <Sun size={15} /> : <Moon size={15} />}
           </button>
+
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="header-toggle flex h-8 w-8 shrink-0 items-center justify-center rounded-md md:hidden"
+            aria-label="Toggle navigation menu"
+          >
+            {mobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+          </button>
         </div>
       </div>
+
+      {/* Mobile dropdown menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden border-t border-border/50 bg-bg-primary animate-fade-in">
+          <nav className="mx-auto max-w-7xl px-4 py-3 grid grid-cols-3 gap-2" role="tablist">
+            {TAB_CONFIG.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabClick(tab.id)}
+                  className={`flex flex-col items-center gap-1 rounded-xl px-2 py-2.5 text-[11px] font-medium transition-colors ${
+                    isActive
+                      ? "bg-accent text-accent-text"
+                      : "text-text-muted hover:bg-bg-card hover:text-text-secondary"
+                  }`}
+                  role="tab"
+                  aria-selected={isActive}
+                >
+                  {TAB_ICONS[tab.id]}
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

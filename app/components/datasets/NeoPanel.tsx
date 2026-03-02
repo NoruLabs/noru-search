@@ -9,6 +9,8 @@ import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 import { NeoDistanceChart, NeoVelocityChart } from "../charts/NeoCharts";
 import { AsteroidDetail } from "../details/AsteroidDetail";
+import { AsteroidTimeline } from "./AsteroidTimeline";
+import { CompareMode } from "./CompareMode";
 import type { NeoObject } from "../../lib/types";
 
 function formatNumber(num: number): string {
@@ -89,6 +91,8 @@ export function NeoPanel() {
   const [filter, setFilter] = useState<"all" | "hazardous" | "safe">("all");
   const [search, setSearch] = useState("");
   const [showCharts, setShowCharts] = useState(true);
+  const [showTimeline, setShowTimeline] = useState(false);
+  const [showCompare, setShowCompare] = useState(false);
   const [selectedAsteroid, setSelectedAsteroid] = useState<NeoObject | null>(null);
   const { data, isLoading, error, refetch } = useNeoFeed();
 
@@ -183,7 +187,33 @@ export function NeoPanel() {
         >
           {showCharts ? "Hide charts" : "Show charts"}
         </button>
+        <button
+          onClick={() => setShowTimeline(!showTimeline)}
+          className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+            showTimeline
+              ? "border-accent bg-accent text-accent-text"
+              : "border-border text-text-muted hover:text-text-secondary"
+          }`}
+        >
+          {showTimeline ? "Hide timeline" : "Timeline"}
+        </button>
+        <button
+          onClick={() => setShowCompare(!showCompare)}
+          className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+            showCompare
+              ? "border-accent bg-accent text-accent-text"
+              : "border-border text-text-muted hover:text-text-secondary"
+          }`}
+        >
+          {showCompare ? "Hide compare" : "Compare mode"}
+        </button>
       </div>
+
+      {/* Asteroid Timeline */}
+      {showTimeline && <AsteroidTimeline />}
+
+      {/* Compare Mode */}
+      {showCompare && <CompareMode initialType="neo" />}
 
       {/* Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 stagger-children">

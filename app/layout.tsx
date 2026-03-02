@@ -3,6 +3,7 @@ import { Sora, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { QueryProvider } from "./components/QueryProvider";
+import { ServiceWorkerRegistrar } from "./components/ServiceWorkerRegistrar";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -67,6 +68,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#23262A" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+      </head>
       <body
         className={`${sora.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
@@ -74,7 +81,10 @@ export default function RootLayout({
           Skip to content
         </a>
         <ThemeProvider>
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <ServiceWorkerRegistrar />
+            {children}
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
