@@ -21,6 +21,7 @@ import {
   SearchHistory,
   SearchFiltersPanel,
 } from "./components/search/SearchResults";
+import { SavedSearchesPanel } from "./components/search/SavedSearches";
 import { ErrorBoundary } from "./components/ui/ErrorBoundary";
 import { LoadingBar } from "./components/ui/LoadingBar";
 import { ScrollToTop } from "./components/ui/ScrollToTop";
@@ -186,7 +187,7 @@ function HomeContent() {
         onHomeClick={handleGoHome}
       />
 
-      <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6">
+      <main id="main-content" className="mx-auto w-full max-w-7xl flex-1 px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8">
         <ErrorBoundary>
         {/* Feed + Search views share the search bar */}
         {(view === "feed" || view === "search") && (
@@ -234,11 +235,32 @@ function HomeContent() {
 
             {/* Content */}
             {isSearchView ? (
-              isSearching && !searchData ? (
-                <SearchResultsSkeleton />
-              ) : searchData ? (
-                <SearchResults data={searchData} onNavigate={handleNavigate} />
-              ) : null
+              <>
+                {/* Saved Searches */}
+                <SavedSearchesPanel
+                  currentQuery={committedQuery}
+                  currentFilters={{
+                    types: filterTypes,
+                    hazardousOnly: hazardousOnly,
+                    startDate: startDate,
+                    endDate: endDate,
+                  }}
+                  onRunSearch={(q, filters) => {
+                    setSearchQuery(q);
+                    setCommittedQuery(q);
+                    if (filters?.types) setFilterTypes(filters.types as DatasetTab[]);
+                    if (filters?.hazardousOnly !== undefined) setHazardousOnly(filters.hazardousOnly);
+                    if (filters?.startDate) setStartDate(filters.startDate);
+                    if (filters?.endDate) setEndDate(filters.endDate);
+                    setView("search");
+                  }}
+                />
+                {isSearching && !searchData ? (
+                  <SearchResultsSkeleton />
+                ) : searchData ? (
+                  <SearchResults data={searchData} onNavigate={handleNavigate} />
+                ) : null}
+              </>
             ) : (
               <Feed searchQuery="" onNavigate={handleNavigate} />
             )}

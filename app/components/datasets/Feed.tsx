@@ -13,10 +13,18 @@ import {
 } from "lucide-react";
 import { useFeed } from "../../hooks/useFeed";
 import { useSpaceNews } from "../../hooks/useSpaceNews";
+import {
+  useSolarFlares,
+  useGeomagneticStorms,
+} from "../../hooks/useSpaceWeather";
 import { DataCard } from "../ui/DataCard";
 import { FeedSkeleton } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
 import { FeedStats } from "../ui/StatsBar";
+import { DailyBriefing } from "./DailyBriefing";
+import { SpaceWeatherRiskMeter } from "./RiskMeter";
+import { AlertConditionsPanel } from "./AlertConditions";
+import { StoryMode } from "./StoryMode";
 import type {
   DatasetTab,
   NeoObject,
@@ -320,6 +328,8 @@ function FeedNewsSection() {
 
 export function Feed({ searchQuery, onNavigate }: FeedProps) {
   const { data, isLoading, error, refetch } = useFeed();
+  const { data: flares } = useSolarFlares(7);
+  const { data: storms } = useGeomagneticStorms(7);
 
   if (isLoading) return <FeedSkeleton />;
   if (error)
@@ -378,16 +388,6 @@ export function Feed({ searchQuery, onNavigate }: FeedProps) {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      {/* Stats */}
-      <FeedStats
-        neoCount={results.neo?.length ?? 0}
-        hazardousCount={
-          results.neo?.filter((n: NeoObject) => n.is_potentially_hazardous_asteroid).length ?? 0
-        }
-        flareCount={results.weather?.length ?? 0}
-        marsCount={results.mars?.length ?? 0}
-      />
-
       {/* ── APOD Hero ── */}
       {showApod && results.apod && (
         <section className="space-y-3">
@@ -454,6 +454,35 @@ export function Feed({ searchQuery, onNavigate }: FeedProps) {
           </div>
         </section>
       )}
+
+      {/* ── Story Mode Digest ── */}
+      <StoryMode />
+
+      {/* ── Daily Briefing + Risk Meter row ── */}
+      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+        <DailyBriefing onNavigate={onNavigate} />
+        <SpaceWeatherRiskMeter />
+      </div>
+
+      {/* ── Alert Conditions ── */}
+      <AlertConditionsPanel
+        hazardousNeoCount={
+          results.neo?.filter((n: NeoObject) => n.is_potentially_hazardous_asteroid).length ?? 0
+        }
+        totalNeoCount={results.neo?.length ?? 0}
+        flares={flares ?? []}
+        storms={storms ?? []}
+      />
+
+      {/* Stats */}
+      <FeedStats
+        neoCount={results.neo?.length ?? 0}
+        hazardousCount={
+          results.neo?.filter((n: NeoObject) => n.is_potentially_hazardous_asteroid).length ?? 0
+        }
+        flareCount={results.weather?.length ?? 0}
+        marsCount={results.mars?.length ?? 0}
+      />
 
       {/* ── Space News (articles, blogs, reports) ── */}
       <FeedNewsSection />

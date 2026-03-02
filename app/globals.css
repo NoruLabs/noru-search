@@ -365,3 +365,67 @@ html { scroll-behavior: smooth; }
   border-color: currentColor;
   font-weight: 600;
 }
+
+/* ─────────────────────────────────────────────────────
+   RESPONSIVE UTILITIES
+   ───────────────────────────────────────────────────── */
+
+/* Mobile-first touch targets */
+@media (max-width: 640px) {
+  .glass-card {
+    padding: 0.75rem;
+  }
+
+  /* Prevent hover effects on touch devices */
+  .glass-card:hover {
+    transform: none;
+  }
+
+  /* Stack grids to single column on small screens */
+  .auto-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Larger touch targets */
+  .header-tab {
+    min-height: 36px;
+    padding: 0.5rem 0.625rem;
+  }
+
+  /* Compact stats bar */
+  .stats-bar {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 641px) and (max-width: 1023px) {
+  .glass-card:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* Safe area insets for notched phones */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .footer-safe {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  }
+
+  .header-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Overflow handling for long content on mobile */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Better touch scrolling */
+.touch-scroll {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}

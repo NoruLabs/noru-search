@@ -1,0 +1,19 @@
+{
+  "name": "Noru Search — Universal Space Data Browser",
+  "short_name": "Noru Search",
+  "description": "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#23262A",
+  "theme_color": "#23262A",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "/noru-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "science"]
+}

@@ -1,67 +1,23 @@
 # Noru Search
 
-A universal space data browser built with Next.js. Search, explore, and visualize NASA datasets from a single interface — including the Astronomy Picture of the Day, **daily space news** (articles, blogs, reports), near-Earth asteroids, Mars rover photos, exoplanets, space weather, and more.
+A space data browser built with Next.js. Explore NASA datasets — APOD, asteroids, Mars photos, exoplanets, space weather, and more — from a single interface.
 
 **Live:** [norusearch.live](https://www.norusearch.live)
 
 ---
 
-## Table of Contents
+## What It Does
 
-- [Features](#features)
-- [Datasets](#datasets)
-- [Quick Start](#quick-start)
-- [Configuration](#configuration)
-- [Project Structure](#project-structure)
-- [Tech Stack](#tech-stack)
-- [Scripts](#scripts)
-- [Contributing](#contributing)
-- [License](#license)
-
----
-
-## Features
-
-- **Universal search** across all NASA datasets with debounced input, URL-synced queries, and persistent search history.
-- **Daily space news** on the main feed: latest articles, blogs, and reports from the Space Flight News API (astronomy, astrophysics, missions, telescopes). Hero cards, grid, and sidebar layout; refreshes daily.
-- **Nine dataset panels**, each with dedicated UI, filtering, and detail views.
-- **Interactive charts** for asteroid tracking and space weather powered by Recharts.
-- **Mars rover photo browser** with camera and sol filtering, plus a fullscreen lightbox.
-- **Exoplanet explorer** with discovery method and year filters.
-- **Dark/light theme** toggle with system preference detection.
-- **Responsive design** that works across desktop, tablet, and mobile.
-- **Server-side API routes** that proxy NASA and Space Flight News API requests; your NASA key stays off the client.
-
----
-
-## Datasets
-
-The **main feed** (home) shows: stats, Astronomy Picture of the Day, **Space News**, Near-Earth Asteroids Today, Mars Rover Photos, and Recent Solar Flares. Each section can link to its full dataset panel.
-
-| Panel | Source | Description |
-|-------|--------|-------------|
-| **Feed (Space News)** | [Space Flight News API](https://api.spaceflightnewsapi.net/v4/) | Daily articles, blogs, and reports (astronomy, astrophysics, missions). No API key. |
-| APOD | NASA Planetary API | Astronomy Picture of the Day with gallery view |
-| Asteroids (NEO) | NASA NeoWs | Near-Earth object tracking with hazard indicators and charts |
-| Mars Rovers | NASA Mars Rover Photos API | Photos from Curiosity, Opportunity, and Spirit |
-| Exoplanets | NASA Exoplanet Archive | Confirmed exoplanet catalog with filtering |
-| Space Weather | NASA DONKI | Solar flares, coronal mass ejections, geomagnetic storms |
-| InSight | NASA InSight API | Mars surface weather from the InSight lander |
-| NASA Media | NASA Image and Video Library | Searchable archive of NASA images and videos |
-| Sounds | NASA Soundcloud / open data | Audio recordings from space missions |
-| TechPort | NASA TechPort | Active and completed technology projects |
+- Browse 10 NASA datasets plus daily space news from one search bar
+- See today's highlights at a glance: APOD hero, risk meter, daily briefing
+- Get narrative summaries of the week's space activity (Story Mode)
+- Set custom alert rules for hazardous asteroids and solar flares
+- Compare asteroids side-by-side, explore exoplanet trends, view asteroid timelines
+- Works on desktop, tablet, and mobile with dark/light theme support
 
 ---
 
 ## Quick Start
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) v18 or later
-- npm, yarn, or pnpm
-- A NASA API key (free at [api.nasa.gov](https://api.nasa.gov/))
-
-### Installation
 
 ```bash
 git clone https://github.com/NoruLabs/noru-search.git
@@ -69,33 +25,36 @@ cd noru-search
 npm install
 ```
 
-### Environment Variables
-
-Create a `.env.local` file in the project root:
+Create `.env.local`:
 
 ```
-NASA_API_KEY=your_api_key_here
+NASA_API_KEY=your_key_here
 ```
 
-The app falls back to `DEMO_KEY` if no key is set, but the demo key has strict rate limits (30 requests/hour, 50 requests/day). A personal key raises those limits to 1,000 requests/hour.
-
-### Run the Development Server
+Get a free key at [api.nasa.gov](https://api.nasa.gov/). Without one, the app uses `DEMO_KEY` (30 req/hour).
 
 ```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000).
 
 ---
 
-## Configuration
+## Datasets
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `NASA_API_KEY` | Your NASA Open API key | `DEMO_KEY` |
-
-All NASA calls go through Next.js API routes under `app/api/nasa/`; the client never sees your key. **Space News** uses the [Space Flight News API](https://api.spaceflightnewsapi.net/v4/) and does not require an API key.
+| Panel | Source | What You See |
+|-------|--------|--------------|
+| **Feed** | NASA + [Spaceflight News API](https://api.spaceflightnewsapi.net/v4/) | APOD hero, daily briefing, risk meter, space news, NEOs, Mars photos, flares |
+| **APOD** | NASA Planetary API | Astronomy Picture of the Day with gallery |
+| **Asteroids** | NASA NeoWs | Near-Earth objects with hazard indicators, timeline, compare mode |
+| **Mars Rovers** | NASA Mars Photos API | Curiosity, Opportunity, Spirit — filter by camera and sol |
+| **Exoplanets** | NASA Exoplanet Archive | Confirmed exoplanets with discovery trends |
+| **Space Weather** | NASA DONKI | Solar flares, CMEs, geomagnetic storms, risk scoring |
+| **InSight** | NASA InSight API | Mars surface weather from the InSight lander |
+| **NASA Media** | NASA Image & Video Library | Searchable image/video archive |
+| **Sounds** | NASA open data | Audio recordings from space missions |
+| **TechPort** | NASA TechPort | Active and completed tech projects |
 
 ---
 
@@ -103,83 +62,73 @@ All NASA calls go through Next.js API routes under `app/api/nasa/`; the client n
 
 ```
 app/
-  page.tsx                  # Main entry point (feed, search, dataset panels)
-  layout.tsx                # Root layout with metadata, fonts, providers
-  globals.css               # Global styles (Tailwind + CSS variables)
+  page.tsx              # Entry point — tabs, search, dataset routing
+  layout.tsx            # Root layout, fonts, providers
+  globals.css           # Tailwind + CSS custom properties (two-tone design system)
   api/
-    nasa/                   # Server-side route handlers for each NASA endpoint
-      apod/route.ts
-      neo/route.ts 
-      mars/route.ts
-      exoplanets/route.ts
-      weather/route.ts
-      insight/route.ts
-      media/route.ts
-      sounds/route.ts
-      techport/route.ts
-      feed/route.ts
-      search/route.ts
-      mars/rovers/route.ts
-    space-news/route.ts     # Space Flight News API (articles, blogs, reports); no key
+    nasa/               # Server-side proxy routes (keeps API key off client)
+    space-news/         # Spaceflight News API (no key needed)
   components/
-    Header.tsx              # Top navigation with tabs
-    Footer.tsx              # Site footer
-    SearchBar.tsx           # Search input with debouncing
-    Tabs.tsx                # Dataset tab bar
-    ThemeProvider.tsx        # Dark/light mode context
-    QueryProvider.tsx        # TanStack React Query provider
-    datasets/
-      Feed.tsx              # Main feed: APOD, Space News, NEO, Mars, Weather
-      ApodPanel.tsx
-      NeoPanel.tsx
-      ...                   # One panel component per dataset
-    details/                # Detail and lightbox views
-    search/                 # Universal search results and filters
-    charts/                 # NEO and weather chart components
-    ui/                     # Shared UI primitives (cards, loaders, modals, etc.)
-  hooks/
-    useFeed.ts              # NASA feed (APOD, NEO, Mars, Weather)
-    useSpaceNews.ts         # Space Flight News API (articles, blogs, reports)
-    ...                     # One hook per dataset
+    Header.tsx          # Top nav with tabs + mobile hamburger
+    SearchBar.tsx       # Debounced search with history
+    datasets/           # One panel per dataset + Feed, DailyBriefing, RiskMeter,
+                        #   AlertConditions, StoryMode, CompareMode, AsteroidTimeline
+    charts/             # NEO charts, weather charts, exoplanet trends
+    details/            # Lightboxes and detail views
+    ui/                 # Shared primitives (DataCard, Modal, Loader, etc.)
+  hooks/                # One React Query hook per dataset
   lib/
-    api.ts                  # Axios client pointing at internal API routes
-    constants.ts            # Tab configuration, rover/camera constants
-    types.ts                # TypeScript interfaces (NASA + Space News)
+    api.ts              # Axios client
+    constants.ts        # Tab config, rover/camera constants
+    types.ts            # TypeScript interfaces
+    scoring.ts          # Space weather risk scoring engine
 ```
 
 ---
 
 ## Tech Stack
 
-| Category | Technology |
-|----------|------------|
-| Framework | Next.js 16 (App Router) |
-| Language | TypeScript 5 |
-| UI | React 19, Tailwind CSS 4 |
-| Data fetching | TanStack React Query 5, Axios |
-| Charts | Recharts 3 |
-| Icons | Lucide React |
-| Linting | ESLint 9 with next/core-web-vitals and next/typescript |
+| | |
+|---|---|
+| **Framework** | Next.js 16 (App Router, Turbopack) |
+| **Language** | TypeScript 5 |
+| **UI** | React 19, Tailwind CSS 4 |
+| **Data** | TanStack React Query 5, Axios |
+| **Charts** | Recharts 3 |
+| **Icons** | Lucide React |
 
 ---
 
 ## Scripts
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start the development server |
-| `npm run build` | Create a production build |
-| `npm run start` | Serve the production build |
-| `npm run lint` | Run ESLint across the project |
+```bash
+npm run dev       # Start dev server
+npm run build     # Production build
+npm run start     # Serve production build
+npm run lint      # Run ESLint
+```
+
+---
+
+## Design System
+
+The app uses a two-tone palette (`#23262A` / `#F8F8FF`) with CSS custom properties:
+
+- `--bg-primary`, `--bg-card`, `--bg-card-hover` — backgrounds
+- `--text-primary`, `--text-secondary`, `--text-muted` — text hierarchy
+- `--accent`, `--accent-soft` — highlights
+- `--border`, `--border-hover` — borders
+
+Severity is conveyed through font weight and opacity, not color hue. Both dark and light themes follow this system.
 
 ---
 
 ## Contributing
 
-Contributions are welcome. Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup steps, branch naming, and PR process.
 
 ---
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+[MIT](LICENSE)

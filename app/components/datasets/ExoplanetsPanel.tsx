@@ -8,6 +8,8 @@ import { Loader } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 import { ExoplanetDetail } from "../details/ExoplanetDetail";
+import { ExoplanetTrends } from "../charts/ExoplanetTrends";
+import { CompareMode } from "./CompareMode";
 import type { Exoplanet } from "../../lib/types";
 
 function getHabitabilityScore(planet: Exoplanet): {
@@ -110,6 +112,8 @@ function ExoplanetCard({ planet, onClick }: { planet: Exoplanet; onClick: () => 
 export function ExoplanetsPanel() {
   const [search, setSearch] = useState("");
   const [selectedPlanet, setSelectedPlanet] = useState<Exoplanet | null>(null);
+  const [showTrends, setShowTrends] = useState(false);
+  const [showCompare, setShowCompare] = useState(false);
   const { data, isLoading, error, refetch } = useExoplanets(100);
 
   if (isLoading) return <Loader text="Discovering exoplanets..." />;
@@ -129,20 +133,48 @@ export function ExoplanetsPanel() {
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Search */}
-      <div className="relative max-w-sm">
-        <Search
-          size={14}
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
-        />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search planets or host stars..."
-          className="w-full rounded-xl border border-border/60 bg-bg-card/80 py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-all focus:border-accent/50 focus:ring-2 focus:ring-accent/10"
-        />
+      {/* Search + Toggle buttons */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="relative flex-1 min-w-[200px] max-w-sm">
+          <Search
+            size={14}
+            className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted"
+          />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search planets or host stars..."
+            className="w-full rounded-xl border border-border/60 bg-bg-card/80 py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-all focus:border-accent/50 focus:ring-2 focus:ring-accent/10"
+          />
+        </div>
+        <button
+          onClick={() => setShowTrends(!showTrends)}
+          className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+            showTrends
+              ? "border-accent bg-accent text-accent-text"
+              : "border-border text-text-muted hover:text-text-secondary"
+          }`}
+        >
+          {showTrends ? "Hide trends" : "Trend charts"}
+        </button>
+        <button
+          onClick={() => setShowCompare(!showCompare)}
+          className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+            showCompare
+              ? "border-accent bg-accent text-accent-text"
+              : "border-border text-text-muted hover:text-text-secondary"
+          }`}
+        >
+          {showCompare ? "Hide compare" : "Compare mode"}
+        </button>
       </div>
+
+      {/* Exoplanet Trends */}
+      {showTrends && <ExoplanetTrends />}
+
+      {/* Compare Mode */}
+      {showCompare && <CompareMode initialType="exoplanets" />}
 
       <p className="text-sm text-text-muted">
         Showing {filtered.length} of {data.length} exoplanets
