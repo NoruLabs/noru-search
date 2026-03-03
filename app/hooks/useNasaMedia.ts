@@ -17,8 +17,7 @@ export function useNasaMedia(
       const { data } = await api.get("/media", { params });
       return data;
     },
-    enabled: query.trim().length >= 1,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }

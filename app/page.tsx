@@ -8,7 +8,6 @@ import { Feed } from "./components/datasets/Feed";
 import { Footer } from "./components/Footer";
 import { ApodPanel } from "./components/datasets/ApodPanel";
 import { NeoPanel } from "./components/datasets/NeoPanel";
-import { MarsPanel } from "./components/datasets/MarsPanel";
 import { ExoplanetsPanel } from "./components/datasets/ExoplanetsPanel";
 import { SpaceWeatherPanel } from "./components/datasets/SpaceWeatherPanel";
 import { InsightPanel } from "./components/datasets/InsightPanel";
@@ -32,7 +31,6 @@ import type { DatasetTab } from "./lib/types";
 const PANELS: Record<DatasetTab, React.ComponentType> = {
   apod: ApodPanel,
   neo: NeoPanel,
-  mars: MarsPanel,
   exoplanets: ExoplanetsPanel,
   weather: SpaceWeatherPanel,
   insight: InsightPanel,

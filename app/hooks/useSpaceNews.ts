@@ -22,6 +22,6 @@ export function useSpaceNews() {
       }
       return res.json();
     },
-    staleTime: 60 * 60 * 1000, // 1 hour (API route uses revalidate 24h)
+    staleTime: 24 * 60 * 60 * 1000,
   });
 }

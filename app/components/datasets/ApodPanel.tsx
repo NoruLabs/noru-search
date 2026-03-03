@@ -237,14 +237,28 @@ export function ApodPanel() {
                 loading="lazy"
               />
             </div>
-          ) : (
-            <div className="aspect-video overflow-hidden rounded-xl">
+          ) : data.url.includes("youtube.com") || data.url.includes("youtu.be") ? (
+            <div className="aspect-video overflow-hidden rounded-xl bg-black">
               <iframe
                 src={data.url}
                 title={data.title}
                 className="h-full w-full"
                 allowFullScreen
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
               />
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-xl bg-black">
+              <video
+                src={data.url}
+                controls
+                className="w-full"
+                preload="metadata"
+                poster={data.thumbnail_url}
+              >
+                Your browser does not support the video tag.
+              </video>
             </div>
           )}
 

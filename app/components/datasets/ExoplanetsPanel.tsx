@@ -114,7 +114,9 @@ export function ExoplanetsPanel() {
   const [selectedPlanet, setSelectedPlanet] = useState<Exoplanet | null>(null);
   const [showTrends, setShowTrends] = useState(false);
   const [showCompare, setShowCompare] = useState(false);
-  const { data, isLoading, error, refetch } = useExoplanets(100);
+  const [page, setPage] = useState(1);
+  const ITEMS_PER_PAGE = 60;
+  const { data, isLoading, error, refetch } = useExoplanets();
 
   if (isLoading) return <Loader text="Discovering exoplanets..." />;
   if (error)
@@ -127,9 +129,13 @@ export function ExoplanetsPanel() {
     ? data.filter(
         (p) =>
           p.pl_name.toLowerCase().includes(search.toLowerCase()) ||
-          p.hostname.toLowerCase().includes(search.toLowerCase())
+          p.hostname.toLowerCase().includes(search.toLowerCase()) ||
+          p.discoverymethod?.toLowerCase().includes(search.toLowerCase())
       )
     : data;
+
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paged = filtered.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -143,8 +149,8 @@ export function ExoplanetsPanel() {
           <input
             type="text"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search planets or host stars..."
+            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+            placeholder="Search planets, host stars, or methods..."
             className="w-full rounded-xl border border-border/60 bg-bg-card/80 py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-all focus:border-accent/50 focus:ring-2 focus:ring-accent/10"
           />
         </div>
@@ -177,12 +183,13 @@ export function ExoplanetsPanel() {
       {showCompare && <CompareMode initialType="exoplanets" />}
 
       <p className="text-sm text-text-muted">
-        Showing {filtered.length} of {data.length} exoplanets
+        Showing {paged.length} of {filtered.length} exoplanets{search && ` matching "${search}"`}
+        {data.length !== filtered.length && ` (${data.length} total)`}
       </p>
 
       {/* Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((planet) => (
+        {paged.map((planet) => (
           <ExoplanetCard
             key={planet.pl_name}
             planet={planet}
@@ -195,6 +202,29 @@ export function ExoplanetsPanel() {
         <p className="py-10 text-center text-sm text-text-muted">
           No exoplanets match your search.
         </p>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center gap-3 pt-4">
+          <button
+            onClick={() => setPage((p) => Math.max(1, p - 1))}
+            disabled={page <= 1}
+            className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary disabled:opacity-40"
+          >
+            ← Previous
+          </button>
+          <span className="text-xs text-text-muted">
+            Page {page} of {totalPages}
+          </span>
+          <button
+            onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+            disabled={page >= totalPages}
+            className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary disabled:opacity-40"
+          >
+            Next →
+          </button>
+        </div>
       )}
 
       {/* Detail modal */}

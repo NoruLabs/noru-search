@@ -123,15 +123,15 @@ function SoundCard({
 }
 
 export function SoundsPanel() {
-  const [query, setQuery] = useState("sounds");
-  const [committedQuery, setCommittedQuery] = useState("sounds");
+  const [query, setQuery] = useState("");
+  const [committedQuery, setCommittedQuery] = useState("");
   const [page, setPage] = useState(1);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [loadingAudio, setLoadingAudio] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const { data, isLoading, error, refetch } = useSpaceSounds(
-    committedQuery,
+    committedQuery || " ",
     page
   );
 
@@ -139,10 +139,8 @@ export function SoundsPanel() {
   const totalHits = data?.collection?.metadata?.total_hits ?? 0;
 
   const handleSearch = () => {
-    if (query.trim()) {
-      setCommittedQuery(query.trim());
-      setPage(1);
-    }
+    setCommittedQuery(query.trim());
+    setPage(1);
   };
 
   const stopAudio = useCallback(() => {
@@ -235,7 +233,7 @@ export function SoundsPanel() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-            placeholder="Voyager, Saturn, plasma, radio..."
+            placeholder="Search space sounds..."
             className="w-full rounded-xl border border-border bg-bg-card py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-all focus:border-accent/40 focus:ring-2 focus:ring-accent/10"
           />
         </div>
@@ -253,7 +251,7 @@ export function SoundsPanel() {
           <span className="font-semibold text-text-primary">
             {totalHits.toLocaleString()}
           </span>{" "}
-          audio results for &ldquo;{committedQuery}&rdquo;
+          audio results{committedQuery ? <> for &ldquo;{committedQuery}&rdquo;</> : <> (latest)</>}
         </p>
       )}
 
@@ -273,7 +271,7 @@ export function SoundsPanel() {
         <div className="py-16 text-center">
           <Music size={32} className="mx-auto mb-3 text-text-muted opacity-40" />
           <p className="text-sm text-text-muted">
-            No audio found for &ldquo;{committedQuery}&rdquo;
+            No audio found{committedQuery ? <> for &ldquo;{committedQuery}&rdquo;</> : "."}
           </p>
           <p className="mt-1 text-xs text-text-muted">
             Try &quot;Voyager&quot;, &quot;Saturn&quot;, or &quot;radio&quot;
@@ -309,7 +307,7 @@ export function SoundsPanel() {
             <span className="text-xs text-text-muted">Page {page}</span>
             <button
               onClick={() => { stopAudio(); setPage((p) => p + 1); }}
-              disabled={items.length < 24}
+              disabled={items.length < 100}
               className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary disabled:opacity-40"
             >
               Next &rarr;

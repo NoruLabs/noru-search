@@ -9,6 +9,7 @@ export function useMarsRovers() {
       const { data } = await api.get("/mars/rovers");
       return data.rovers;
     },
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }
@@ -34,6 +35,7 @@ export function useMarsPhotos(
       return data.photos;
     },
     enabled: !!rover,
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }

@@ -16,12 +16,14 @@ import {
   FlareIntensityChart,
   FlareTimelineChart,
 } from "../charts/WeatherCharts";
+import { Calendar, Search, X } from "lucide-react";
 
 type WeatherCategory = "flares" | "cme" | "storms" | "sep" | "ips";
 
 export function SpaceWeatherPanel() {
   const [category, setCategory] = useState<WeatherCategory>("flares");
   const [daysBack, setDaysBack] = useState(30);
+  const [searchText, setSearchText] = useState("");
 
   const flares = useSolarFlares(daysBack);
   const cmes = useCoronalMassEjections(daysBack);
@@ -40,50 +42,84 @@ export function SpaceWeatherPanel() {
             ? shocks
             : storms;
 
+  // Filter helper
+  const q = searchText.toLowerCase().trim();
+
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Controls */}
-      <div className="flex flex-wrap items-end gap-3">
-        {/* Category tabs */}
-        <div className="flex gap-2">
-          {(
-            [
-              { id: "flares", label: "Solar Flares" },
-              { id: "cme", label: "CMEs" },
-              { id: "storms", label: "Geomagnetic Storms" },
-              { id: "sep", label: "Energetic Particles" },
-              { id: "ips", label: "Interplanetary Shocks" },
-            ] as const
-          ).map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setCategory(cat.id)}
-              className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
-                category === cat.id
-                  ? "border-accent bg-accent text-accent-text"
-                  : "border-border text-text-muted hover:text-text-secondary"
-              }`}
+      <div className="space-y-3">
+        <div className="flex flex-wrap items-end gap-3">
+          {/* Category tabs */}
+          <div className="flex flex-wrap gap-2">
+            {(
+              [
+                { id: "flares", label: "Solar Flares" },
+                { id: "cme", label: "CMEs" },
+                { id: "storms", label: "Geomagnetic Storms" },
+                { id: "sep", label: "Energetic Particles" },
+                { id: "ips", label: "Interplanetary Shocks" },
+              ] as const
+            ).map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => { setCategory(cat.id); setSearchText(""); }}
+                className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${
+                  category === cat.id
+                    ? "border-accent bg-accent text-accent-text"
+                    : "border-border text-text-muted hover:text-text-secondary"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Time range */}
+          <div>
+            <label className="mb-1 block text-xs text-text-muted">
+              Past days
+            </label>
+            <select
+              value={daysBack}
+              onChange={(e) => setDaysBack(Number(e.target.value))}
+              className="rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:ring-2 focus:ring-accent/10"
             >
-              {cat.label}
-            </button>
-          ))}
+              <option value={7}>7 days</option>
+              <option value={14}>14 days</option>
+              <option value={30}>30 days</option>
+              <option value={60}>60 days</option>
+              <option value={90}>90 days</option>
+            </select>
+          </div>
         </div>
 
-        {/* Time range */}
-        <div>
-          <label className="mb-1 block text-xs text-text-muted">
-            Past days
-          </label>
-          <select
-            value={daysBack}
-            onChange={(e) => setDaysBack(Number(e.target.value))}
-            className="rounded-xl border border-border/60 bg-bg-card/80 px-3 py-2 text-sm text-text-primary outline-none transition-all focus:ring-2 focus:ring-accent/10"
-          >
-            <option value={7}>7 days</option>
-            <option value={14}>14 days</option>
-            <option value={30}>30 days</option>
-            <option value={60}>60 days</option>
-          </select>
+        {/* Search within results */}
+        <div className="flex gap-2 max-w-md">
+          <div className="relative flex-1">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+            <input
+              type="text"
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder={
+                category === "flares" ? "Filter by class (X, M, C)..." :
+                category === "cme" ? "Filter by source, speed..." :
+                category === "storms" ? "Filter by Kp index..." :
+                "Filter events..."
+              }
+              className="w-full rounded-xl border border-border bg-bg-card py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-all focus:border-accent/40 focus:ring-2 focus:ring-accent/10"
+            />
+          </div>
+          {searchText && (
+            <button
+              onClick={() => setSearchText("")}
+              className="flex items-center gap-1 rounded-xl border border-border px-3 py-2 text-xs text-text-muted hover:text-text-primary transition-colors"
+            >
+              <X size={12} />
+              Clear
+            </button>
+          )}
         </div>
       </div>
 
@@ -102,21 +138,29 @@ export function SpaceWeatherPanel() {
       ) : (
         <>
           {/* Solar Flares */}
-          {category === "flares" && flares.data && (
+          {category === "flares" && flares.data && (() => {
+            const filtered = q
+              ? flares.data.filter((f) =>
+                  f.classType.toLowerCase().includes(q) ||
+                  (f.sourceLocation && f.sourceLocation.toLowerCase().includes(q)) ||
+                  new Date(f.peakTime).toLocaleDateString().includes(q)
+                )
+              : flares.data;
+            return (
             <div className="space-y-6 animate-fade-in">
               {/* Charts */}
-              {flares.data.length > 0 && (
+              {filtered.length > 0 && (
                 <div className="grid gap-4 lg:grid-cols-2">
-                  <FlareIntensityChart data={flares.data} />
-                  <FlareTimelineChart data={flares.data} />
+                  <FlareIntensityChart data={filtered} />
+                  <FlareTimelineChart data={filtered} />
                 </div>
               )}
 
               <p className="text-sm text-text-muted">
-                {flares.data.length} solar flares in the past {daysBack} days
+                {filtered.length} solar flares in the past {daysBack} days{q && ` matching "${searchText}"`}
               </p>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {flares.data.map((flare) => (
+                {filtered.map((flare) => (
                   <DataCard key={flare.flrID}>
                     <div className="space-y-2">
                       <div className="flex items-start justify-between">
@@ -166,17 +210,27 @@ export function SpaceWeatherPanel() {
                 ))}
               </div>
             </div>
-          )}
+            );
+          })()}
 
           {/* CMEs */}
-          {category === "cme" && cmes.data && (
+          {category === "cme" && cmes.data && (() => {
+            const filtered = q
+              ? cmes.data.filter((c) =>
+                  (c.sourceLocation && c.sourceLocation.toLowerCase().includes(q)) ||
+                  (c.note && c.note.toLowerCase().includes(q)) ||
+                  new Date(c.startTime).toLocaleDateString().includes(q) ||
+                  (c.cmeAnalyses?.[0]?.speed && String(c.cmeAnalyses[0].speed).includes(q))
+                )
+              : cmes.data;
+            return (
             <>
               <p className="text-sm text-text-muted">
-                {cmes.data.length} coronal mass ejections in the past{" "}
-                {daysBack} days
+                {filtered.length} coronal mass ejections in the past{" "}
+                {daysBack} days{q && ` matching "${searchText}"`}
               </p>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {cmes.data.map((cme) => (
+                {filtered.map((cme) => (
                   <DataCard key={cme.activityID}>
                     <div className="space-y-2">
                       <h3 className="text-sm font-semibold text-text-primary">
@@ -224,22 +278,30 @@ export function SpaceWeatherPanel() {
                 ))}
               </div>
             </>
-          )}
+            );
+          })()}
 
           {/* Geomagnetic Storms */}
-          {category === "storms" && storms.data && (
+          {category === "storms" && storms.data && (() => {
+            const filtered = q
+              ? storms.data.filter((s) =>
+                  new Date(s.startTime).toLocaleDateString().includes(q) ||
+                  (s.allKpIndex?.[0] && String(s.allKpIndex[0].kpIndex).includes(q))
+                )
+              : storms.data;
+            return (
             <>
               <p className="text-sm text-text-muted">
-                {storms.data.length} geomagnetic storms in the past {daysBack}{" "}
-                days
+                {filtered.length} geomagnetic storms in the past {daysBack}{" "}
+                days{q && ` matching "${searchText}"`}
               </p>
-              {storms.data.length === 0 ? (
+              {filtered.length === 0 ? (
                 <p className="py-10 text-center text-sm text-text-muted">
-                  No geomagnetic storms detected in this period.
+                  No geomagnetic storms detected{q ? ` matching "${searchText}"` : " in this period"}.
                 </p>
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {storms.data.map((storm) => (
+                  {filtered.map((storm) => (
                     <DataCard key={storm.gstID}>
                       <div className="space-y-2">
                         <h3 className="text-sm font-semibold text-text-primary">
@@ -267,22 +329,30 @@ export function SpaceWeatherPanel() {
                 </div>
               )}
             </>
-          )}
+            );
+          })()}
 
           {/* Solar Energetic Particles */}
-          {category === "sep" && seps.data && (
+          {category === "sep" && seps.data && (() => {
+            const filtered = q
+              ? seps.data.filter((s) =>
+                  new Date(s.eventTime).toLocaleDateString().includes(q) ||
+                  (s.instruments?.[0] && s.instruments[0].displayName.toLowerCase().includes(q))
+                )
+              : seps.data;
+            return (
             <>
               <p className="text-sm text-text-muted">
-                {seps.data.length} solar energetic particle events in the past{" "}
-                {daysBack} days
+                {filtered.length} solar energetic particle events in the past{" "}
+                {daysBack} days{q && ` matching "${searchText}"`}
               </p>
-              {seps.data.length === 0 ? (
+              {filtered.length === 0 ? (
                 <p className="py-10 text-center text-sm text-text-muted">
-                  No solar energetic particle events detected in this period.
+                  No solar energetic particle events detected{q ? ` matching "${searchText}"` : " in this period"}.
                 </p>
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {seps.data.map((sep) => (
+                  {filtered.map((sep) => (
                     <DataCard key={sep.sepID}>
                       <div className="space-y-2">
                         <h3 className="text-sm font-semibold text-text-primary">
@@ -310,22 +380,31 @@ export function SpaceWeatherPanel() {
                 </div>
               )}
             </>
-          )}
+            );
+          })()}
 
           {/* Interplanetary Shocks */}
-          {category === "ips" && shocks.data && (
+          {category === "ips" && shocks.data && (() => {
+            const filtered = q
+              ? shocks.data.filter((s) =>
+                  new Date(s.eventTime).toLocaleDateString().includes(q) ||
+                  (s.location && s.location.toLowerCase().includes(q)) ||
+                  (s.instruments?.[0] && s.instruments[0].displayName.toLowerCase().includes(q))
+                )
+              : shocks.data;
+            return (
             <>
               <p className="text-sm text-text-muted">
-                {shocks.data.length} interplanetary shocks in the past{" "}
-                {daysBack} days
+                {filtered.length} interplanetary shocks in the past{" "}
+                {daysBack} days{q && ` matching "${searchText}"`}
               </p>
-              {shocks.data.length === 0 ? (
+              {filtered.length === 0 ? (
                 <p className="py-10 text-center text-sm text-text-muted">
-                  No interplanetary shocks detected in this period.
+                  No interplanetary shocks detected{q ? ` matching "${searchText}"` : " in this period"}.
                 </p>
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {shocks.data.map((shock) => (
+                  {filtered.map((shock) => (
                     <DataCard key={shock.activityID}>
                       <div className="space-y-2">
                         <h3 className="text-sm font-semibold text-text-primary">
@@ -361,7 +440,8 @@ export function SpaceWeatherPanel() {
                 </div>
               )}
             </>
-          )}
+            );
+          })()}
         </>
       )}
     </div>

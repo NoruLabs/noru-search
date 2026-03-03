@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import {
-  Camera,
   Globe,
   Moon,
   Orbit,
@@ -24,7 +23,6 @@ import { TAB_CONFIG } from "../lib/constants";
 const TAB_ICONS: Record<DatasetTab, React.ReactNode> = {
   apod: <Telescope size={14} />,
   neo: <Orbit size={14} />,
-  mars: <Camera size={14} />,
   exoplanets: <Globe size={14} />,
   weather: <SunIcon size={14} />,
   insight: <Thermometer size={14} />,

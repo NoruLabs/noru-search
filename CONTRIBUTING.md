@@ -1,204 +1,159 @@
 # Contributing to Noru Search
 
-Thank you for your interest in contributing. This document explains the process for submitting changes, the standards we follow, and how to set up the project for local development.
+Thank you for your interest in contributing. This document covers everything you need to get started.
 
 ---
 
 ## Table of Contents
 
-- [Code of Conduct](#code-of-conduct)
 - [Getting Started](#getting-started)
-- [How to Contribute](#how-to-contribute)
-- [Development Workflow](#development-workflow)
+- [Workflow](#workflow)
 - [Coding Standards](#coding-standards)
 - [Commit Messages](#commit-messages)
-- [Pull Request Process](#pull-request-process)
+- [Pull Request Checklist](#pull-request-checklist)
 - [Adding a New Dataset](#adding-a-new-dataset)
 - [Reporting Bugs](#reporting-bugs)
 - [Requesting Features](#requesting-features)
-
----
-
-## Code of Conduct
-
-Be respectful, constructive, and inclusive. Harassment, discrimination, and personal attacks are not tolerated. Maintainers reserve the right to remove comments, commits, or contributions that violate these standards.
+- [Code of Conduct](#code-of-conduct)
 
 ---
 
 ## Getting Started
 
-1. **Fork** the repository on GitHub.
-2. **Clone** your fork locally:
+1. **Fork** the repository on GitHub, then clone your fork:
    ```bash
    git clone https://github.com/<your-username>/noru-search.git
    cd noru-search
-   ```
-3. **Install dependencies:**
-   ```bash
    npm install
    ```
-4. **Set up environment variables.** Create a `.env.local` file:
-   ```
+
+2. **Create `.env.local`** in the project root:
+   ```env
    NASA_API_KEY=your_api_key_here
    ```
-   Get a free key at [api.nasa.gov](https://api.nasa.gov/). The `DEMO_KEY` works but has strict rate limits.
-5. **Start the dev server:**
+   Free key at [api.nasa.gov](https://api.nasa.gov). `DEMO_KEY` works but has strict rate limits.
+
+3. **Start the dev server:**
    ```bash
    npm run dev
    ```
-6. Open [http://localhost:3000](http://localhost:3000) and verify everything loads.
+   Open [http://localhost:3000](http://localhost:3000) and verify everything loads.
 
 ---
 
-## How to Contribute
-
-- **Bug fixes** -- Find an open issue labeled `bug` or report a new one.
-- **New features** -- Open an issue first to discuss the idea before writing code.
-- **Documentation** -- Improvements to README, inline comments, or this file are always welcome.
-- **Refactors** -- If you see a way to simplify or improve existing code, open an issue or PR with a clear explanation of the change.
-
----
-
-## Development Workflow
+## Workflow
 
 1. **Create a branch** from `main`:
    ```bash
    git checkout -b feat/your-feature-name
+   # prefixes: feat/ fix/ docs/ refactor/
    ```
-   Use a descriptive branch name. Prefix with `feat/`, `fix/`, `docs/`, or `refactor/` as appropriate.
 
-2. **Make your changes.** Keep each commit focused on a single logical change.
+2. **Make focused commits.** One logical change per commit.
 
-3. **Lint your code** before committing:
+3. **Lint and build before pushing:**
    ```bash
    npm run lint
+   npm run build
    ```
-   Fix any errors. Do not disable ESLint rules without a strong justification.
 
-4. **Test locally.** Run `npm run build` to ensure the production build succeeds. Manually verify your changes in the browser.
-
-5. **Push** your branch and open a pull request against `main`.
+4. **Open a pull request** against `main`. Fill in the description and link any related issues.
 
 ---
 
 ## Coding Standards
 
 ### TypeScript
+- Strict TypeScript. Avoid `any`; if unavoidable, leave a comment.
+- All API response shapes go in `app/lib/types.ts`.
+- Use named exports (components, hooks, utilities).
 
-- Use strict TypeScript. Do not use `any` unless absolutely necessary, and leave a comment explaining why.
-- Define interfaces for all API response shapes in `app/lib/types.ts`.
-- Prefer named exports over default exports (components, hooks, utilities).
+### React + Next.js
+- Functional components only.
+- Add `"use client"` only when the file needs hooks, event handlers, or browser APIs.
+- All data fetching via **TanStack React Query** — one hook per dataset in `app/hooks/`.
+- No inline styles. Use Tailwind CSS utility classes.
 
-### React and Next.js
+### File locations
 
-- Use functional components exclusively.
-- Place `"use client"` at the top of files that require client-side features (hooks, event handlers, browser APIs). Keep server components as the default wherever possible.
-- Use TanStack React Query for all data fetching. Each dataset should have a dedicated hook in `app/hooks/`.
-- Avoid inline styles. Use Tailwind CSS utility classes.
-
-### File Organization
-
-| Type | Location |
-|------|----------|
+| What | Where |
+|------|-------|
 | API route handlers | `app/api/nasa/<endpoint>/route.ts` |
 | Dataset panel components | `app/components/datasets/` |
-| Detail/lightbox views | `app/components/details/` |
+| Lightbox / detail views | `app/components/details/` |
 | Chart components | `app/components/charts/` |
 | Shared UI primitives | `app/components/ui/` |
 | Data-fetching hooks | `app/hooks/` |
 | Types and interfaces | `app/lib/types.ts` |
 | Constants and config | `app/lib/constants.ts` |
 
-### API Routes
-
-All NASA API calls go through server-side route handlers in `app/api/nasa/`. Never call NASA endpoints directly from client code. This keeps the API key on the server and provides a single place to handle errors and rate limiting.
+**All NASA API calls must go through `app/api/nasa/`.** Never call NASA endpoints directly from client code.
 
 ---
 
 ## Commit Messages
 
-Follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
+Follow [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
 <type>(<scope>): <short summary>
 ```
 
-**Types:**
-
 | Type | Use for |
 |------|---------|
 | `feat` | New features |
 | `fix` | Bug fixes |
-| `docs` | Documentation-only changes |
-| `style` | Formatting, whitespace (no logic changes) |
-| `refactor` | Code restructuring without behavior changes |
+| `docs` | Documentation only |
+| `style` | Formatting / whitespace (no logic change) |
+| `refactor` | Code restructuring without behavior change |
 | `perf` | Performance improvements |
 | `chore` | Build config, dependencies, tooling |
 
-**Examples:**
-
 ```
-feat(mars): add camera filter to rover photo panel
-fix(neo): correct date range validation for asteroid feed
-docs: update README with new dataset table
+feat(apod): add date picker to APOD panel
+fix(neo): correct date range in asteroid feed
+docs: update dataset table in README
 refactor(hooks): extract shared pagination logic
 ```
 
-Keep the summary under 72 characters. Use the imperative mood ("add", not "added" or "adds").
+Keep summaries under 72 characters. Use imperative mood ("add", not "added").
 
 ---
 
-## Pull Request Process
+## Pull Request Checklist
 
-1. **Fill in the PR description.** Describe what changes you made and why. Link any related issues.
-2. **Keep PRs focused.** One feature or fix per pull request. Large PRs are harder to review and more likely to stall.
-3. **Ensure the build passes.** Run `npm run build` and `npm run lint` locally before pushing.
-4. **Respond to review feedback** promptly. Maintainers may request changes before merging.
-5. **Squash commits** if your PR has many small fixup commits. A clean history is easier to maintain.
+Before submitting:
 
-### PR Checklist
-
-Before submitting, verify:
-
-- [ ] The development server runs without errors.
+- [ ] Dev server runs without errors.
 - [ ] `npm run build` succeeds.
 - [ ] `npm run lint` reports no errors.
-- [ ] New or changed components render correctly on mobile and desktop.
-- [ ] Any new environment variables are documented in the README.
+- [ ] Changes render correctly on mobile and desktop.
+- [ ] New environment variables are documented in `README.md`.
 - [ ] New TypeScript types are added to `app/lib/types.ts`.
 
 ---
 
 ## Adding a New Dataset
 
-If you want to integrate a new NASA API or data source, follow this pattern:
-
-1. **Create an API route** at `app/api/nasa/<name>/route.ts`. The handler should accept query parameters, call the external API with the server-side key, and return JSON.
-
-2. **Define types** in `app/lib/types.ts` for the API response shape.
-
-3. **Create a hook** at `app/hooks/use<Name>.ts` using TanStack React Query. Follow the pattern established by existing hooks (e.g., `useApod.ts`, `useNeo.ts`).
-
-4. **Build a panel component** at `app/components/datasets/<Name>Panel.tsx`. Import and use your hook for data fetching.
-
-5. **Register the tab** in `app/lib/constants.ts` by adding an entry to `TAB_CONFIG` and extending the `DatasetTab` union in `app/lib/types.ts`.
-
-6. **Wire it into the main page** by adding the panel to the `PANELS` record in `app/page.tsx`.
-
+1. **API route** → `app/api/nasa/<name>/route.ts` — accept query params, call the external API server-side, return JSON.
+2. **Types** → `app/lib/types.ts` — define interfaces for the response shape.
+3. **Hook** → `app/hooks/use<Name>.ts` — use TanStack React Query. Follow `useApod.ts` / `useNeo.ts` as reference.
+4. **Panel** → `app/components/datasets/<Name>Panel.tsx` — import your hook, render the data.
+5. **Register** — add an entry to `TAB_CONFIG` in `app/lib/constants.ts` and extend `DatasetTab` in `app/lib/types.ts`.
+6. **Wire up** — add the panel to the `PANELS` record in `app/page.tsx`.
 7. **Update the README** datasets table.
 
 ---
 
 ## Reporting Bugs
 
-Open a GitHub issue with the following information:
+Open a GitHub issue with:
 
-- **Summary** -- A clear, one-sentence description of the bug.
-- **Steps to reproduce** -- The exact actions to trigger the problem.
-- **Expected behavior** -- What should happen.
-- **Actual behavior** -- What happens instead.
-- **Environment** -- Browser, OS, and screen size if relevant.
-- **Screenshots or console errors** -- If applicable.
+- **Summary** — one-sentence description.
+- **Steps to reproduce** — exact actions to trigger the bug.
+- **Expected vs. actual behavior.**
+- **Environment** — browser, OS, screen size (if relevant).
+- **Screenshots or console errors** — if applicable.
 
 ---
 
@@ -206,14 +161,18 @@ Open a GitHub issue with the following information:
 
 Open a GitHub issue with:
 
-- **Problem statement** -- What limitation or need does this address?
-- **Proposed solution** -- How you envision it working.
-- **Alternatives considered** -- Other approaches you thought of.
+- **Problem statement** — what limitation does this address?
+- **Proposed solution** — how you envision it working.
+- **Alternatives considered** — other approaches you thought of.
 
-Feature requests are not guaranteed to be implemented, but well-reasoned proposals with clear use cases are more likely to be accepted.
+---
+
+## Code of Conduct
+
+Be respectful, constructive, and inclusive. Harassment and personal attacks are not tolerated. Maintainers reserve the right to remove contributions that violate these standards.
 
 ---
 
 ## Questions
 
-If you have questions that are not covered here, open a GitHub issue or start a discussion. We are happy to help.
+Open a GitHub issue or start a discussion. We're happy to help.

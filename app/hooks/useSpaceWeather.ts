@@ -29,6 +29,7 @@ export function useSolarFlares(daysBack: number = 30) {
       });
       return data;
     },
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }
@@ -44,6 +45,7 @@ export function useCoronalMassEjections(daysBack: number = 30) {
       });
       return data;
     },
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }
@@ -59,6 +61,7 @@ export function useGeomagneticStorms(daysBack: number = 30) {
       });
       return data;
     },
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }
@@ -74,6 +77,7 @@ export function useSolarEnergeticParticles(daysBack: number = 30) {
       });
       return data;
     },
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }
@@ -89,6 +93,7 @@ export function useInterplanetaryShocks(daysBack: number = 30) {
       });
       return data;
     },
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }

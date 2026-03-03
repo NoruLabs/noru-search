@@ -11,9 +11,9 @@ const NASA_IMAGES_API = "https://images-api.nasa.gov";
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get("q") || "sounds";
+  const q = searchParams.get("q") || " ";
   const page = searchParams.get("page") || "1";
-  const limit = searchParams.get("limit") || "24";
+  const limit = searchParams.get("limit") || "100";
 
   try {
     const { data } = await axios.get(`${NASA_IMAGES_API}/search`, {

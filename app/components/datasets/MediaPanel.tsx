@@ -11,8 +11,9 @@ import { getApiErrorMessage } from "../../lib/api";
 type MediaFilter = "image" | "video";
 
 export function MediaPanel() {
-  const [query, setQuery] = useState("Hubble");
-  const [committedQuery, setCommittedQuery] = useState("Hubble");
+  const currentYear = new Date().getFullYear().toString();
+  const [query, setQuery] = useState("");
+  const [committedQuery, setCommittedQuery] = useState("");
   const [mediaType, setMediaType] = useState<MediaFilter>("image");
   const [page, setPage] = useState(1);
   const [yearStart, setYearStart] = useState("");
@@ -21,10 +22,12 @@ export function MediaPanel() {
   const [committedYearEnd, setCommittedYearEnd] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
-  const { data, isLoading, error, refetch } = useNasaMedia(committedQuery, {
+  const isDefaultView = !committedQuery;
+
+  const { data, isLoading, error, refetch } = useNasaMedia(committedQuery || "space", {
     mediaType,
     page,
-    yearStart: committedYearStart || undefined,
+    yearStart: committedYearStart || (isDefaultView ? currentYear : undefined),
     yearEnd: committedYearEnd || undefined,
   });
 
@@ -32,12 +35,10 @@ export function MediaPanel() {
   const totalHits = data?.collection?.metadata?.total_hits ?? 0;
 
   const handleSearch = () => {
-    if (query.trim()) {
-      setCommittedQuery(query.trim());
-      setCommittedYearStart(yearStart);
-      setCommittedYearEnd(yearEnd);
-      setPage(1);
-    }
+    setCommittedQuery(query.trim());
+    setCommittedYearStart(yearStart);
+    setCommittedYearEnd(yearEnd);
+    setPage(1);
   };
 
   const clearFilters = () => {
@@ -72,7 +73,7 @@ export function MediaPanel() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="Hubble, Artemis, Apollo, galaxies, nebula..."
+              placeholder="Search NASA images and videos..."
               className="w-full rounded-xl border border-border bg-bg-card py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-all focus:border-accent/40 focus:ring-2 focus:ring-accent/10"
             />
           </div>
@@ -176,7 +177,7 @@ export function MediaPanel() {
           <span className="font-semibold text-text-primary">
             {totalHits.toLocaleString()}
           </span>{" "}
-          results for &ldquo;{committedQuery}&rdquo;
+          results{committedQuery ? <> for &ldquo;{committedQuery}&rdquo;</> : <> (latest)</>}
         </p>
       )}
 
@@ -195,7 +196,7 @@ export function MediaPanel() {
       ) : items.length === 0 ? (
         <div className="py-16 text-center">
           <p className="text-sm text-text-muted">
-            No {mediaType}s found for &ldquo;{committedQuery}&rdquo;
+            No {mediaType}s found{committedQuery ? <> for &ldquo;{committedQuery}&rdquo;</> : "."}
           </p>
         </div>
       ) : (
@@ -276,7 +277,7 @@ export function MediaPanel() {
             <span className="text-xs text-text-muted">Page {page}</span>
             <button
               onClick={() => setPage((p) => p + 1)}
-              disabled={items.length < 24}
+              disabled={items.length < 100}
               className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-text-secondary transition-colors hover:border-border-hover hover:text-text-primary disabled:opacity-40"
             >
               Next →
