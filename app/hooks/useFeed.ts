@@ -24,6 +24,6 @@ export function useFeed() {
       const { data } = await api.get("/feed");
       return data;
     },
-    staleTime: 3 * 60 * 1000, // 3 min
+    staleTime: 24 * 60 * 60 * 1000,
   });
 }

@@ -12,6 +12,7 @@ export function useExoplanets(limit?: number, offset: number = 0) {
       const { data } = await api.get("/exoplanets", { params });
       return data;
     },
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }

@@ -31,6 +31,7 @@ export function useNeoFeed(startDate?: string, endDate?: string) {
         return distA - distB;
       });
     },
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }

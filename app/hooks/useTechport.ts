@@ -11,7 +11,7 @@ export function useTechportProjects(updatedSince?: string) {
       const { data } = await api.get("/techport", { params });
       return data;
     },
-    staleTime: 10 * 60 * 1000,
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }

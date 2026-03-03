@@ -11,6 +11,7 @@ import { getApiErrorMessage } from "../../lib/api";
 type MediaFilter = "image" | "video";
 
 export function MediaPanel() {
+  const currentYear = new Date().getFullYear().toString();
   const [query, setQuery] = useState("");
   const [committedQuery, setCommittedQuery] = useState("");
   const [mediaType, setMediaType] = useState<MediaFilter>("image");
@@ -21,10 +22,12 @@ export function MediaPanel() {
   const [committedYearEnd, setCommittedYearEnd] = useState("");
   const [showFilters, setShowFilters] = useState(false);
 
-  const { data, isLoading, error, refetch } = useNasaMedia(committedQuery || " ", {
+  const isDefaultView = !committedQuery;
+
+  const { data, isLoading, error, refetch } = useNasaMedia(committedQuery || "space", {
     mediaType,
     page,
-    yearStart: committedYearStart || undefined,
+    yearStart: committedYearStart || (isDefaultView ? currentYear : undefined),
     yearEnd: committedYearEnd || undefined,
   });
 

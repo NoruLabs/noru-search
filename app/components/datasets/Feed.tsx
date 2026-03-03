@@ -394,14 +394,30 @@ export function Feed({ searchQuery, onNavigate }: FeedProps) {
             )}
             {results.apod.media_type === "video" && (
               <div className="relative">
-                <div className="aspect-[21/9] w-full overflow-hidden">
-                  <iframe
-                    src={results.apod.url}
-                    title={results.apod.title}
-                    className="h-full w-full"
-                    allowFullScreen
-                  />
-                </div>
+                {results.apod.url.includes("youtube.com") || results.apod.url.includes("youtu.be") ? (
+                  <div className="aspect-[21/9] w-full overflow-hidden">
+                    <iframe
+                      src={results.apod.url}
+                      title={results.apod.title}
+                      className="h-full w-full"
+                      allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-[21/9] w-full overflow-hidden bg-black">
+                    <video
+                      src={results.apod.url}
+                      controls
+                      className="h-full w-full object-contain"
+                      preload="metadata"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                )}
                 {/* Text content below video */}
                 <div className="p-6 sm:p-8">
                   <h3 className="text-lg font-semibold text-text-primary sm:text-xl">

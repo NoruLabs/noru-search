@@ -9,7 +9,7 @@ export function useInsightWeather() {
       const { data } = await api.get("/insight");
       return data;
     },
-    staleTime: 10 * 60 * 1000, // 10 min — data updates infrequently
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }

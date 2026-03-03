@@ -1,19 +1,23 @@
 # Noru Search
 
-A space data browser built with Next.js. Explore NASA datasets — APOD, asteroids, Mars photos, exoplanets, space weather, and more — from a single interface.
+> A space data explorer — browse NASA datasets, space news, and real-time space weather from a single interface.
 
-**Live:** [norusearch.live](https://www.norusearch.live)
+**Live:** [norusearch.live](https://www.norusearch.live)  
+**License:** [MIT](LICENSE)
 
 ---
 
-## What It Does
+## Features
 
-- Browse 10 NASA datasets plus daily space news from one search bar
-- See today's highlights at a glance: APOD hero, risk meter, daily briefing
-- Get narrative summaries of the week's space activity (Story Mode)
-- Set custom alert rules for hazardous asteroids and solar flares
-- Compare asteroids side-by-side, explore exoplanet trends, view asteroid timelines
-- Works on desktop, tablet, and mobile with dark/light theme support
+- **Universal search** across all datasets with history and saved searches
+- **Feed dashboard** — APOD hero, daily briefing, risk meter, alert conditions, NEOs, and space news carousel
+- **Story Mode** — narrative weekly summary of space activity
+- **Compare Mode** — side-by-side asteroid comparison
+- **Alert rules** — custom threshold alerts for hazardous asteroids and solar flares
+- **Charts** — exoplanet discovery trends, NEO size/velocity charts, space weather charts
+- **Asteroid timeline** — visual timeline of close approaches
+- **PWA-ready** — service worker and web app manifest included
+- **Dark / light theme** with responsive layout (mobile, tablet, desktop)
 
 ---
 
@@ -25,13 +29,13 @@ cd noru-search
 npm install
 ```
 
-Create `.env.local`:
+Create `.env.local` in the project root:
 
-```
-NASA_API_KEY=your_key_here
+```env
+NASA_API_KEY=your_nasa_api_key
 ```
 
-Get a free key at [api.nasa.gov](https://api.nasa.gov/). Without one, the app uses `DEMO_KEY` (30 req/hour).
+Get a free key at [api.nasa.gov](https://api.nasa.gov). Without one the app falls back to `DEMO_KEY` (30 req/hour, 50 req/day).
 
 ```bash
 npm run dev
@@ -39,49 +43,68 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
+> **Production build:**
+> ```bash
+> npm run build && npm start
+> ```
+
 ---
 
 ## Datasets
 
-| Panel | Source | What You See |
-|-------|--------|--------------|
-| **Feed** | NASA + [Spaceflight News API](https://api.spaceflightnewsapi.net/v4/) | APOD hero, daily briefing, risk meter, space news, NEOs, Mars photos, flares |
-| **APOD** | NASA Planetary API | Astronomy Picture of the Day with gallery |
-| **Asteroids** | NASA NeoWs | Near-Earth objects with hazard indicators, timeline, compare mode |
-| **Mars Rovers** | NASA Mars Photos API | Curiosity, Opportunity, Spirit — filter by camera and sol |
-| **Exoplanets** | NASA Exoplanet Archive | Confirmed exoplanets with discovery trends |
-| **Space Weather** | NASA DONKI | Solar flares, CMEs, geomagnetic storms, risk scoring |
+| Tab | Source | What You Get |
+|-----|--------|--------------|| **Feed** | NASA + [Spaceflight News API](https://api.spaceflightnewsapi.net/v4/) | APOD hero, daily briefing, risk meter, alert conditions, space news carousel, NEOs |
+| **APOD** | NASA Planetary API | Astronomy Picture of the Day — images, YouTube embeds, and direct videos; date picker; gallery |
+| **Asteroids** | NASA NeoWs | Near-Earth objects, hazard indicators, timeline, compare mode, charts |
+| **Mars Rovers** | NASA Mars Photos API | Curiosity, Opportunity, Spirit — filter by sol and camera |
+| **Exoplanets** | NASA Exoplanet Archive | Confirmed exoplanets with discovery-year trends |
+| **Space Weather** | NASA DONKI | Solar flares, CMEs, geomagnetic storms, risk score |
 | **InSight** | NASA InSight API | Mars surface weather from the InSight lander |
-| **NASA Media** | NASA Image & Video Library | Searchable image/video archive |
+| **NASA Media** | NASA Image & Video Library | Searchable image and video archive |
 | **Sounds** | NASA open data | Audio recordings from space missions |
-| **TechPort** | NASA TechPort | Active and completed tech projects |
+| **TechPort** | NASA TechPort | Active and completed NASA technology projects |
 
 ---
 
 ## Project Structure
 
 ```
-app/
-  page.tsx              # Entry point — tabs, search, dataset routing
-  layout.tsx            # Root layout, fonts, providers
-  globals.css           # Tailwind + CSS custom properties (two-tone design system)
-  api/
-    nasa/               # Server-side proxy routes (keeps API key off client)
-    space-news/         # Spaceflight News API (no key needed)
-  components/
-    Header.tsx          # Top nav with tabs + mobile hamburger
-    SearchBar.tsx       # Debounced search with history
-    datasets/           # One panel per dataset + Feed, DailyBriefing, RiskMeter,
-                        #   AlertConditions, StoryMode, CompareMode, AsteroidTimeline
-    charts/             # NEO charts, weather charts, exoplanet trends
-    details/            # Lightboxes and detail views
-    ui/                 # Shared primitives (DataCard, Modal, Loader, etc.)
-  hooks/                # One React Query hook per dataset
-  lib/
-    api.ts              # Axios client
-    constants.ts        # Tab config, rover/camera constants
-    types.ts            # TypeScript interfaces
-    scoring.ts          # Space weather risk scoring engine
+noru-search/
+├── app/
+│   ├── page.tsx              # Root page — tab routing, search, feed
+│   ├── layout.tsx            # Root layout, fonts, providers
+│   ├── globals.css           # Tailwind + CSS custom properties (design tokens)
+│   ├── api/
+│   │   ├── nasa/             # Server-side proxy routes (API key never reaches client)
+│   │   │   ├── apod/         # Astronomy Picture of the Day
+│   │   │   ├── neo/          # Near-Earth objects
+│   │   │   ├── mars/         # Mars rover photos
+│   │   │   ├── exoplanets/   # NASA Exoplanet Archive
+│   │   │   ├── feed/         # Combined daily feed
+│   │   │   ├── insight/      # InSight Mars weather
+│   │   │   ├── media/        # NASA Image & Video Library
+│   │   │   ├── sounds/       # NASA Sounds
+│   │   │   ├── techport/     # TechPort projects
+│   │   │   └── weather/      # DONKI space weather
+│   │   └── space-news/       # Spaceflight News API (no key required)
+│   ├── components/
+│   │   ├── Header.tsx        # Navigation tabs + mobile menu
+│   │   ├── SearchBar.tsx     # Debounced search with history
+│   │   ├── datasets/         # One panel per dataset + Feed, DailyBriefing,
+│   │   │                     #   RiskMeter, AlertConditions, StoryMode, CompareMode
+│   │   ├── charts/           # Recharts wrappers (NEO, weather, exoplanets)
+│   │   ├── details/          # Lightboxes and drill-down views
+│   │   └── ui/               # Shared primitives (DataCard, Modal, Loader …)
+│   ├── hooks/                # One TanStack React Query hook per dataset
+│   └── lib/
+│       ├── api.ts            # Axios client + error helpers
+│       ├── constants.ts      # TAB_CONFIG, rover/camera lists
+│       ├── types.ts          # All TypeScript interfaces
+│       ├── scoring.ts        # Space weather risk score engine
+│       └── storage.ts        # localStorage helpers (saved searches, alerts)
+└── public/
+    ├── manifest.json         # PWA manifest
+    └── sw.js                 # Service worker
 ```
 
 ---
@@ -90,42 +113,38 @@ app/
 
 | | |
 |---|---|
-| **Framework** | Next.js 16 (App Router, Turbopack) |
+| **Framework** | Next.js 16.1 (App Router, Turbopack) |
 | **Language** | TypeScript 5 |
 | **UI** | React 19, Tailwind CSS 4 |
-| **Data** | TanStack React Query 5, Axios |
+| **Data fetching** | TanStack React Query 5, Axios |
 | **Charts** | Recharts 3 |
 | **Icons** | Lucide React |
+| **Linting** | ESLint 9 (eslint-config-next) |
+
+---
+
+## Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `NASA_API_KEY` | No | NASA Open APIs key. Falls back to `DEMO_KEY` if unset. Get one free at [api.nasa.gov](https://api.nasa.gov). |
 
 ---
 
 ## Scripts
 
 ```bash
-npm run dev       # Start dev server
-npm run build     # Production build
-npm run start     # Serve production build
-npm run lint      # Run ESLint
+npm run dev     # Development server (Turbopack)
+npm run build   # Production build
+npm start       # Serve production build
+npm run lint    # ESLint
 ```
-
----
-
-## Design System
-
-The app uses a two-tone palette (`#23262A` / `#F8F8FF`) with CSS custom properties:
-
-- `--bg-primary`, `--bg-card`, `--bg-card-hover` — backgrounds
-- `--text-primary`, `--text-secondary`, `--text-muted` — text hierarchy
-- `--accent`, `--accent-soft` — highlights
-- `--border`, `--border-hover` — borders
-
-Severity is conveyed through font weight and opacity, not color hue. Both dark and light themes follow this system.
 
 ---
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup steps, branch naming, and PR process.
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup steps, branch naming, coding standards, and the PR process.
 
 ---
 

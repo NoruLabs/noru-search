@@ -112,14 +112,28 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
                   alt={selected.title}
                   className="w-full rounded-lg object-cover"
                 />
-              ) : (
-                <div className="aspect-video overflow-hidden rounded-lg">
+              ) : selected.url.includes("youtube.com") || selected.url.includes("youtu.be") ? (
+                <div className="aspect-video overflow-hidden rounded-lg bg-black">
                   <iframe
                     src={selected.url}
                     title={selected.title}
                     className="h-full w-full"
                     allowFullScreen
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
                   />
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-lg bg-black">
+                  <video
+                    src={selected.url}
+                    controls
+                    className="w-full"
+                    preload="metadata"
+                    poster={selected.thumbnail_url}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
                 </div>
               )}
               <p className="text-sm leading-relaxed text-text-secondary">
@@ -170,9 +184,42 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
                           loading="lazy"
                         />
                       </div>
+                    ) : apod.url.includes("youtube.com") || apod.url.includes("youtu.be") ? (
+                      (() => {
+                        const ytMatch = apod.url.match(/embed\/([^?&"'>/]+)/);
+                        const thumb = apod.thumbnail_url ||
+                          (ytMatch ? `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg` : undefined);
+                        return thumb ? (
+                          <div className="relative aspect-square overflow-hidden">
+                            <img
+                              src={thumb}
+                              alt={apod.title}
+                              className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                              <span className="text-2xl">▶</span>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex aspect-square items-center justify-center bg-bg-card text-text-muted">
+                            <span className="text-2xl">▶</span>
+                          </div>
+                        );
+                      })()
                     ) : (
-                      <div className="flex aspect-square items-center justify-center bg-bg-card text-text-muted">
-                        <span className="text-2xl">▶</span>
+                      /* Direct video (mp4 etc) */
+                      <div className="relative aspect-square overflow-hidden bg-black">
+                        <video
+                          src={apod.url}
+                          className="h-full w-full object-cover"
+                          preload="none"
+                          poster={apod.thumbnail_url}
+                          muted
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                          <span className="text-2xl">▶</span>
+                        </div>
                       </div>
                     )}
                     <div className="p-2">

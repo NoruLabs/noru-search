@@ -15,7 +15,7 @@ export function useSpaceSounds(query: string = "sounds", page: number = 1) {
       });
       return data;
     },
-    staleTime: 5 * 60 * 1000,
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }

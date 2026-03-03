@@ -11,6 +11,7 @@ export function useApod(date?: string) {
       const { data } = await api.get("/apod", { params });
       return data;
     },
+    staleTime: 24 * 60 * 60 * 1000,
     meta: { errorMessage: getApiErrorMessage },
   });
 }
@@ -25,5 +26,6 @@ export function useApodRange(startDate: string, endDate: string) {
       return data;
     },
     enabled: !!startDate && !!endDate,
+    staleTime: 24 * 60 * 60 * 1000,
   });
 }
