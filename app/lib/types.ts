@@ -240,7 +240,6 @@ export interface InterplanetaryShock {
 export type DatasetTab =
   | "apod"
   | "neo"
-  | "mars"
   | "exoplanets"
   | "weather"
   | "insight"

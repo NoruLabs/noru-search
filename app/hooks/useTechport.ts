@@ -2,11 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { api, getApiErrorMessage } from "../lib/api";
 import type { TechportProject, TechportListResponse } from "../lib/types";
 
-export function useTechportProjects() {
+export function useTechportProjects(updatedSince?: string) {
   return useQuery<TechportListResponse>({
-    queryKey: ["techport-projects"],
+    queryKey: ["techport-projects", updatedSince],
     queryFn: async () => {
-      const { data } = await api.get("/techport");
+      const params: Record<string, string> = {};
+      if (updatedSince) params.updated_since = updatedSince;
+      const { data } = await api.get("/techport", { params });
       return data;
     },
     staleTime: 10 * 60 * 1000,

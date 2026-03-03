@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Rocket, ExternalLink, ChevronLeft } from "lucide-react";
+import { Rocket, ExternalLink, ChevronLeft, Calendar, Search } from "lucide-react";
 import { useTechportProjects, useTechportProject } from "../../hooks/useTechport";
 import { DataCard } from "../ui/DataCard";
 import { Loader, CardSkeleton } from "../ui/Loader";
@@ -9,16 +9,26 @@ import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 
 export function TechportPanel() {
-  const { data, isLoading, error, refetch } = useTechportProjects();
+  const [sinceDate, setSinceDate] = useState("");
+  const [committedSince, setCommittedSince] = useState("");
+  const { data, isLoading, error, refetch } = useTechportProjects(committedSince || undefined);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [detailIds, setDetailIds] = useState<number[]>([]);
 
-  // Once we have the project list, pick first few to show details
+  // Once we have the project list, pick first batch to show details
   useEffect(() => {
     if (data?.projects) {
-      setDetailIds(data.projects.slice(0, 12).map((p) => p.projectId));
+      // Sort by lastUpdated descending to show latest first
+      const sorted = [...data.projects].sort(
+        (a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
+      );
+      setDetailIds(sorted.slice(0, 18).map((p) => p.projectId));
     }
   }, [data]);
+
+  const handleDateSearch = () => {
+    setCommittedSince(sinceDate);
+  };
 
   if (selectedId !== null) {
     return (
@@ -38,6 +48,41 @@ export function TechportPanel() {
         <p className="mt-1 text-sm text-text-muted">
           Active space technology projects: propulsion, habitats, mission systems, and more
         </p>
+      </div>
+
+      {/* Date search controls */}
+      <div className="flex flex-wrap items-end gap-3">
+        <div>
+          <label className="mb-1 block text-[10px] uppercase tracking-wider text-text-muted">
+            Updated since
+          </label>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <Calendar size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+              <input
+                type="date"
+                value={sinceDate}
+                onChange={(e) => setSinceDate(e.target.value)}
+                className="rounded-xl border border-border bg-bg-card py-2 pl-9 pr-3 text-sm text-text-primary outline-none transition-all focus:border-accent/40 focus:ring-2 focus:ring-accent/10"
+              />
+            </div>
+            <button
+              onClick={handleDateSearch}
+              className="flex items-center gap-1.5 rounded-xl border border-accent bg-accent px-3 py-2 text-sm font-medium text-accent-text transition-all hover:opacity-80 active:scale-95"
+            >
+              <Search size={14} />
+              Search
+            </button>
+            {committedSince && (
+              <button
+                onClick={() => { setSinceDate(""); setCommittedSince(""); }}
+                className="text-xs text-text-muted hover:text-text-primary transition-colors"
+              >
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
       </div>
 
       {isLoading ? (

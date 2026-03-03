@@ -3,7 +3,6 @@
 import {
   Telescope,
   Orbit,
-  Camera,
   Globe,
   Sun,
   AlertTriangle,
@@ -26,7 +25,6 @@ import type { SearchHistoryItem } from "../../hooks/useSearchHistory";
 import type {
   ApodData,
   NeoObject,
-  MarsPhoto,
   Exoplanet,
   SolarFlare,
   NasaMediaItem,
@@ -146,7 +144,6 @@ export function SearchFiltersPanel({
   const typeOptions: { id: DatasetTab; label: string; icon: React.ReactNode }[] = [
     { id: "apod", label: "APOD", icon: <Telescope size={12} /> },
     { id: "neo", label: "Asteroids", icon: <Orbit size={12} /> },
-    { id: "mars", label: "Mars", icon: <Camera size={12} /> },
     { id: "exoplanets", label: "Exoplanets", icon: <Globe size={12} /> },
     { id: "weather", label: "Weather", icon: <Sun size={12} /> },
     { id: "media", label: "Media", icon: <ImageIcon size={12} /> },
@@ -397,34 +394,6 @@ export function SearchResults({
               </DataCard>
             );
           })}
-        </div>
-      </ResultSection>
-
-      {/* Mars Results */}
-      <ResultSection
-        icon={<Camera size={16} className="text-text-muted" />}
-        title="Mars Rover Photos"
-        count={counts.mars || 0}
-      >
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 stagger-children">
-          {(results.mars as MarsPhoto[] | undefined)?.map((photo) => (
-            <DataCard key={photo.id} className="overflow-hidden p-0">
-              <a href={photo.img_src} target="_blank" rel="noopener noreferrer">
-                <img
-                  src={photo.img_src}
-                  alt={`Mars - ${photo.camera.full_name}`}
-                  className="aspect-square w-full object-cover"
-                  loading="lazy"
-                />
-              </a>
-              <div className="p-2">
-                <p className="truncate text-[11px] font-medium text-text-primary">
-                  {photo.camera.full_name}
-                </p>
-                <p className="text-[10px] text-text-muted">{photo.earth_date}</p>
-              </div>
-            </DataCard>
-          ))}
         </div>
       </ResultSection>
 

@@ -9,14 +9,13 @@ export interface TabConfig {
 
 export const TAB_CONFIG: TabConfig[] = [
   { id: "apod",       label: "APOD",          description: "Astronomy Picture of the Day",  color: "var(--c-apod)" },
+  { id: "media",      label: "NASA Media",    description: "Images & Videos",               color: "var(--c-media)" },
+  { id: "sounds",     label: "Sounds",        description: "Audio from Space",              color: "var(--c-sounds)" },
   { id: "neo",        label: "Asteroids",     description: "Near-Earth Objects",            color: "var(--c-neo)" },
-  { id: "mars",       label: "Mars Rovers",   description: "Rover Photos & Data",           color: "var(--c-mars)" },
+  { id: "techport",   label: "TechPort",      description: "Technology Projects",           color: "var(--c-techport)" },
   { id: "exoplanets", label: "Exoplanets",    description: "Discovered Worlds",             color: "var(--c-exo)" },
   { id: "weather",    label: "Space Weather", description: "Solar Activity & Storms",       color: "var(--c-weather)" },
   { id: "insight",    label: "InSight",       description: "Mars Surface Conditions",       color: "var(--c-insight)" },
-  { id: "media",      label: "NASA Media",    description: "Images & Videos",               color: "var(--c-media)" },
-  { id: "sounds",     label: "Sounds",        description: "Audio from Space",              color: "var(--c-sounds)" },
-  { id: "techport",   label: "TechPort",      description: "Technology Projects",           color: "var(--c-techport)" },
 ];
 
 /** Get a tab's accent color by ID */

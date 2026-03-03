@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Camera,
   Globe,
   Home,
   Orbit,
@@ -18,7 +17,6 @@ import { TAB_CONFIG } from "../lib/constants";
 const TAB_ICONS: Record<DatasetTab, React.ReactNode> = {
   apod: <Telescope size={16} />,
   neo: <Orbit size={16} />,
-  mars: <Camera size={16} />,
   exoplanets: <Globe size={16} />,
   weather: <Sun size={16} />,
   insight: <Thermometer size={16} />,

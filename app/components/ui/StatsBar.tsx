@@ -1,6 +1,6 @@
 "use client";
 
-import { Orbit, Sun, Globe, Camera, Telescope } from "lucide-react";
+import { Orbit, Sun, Globe, Telescope } from "lucide-react";
 
 interface StatItem {
   icon: React.ReactNode;
@@ -40,12 +40,10 @@ export function FeedStats({
   neoCount,
   hazardousCount,
   flareCount,
-  marsCount,
 }: {
   neoCount: number;
   hazardousCount: number;
   flareCount: number;
-  marsCount: number;
 }) {
   const stats: StatItem[] = [
     {
@@ -62,11 +60,6 @@ export function FeedStats({
       icon: <Sun size={14} />,
       label: "Solar Flares (30d)",
       value: flareCount,
-    },
-    {
-      icon: <Camera size={14} />,
-      label: "Mars Photos",
-      value: marsCount,
     },
   ];
 

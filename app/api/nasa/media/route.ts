@@ -5,7 +5,7 @@ const NASA_IMAGES_API = "https://images-api.nasa.gov";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const q = searchParams.get("q") || "space";
+  const q = searchParams.get("q") || " ";
   const mediaType = searchParams.get("media_type") || "image";
   const page = searchParams.get("page") || "1";
   const yearStart = searchParams.get("year_start");
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
       q,
       media_type: mediaType,
       page,
-      page_size: "24",
+      page_size: "100",
     };
     if (yearStart) params.year_start = yearStart;
     if (yearEnd) params.year_end = yearEnd;

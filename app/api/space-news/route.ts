@@ -18,17 +18,17 @@ export async function GET() {
     const [articlesRes, blogsRes, reportsRes] = await Promise.all([
       axios.get(`${BASE}/articles/`, {
         params: {
-          _limit: 10,
+          _limit: 20,
           published_at_gte: publishedAtGte,
         },
         timeout: 15000,
       }),
       axios.get(`${BASE}/blogs/`, {
-        params: { _limit: 5 },
+        params: { _limit: 8 },
         timeout: 10000,
       }),
       axios.get(`${BASE}/reports/`, {
-        params: { _limit: 3 },
+        params: { _limit: 5 },
         timeout: 10000,
       }),
     ]);
@@ -40,7 +40,7 @@ export async function GET() {
     // If filtered articles are too few, fetch without date filter
     if (articles.length < 5) {
       const fallback = await axios.get(`${BASE}/articles/`, {
-        params: { _limit: 10 },
+        params: { _limit: 20 },
         timeout: 15000,
       });
       const fallbackResults = fallback.data?.results ?? [];
