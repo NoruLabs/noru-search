@@ -5,6 +5,7 @@ import {
   useRef,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
 import {
   Telescope,
@@ -116,15 +117,14 @@ function FeedNewsSection() {
   const rafRef = useRef<number>(0);
   const SPEED = 0.5; // px per frame
 
-  const items: NewsItem[] = (() => {
+  const items: NewsItem[] = useMemo(() => {
     if (!data) return [];
-    const all: NewsItem[] = [
+    return [
       ...data.articles.map((a) => ({ ...a, _type: "article" as const })),
       ...data.blogs.map((b) => ({ ...b, _type: "blog" as const })),
       ...data.reports.map((r) => ({ ...r, _type: "report" as const })),
     ];
-    return all;
-  })();
+  }, [data]);
 
   const animate = useCallback(() => {
     const track = trackRef.current;

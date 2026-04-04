@@ -12,11 +12,18 @@ import { DataCard } from "../ui/DataCard";
 import { Loader, CardSkeleton } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
-import {
-  FlareIntensityChart,
-  FlareTimelineChart,
-} from "../charts/WeatherCharts";
+import dynamic from "next/dynamic";
 import { Calendar, Search, X } from "lucide-react";
+
+const FlareIntensityChart = dynamic(() => import("../charts/WeatherCharts").then(mod => mod.FlareIntensityChart), {
+  ssr: false,
+  loading: () => <CardSkeleton type="chart" />
+});
+
+const FlareTimelineChart = dynamic(() => import("../charts/WeatherCharts").then(mod => mod.FlareTimelineChart), {
+  ssr: false,
+  loading: () => <CardSkeleton type="chart" />
+});
 
 type WeatherCategory = "flares" | "cme" | "storms" | "sep" | "ips";
 

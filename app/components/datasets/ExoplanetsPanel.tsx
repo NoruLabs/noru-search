@@ -7,10 +7,15 @@ import { DataCard } from "../ui/DataCard";
 import { Loader } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
+import dynamic from "next/dynamic";
 import { ExoplanetDetail } from "../details/ExoplanetDetail";
-import { ExoplanetTrends } from "../charts/ExoplanetTrends";
 import { CompareMode } from "./CompareMode";
 import type { Exoplanet } from "../../lib/types";
+
+const ExoplanetTrends = dynamic(() => import("../charts/ExoplanetTrends").then(mod => mod.ExoplanetTrends), {
+  ssr: false,
+  loading: () => <Loader />
+});
 
 function getHabitabilityScore(planet: Exoplanet): {
   score: number;

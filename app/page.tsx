@@ -2,25 +2,26 @@
 
 import { Suspense, useState, useCallback, useEffect, useRef } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { Header } from "./components/Header";
 import { SearchBar } from "./components/SearchBar";
-import { Feed } from "./components/datasets/Feed";
 import { Footer } from "./components/Footer";
-import { ApodPanel } from "./components/datasets/ApodPanel";
-import { NeoPanel } from "./components/datasets/NeoPanel";
-import { ExoplanetsPanel } from "./components/datasets/ExoplanetsPanel";
-import { SpaceWeatherPanel } from "./components/datasets/SpaceWeatherPanel";
-import { InsightPanel } from "./components/datasets/InsightPanel";
-import { MediaPanel } from "./components/datasets/MediaPanel";
-import { SoundsPanel } from "./components/datasets/SoundsPanel";
-import { TechportPanel } from "./components/datasets/TechportPanel";
-import {
-  SearchResults,
-  SearchResultsSkeleton,
-  SearchHistory,
-  SearchFiltersPanel,
-} from "./components/search/SearchResults";
-import { SavedSearchesPanel } from "./components/search/SavedSearches";
+
+// Dynamically import dataset panels to reduce initial bundle size
+const Feed = dynamic(() => import("./components/datasets/Feed").then((mod) => mod.Feed));
+const ApodPanel = dynamic(() => import("./components/datasets/ApodPanel").then((mod) => mod.ApodPanel));
+const NeoPanel = dynamic(() => import("./components/datasets/NeoPanel").then((mod) => mod.NeoPanel));
+const ExoplanetsPanel = dynamic(() => import("./components/datasets/ExoplanetsPanel").then((mod) => mod.ExoplanetsPanel));
+const SpaceWeatherPanel = dynamic(() => import("./components/datasets/SpaceWeatherPanel").then((mod) => mod.SpaceWeatherPanel));
+const InsightPanel = dynamic(() => import("./components/datasets/InsightPanel").then((mod) => mod.InsightPanel));
+const MediaPanel = dynamic(() => import("./components/datasets/MediaPanel").then((mod) => mod.MediaPanel));
+const SoundsPanel = dynamic(() => import("./components/datasets/SoundsPanel").then((mod) => mod.SoundsPanel));
+const TechportPanel = dynamic(() => import("./components/datasets/TechportPanel").then((mod) => mod.TechportPanel));
+
+import { SearchResultsSkeleton, SearchHistory, SearchFiltersPanel } from "./components/search/SearchResults";
+const SearchResults = dynamic(() => import("./components/search/SearchResults").then((mod) => mod.SearchResults));
+const SavedSearchesPanel = dynamic(() => import("./components/search/SavedSearches").then((mod) => mod.SavedSearchesPanel));
+
 import { ErrorBoundary } from "./components/ui/ErrorBoundary";
 import { LoadingBar } from "./components/ui/LoadingBar";
 import { ScrollToTop } from "./components/ui/ScrollToTop";

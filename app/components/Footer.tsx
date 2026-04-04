@@ -1,6 +1,13 @@
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export function Footer() {
+  const [year, setYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   return (
     <footer className="mt-auto">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -39,7 +46,7 @@ export function Footer() {
           </p>
 
           <p className="text-xs text-text-muted/60">
-            &copy; {new Date().getFullYear()}
+            &copy; {year || "NASA Data"}
           </p>
         </div>
       </div>

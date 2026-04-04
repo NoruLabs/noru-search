@@ -7,11 +7,20 @@ import { DataCard } from "../ui/DataCard";
 import { Loader, CardSkeleton } from "../ui/Loader";
 import { ErrorState } from "../ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
-import { NeoDistanceChart, NeoVelocityChart } from "../charts/NeoCharts";
+import dynamic from "next/dynamic";
 import { AsteroidDetail } from "../details/AsteroidDetail";
 import { AsteroidTimeline } from "./AsteroidTimeline";
 import { CompareMode } from "./CompareMode";
 import type { NeoObject } from "../../lib/types";
+
+const NeoDistanceChart = dynamic(() => import("../charts/NeoCharts").then(mod => mod.NeoDistanceChart), { 
+  ssr: false, 
+  loading: () => <CardSkeleton type="chart" /> 
+});
+const NeoVelocityChart = dynamic(() => import("../charts/NeoCharts").then(mod => mod.NeoVelocityChart), { 
+  ssr: false, 
+  loading: () => <CardSkeleton type="chart" /> 
+});
 
 function formatNumber(num: number): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(num);
