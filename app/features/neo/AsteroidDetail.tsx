@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertTriangle, Shield, ExternalLink } from "lucide-react";
-import { Modal } from "../ui/Modal";
+import { Modal } from "../../components/ui/Modal";
 import type { NeoObject } from "../../lib/types";
 
 function fmt(num: number): string {

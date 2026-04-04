@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from "react";
 import { Calendar, AlertTriangle, Shield, ChevronLeft, ChevronRight, Zap } from "lucide-react";
 import { useNeoFeed } from "../../hooks/useNeo";
-import { DataCard } from "../ui/DataCard";
+import { DataCard } from "../../components/ui/DataCard";
 import type { NeoObject, CloseApproach } from "../../lib/types";
 
 function formatSpeed(kmh: string): string {

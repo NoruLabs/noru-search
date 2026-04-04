@@ -17,12 +17,12 @@ import { Calendar, Search, X } from "lucide-react";
 
 const FlareIntensityChart = dynamic(() => import("../charts/WeatherCharts").then(mod => mod.FlareIntensityChart), {
   ssr: false,
-  loading: () => <CardSkeleton type="chart" />
+  loading: () => <CardSkeleton />
 });
 
 const FlareTimelineChart = dynamic(() => import("../charts/WeatherCharts").then(mod => mod.FlareTimelineChart), {
   ssr: false,
-  loading: () => <CardSkeleton type="chart" />
+  loading: () => <CardSkeleton />
 });
 
 type WeatherCategory = "flares" | "cme" | "storms" | "sep" | "ips";

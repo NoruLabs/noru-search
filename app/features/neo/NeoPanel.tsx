@@ -3,23 +3,23 @@
 import { useState } from "react";
 import { AlertTriangle, Shield, Search } from "lucide-react";
 import { useNeoFeed } from "../../hooks/useNeo";
-import { DataCard } from "../ui/DataCard";
-import { Loader, CardSkeleton } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader, CardSkeleton } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 import dynamic from "next/dynamic";
-import { AsteroidDetail } from "../details/AsteroidDetail";
+import { AsteroidDetail } from "./AsteroidDetail";
 import { AsteroidTimeline } from "./AsteroidTimeline";
-import { CompareMode } from "./CompareMode";
+import { CompareMode } from "../../components/datasets/CompareMode";
 import type { NeoObject } from "../../lib/types";
 
-const NeoDistanceChart = dynamic(() => import("../charts/NeoCharts").then(mod => mod.NeoDistanceChart), { 
+const NeoDistanceChart = dynamic(() => import("./NeoCharts").then(mod => mod.NeoDistanceChart), { 
   ssr: false, 
-  loading: () => <CardSkeleton type="chart" /> 
+  loading: () => <CardSkeleton /> 
 });
-const NeoVelocityChart = dynamic(() => import("../charts/NeoCharts").then(mod => mod.NeoVelocityChart), { 
+const NeoVelocityChart = dynamic(() => import("./NeoCharts").then(mod => mod.NeoVelocityChart), { 
   ssr: false, 
-  loading: () => <CardSkeleton type="chart" /> 
+  loading: () => <CardSkeleton /> 
 });
 
 function formatNumber(num: number): string {
