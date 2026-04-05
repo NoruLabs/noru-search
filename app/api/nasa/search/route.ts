@@ -139,11 +139,12 @@ export async function GET(request: NextRequest) {
 
   // ── Exoplanets: search by planet or host star name ──
   if (types.includes("exoplanets")) {
+    const safeQ = q.replace(/'/g, "''"); // Basic SQL sanitization for single quotes
     promises.push(
       axios
         .get("https://exoplanetarchive.ipac.caltech.edu/TAP/sync", {
           params: {
-            query: `SELECT pl_name,hostname,discoverymethod,disc_year,pl_orbper,pl_rade,pl_bmasse,pl_eqt,st_spectype,st_teff,sy_dist,pl_orbsmax FROM pscomppars WHERE LOWER(pl_name) LIKE '%${q}%' OR LOWER(hostname) LIKE '%${q}%' ORDER BY disc_year DESC`,
+            query: `SELECT pl_name,hostname,discoverymethod,disc_year,pl_orbper,pl_rade,pl_bmasse,pl_eqt,st_spectype,st_teff,sy_dist,pl_orbsmax FROM pscomppars WHERE LOWER(pl_name) LIKE '%${safeQ}%' OR LOWER(hostname) LIKE '%${safeQ}%' ORDER BY disc_year DESC`,
             format: "json",
           },
           timeout: 15000,

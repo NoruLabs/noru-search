@@ -1,31 +1,30 @@
 "use client";
 
-import { Suspense, useState, useCallback, useEffect, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
 import { Header } from "./components/Header";
 import { SearchBar } from "./components/SearchBar";
-import { Feed } from "./components/datasets/Feed";
 import { Footer } from "./components/Footer";
-import { ApodPanel } from "./components/datasets/ApodPanel";
-import { NeoPanel } from "./components/datasets/NeoPanel";
-import { ExoplanetsPanel } from "./components/datasets/ExoplanetsPanel";
-import { SpaceWeatherPanel } from "./components/datasets/SpaceWeatherPanel";
-import { InsightPanel } from "./components/datasets/InsightPanel";
-import { MediaPanel } from "./components/datasets/MediaPanel";
-import { SoundsPanel } from "./components/datasets/SoundsPanel";
-import { TechportPanel } from "./components/datasets/TechportPanel";
-import {
-  SearchResults,
-  SearchResultsSkeleton,
-  SearchHistory,
-  SearchFiltersPanel,
-} from "./components/search/SearchResults";
-import { SavedSearchesPanel } from "./components/search/SavedSearches";
+import { useAppSearchState, ViewMode } from "./hooks/useAppSearchState";
+
+// Dynamically import dataset panels to reduce initial bundle size
+const Feed = dynamic(() => import("./features/feed/Feed").then((mod) => mod.Feed));
+const ApodPanel = dynamic(() => import("./features/apod/ApodPanel").then((mod) => mod.ApodPanel));
+const NeoPanel = dynamic(() => import("./features/neo/NeoPanel").then((mod) => mod.NeoPanel));
+const ExoplanetsPanel = dynamic(() => import("./features/exoplanets/ExoplanetsPanel").then((mod) => mod.ExoplanetsPanel));
+const SpaceWeatherPanel = dynamic(() => import("./features/weather/SpaceWeatherPanel").then((mod) => mod.SpaceWeatherPanel));
+const InsightPanel = dynamic(() => import("./features/insight/InsightPanel").then((mod) => mod.InsightPanel));
+const MediaPanel = dynamic(() => import("./features/media/MediaPanel").then((mod) => mod.MediaPanel));
+const SoundsPanel = dynamic(() => import("./features/sounds/SoundsPanel").then((mod) => mod.SoundsPanel));
+const TechportPanel = dynamic(() => import("./features/techport/TechportPanel").then((mod) => mod.TechportPanel));
+
+import { SearchResultsSkeleton, SearchHistory, SearchFiltersPanel } from "./components/search/SearchResults";
+const SearchResults = dynamic(() => import("./components/search/SearchResults").then((mod) => mod.SearchResults));
+const SavedSearchesPanel = dynamic(() => import("./components/search/SavedSearches").then((mod) => mod.SavedSearchesPanel));
+
 import { ErrorBoundary } from "./components/ui/ErrorBoundary";
 import { LoadingBar } from "./components/ui/LoadingBar";
 import { ScrollToTop } from "./components/ui/ScrollToTop";
-import { useUniversalSearch } from "./hooks/useSearch";
-import { useSearchHistory } from "./hooks/useSearchHistory";
 import type { DatasetTab } from "./lib/types";
 
 const PANELS: Record<DatasetTab, React.ComponentType> = {
@@ -39,8 +38,6 @@ const PANELS: Record<DatasetTab, React.ComponentType> = {
   techport: TechportPanel,
 };
 
-type ViewMode = "feed" | "search" | DatasetTab;
-
 export default function Home() {
   return (
     <Suspense>
@@ -50,127 +47,39 @@ export default function Home() {
 }
 
 function HomeContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  // Initialize from URL params
-  const initialQuery = searchParams.get("q") || "";
-  const initialView: ViewMode = initialQuery
-    ? "search"
-    : (searchParams.get("tab") as DatasetTab) || "feed";
-
-  const [view, setView] = useState<ViewMode>(initialView);
-  const [searchQuery, setSearchQuery] = useState(initialQuery);
-  const [committedQuery, setCommittedQuery] = useState(initialQuery);
-  const [showHistory, setShowHistory] = useState(false);
-  const [showFilters, setShowFilters] = useState(false);
-
-  // Search filters
-  const [filterTypes, setFilterTypes] = useState<DatasetTab[]>([]);
-  const [hazardousOnly, setHazardousOnly] = useState(false);
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
-
-  const { history, addToHistory, removeFromHistory, clearHistory } =
-    useSearchHistory();
-
-  // Debounce search
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleSearchChange = useCallback(
-    (q: string) => {
-      setSearchQuery(q);
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-
-      if (q.trim().length >= 2) {
-        debounceRef.current = setTimeout(() => {
-          setCommittedQuery(q.trim());
-          setView("search");
-        }, 400);
-      } else if (q.trim().length === 0) {
-        setCommittedQuery("");
-        if (view === "search") setView("feed");
-      }
-    },
-    [view]
-  );
-
-  // Universal search query
   const {
-    data: searchData,
-    isLoading: isSearching,
-    isFetching,
-  } = useUniversalSearch(committedQuery, {
-    types: filterTypes.length > 0 ? filterTypes : undefined,
+    view,
+    setView,
+    searchQuery,
+    setSearchQuery,
+    committedQuery,
+    setCommittedQuery,
+    showHistory,
+    setShowHistory,
+    showFilters,
+    setShowFilters,
+    filterTypes,
+    setFilterTypes,
     hazardousOnly,
-    startDate: startDate || undefined,
-    endDate: endDate || undefined,
-  });
-
-  // Save to history when results arrive
-  useEffect(() => {
-    if (searchData && searchData.totalResults >= 0 && committedQuery) {
-      addToHistory(committedQuery, searchData.totalResults);
-    }
-  }, [searchData, committedQuery, addToHistory]);
-
-  // Sync URL params
-  useEffect(() => {
-    const params = new URLSearchParams();
-    if (view === "search" && committedQuery) {
-      params.set("q", committedQuery);
-      if (filterTypes.length > 0) params.set("types", filterTypes.join(","));
-      if (hazardousOnly) params.set("hazardous", "true");
-      if (startDate) params.set("startDate", startDate);
-      if (endDate) params.set("endDate", endDate);
-    } else if (view !== "feed" && view !== "search") {
-      params.set("tab", view);
-    }
-    const qs = params.toString();
-    router.replace(qs ? `?${qs}` : "/", { scroll: false });
-  }, [view, committedQuery, filterTypes, hazardousOnly, startDate, endDate, router]);
-
-  const handleSubmitSearch = useCallback(() => {
-    const q = searchQuery.trim();
-    if (q.length >= 2) {
-      setCommittedQuery(q);
-      setView("search");
-      setShowHistory(false);
-    }
-  }, [searchQuery]);
-
-  const handleSelectHistory = useCallback(
-    (q: string) => {
-      setSearchQuery(q);
-      setCommittedQuery(q);
-      setView("search");
-      setShowHistory(false);
-    },
-    []
-  );
-
-  const handleNavigate = useCallback((tab: DatasetTab) => {
-    setView(tab);
-  }, []);
-
-  const handleTabChange = useCallback((tab: DatasetTab) => {
-    setView(tab);
-    setSearchQuery("");
-    setCommittedQuery("");
-    setShowFilters(false);
-  }, []);
-
-  const handleGoHome = useCallback(() => {
-    setView("feed");
-    setSearchQuery("");
-    setCommittedQuery("");
-    setShowFilters(false);
-  }, []);
-
-  const handleToggleType = useCallback((type: DatasetTab) => {
-    setFilterTypes((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
-  }, []);
+    setHazardousOnly,
+    startDate,
+    setStartDate,
+    endDate,
+    setEndDate,
+    history,
+    clearHistory,
+    removeFromHistory,
+    handleSearchChange,
+    searchData,
+    isSearching,
+    isFetching,
+    handleSubmitSearch,
+    handleSelectHistory,
+    handleNavigate,
+    handleTabChange,
+    handleGoHome,
+    handleToggleType
+  } = useAppSearchState();
 
   const ActivePanel = view !== "feed" && view !== "search" ? PANELS[view] : null;
   const isSearchView = view === "search" && committedQuery.length >= 2;
@@ -179,7 +88,6 @@ function HomeContent() {
     <div className="flex min-h-screen flex-col bg-bg-primary">
       <LoadingBar isLoading={isFetching} />
       <Header
-        onLogoClick={handleGoHome}
         activeTab={view !== "feed" && view !== "search" ? view : null}
         onTabChange={handleTabChange}
         onHomeClick={handleGoHome}

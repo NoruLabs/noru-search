@@ -3,15 +3,24 @@
 import { useState } from "react";
 import { AlertTriangle, Shield, Search } from "lucide-react";
 import { useNeoFeed } from "../../hooks/useNeo";
-import { DataCard } from "../ui/DataCard";
-import { Loader, CardSkeleton } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader, CardSkeleton } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
-import { NeoDistanceChart, NeoVelocityChart } from "../charts/NeoCharts";
-import { AsteroidDetail } from "../details/AsteroidDetail";
+import dynamic from "next/dynamic";
+import { AsteroidDetail } from "./AsteroidDetail";
 import { AsteroidTimeline } from "./AsteroidTimeline";
-import { CompareMode } from "./CompareMode";
+import { CompareMode } from "../../components/compare/CompareMode";
 import type { NeoObject } from "../../lib/types";
+
+const NeoDistanceChart = dynamic(() => import("./NeoCharts").then(mod => mod.NeoDistanceChart), { 
+  ssr: false, 
+  loading: () => <CardSkeleton /> 
+});
+const NeoVelocityChart = dynamic(() => import("./NeoCharts").then(mod => mod.NeoVelocityChart), { 
+  ssr: false, 
+  loading: () => <CardSkeleton /> 
+});
 
 function formatNumber(num: number): string {
   return new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(num);

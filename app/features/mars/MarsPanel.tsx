@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { useMarsRovers, useMarsPhotos } from "../../hooks/useMarsRovers";
-import { DataCard } from "../ui/DataCard";
-import { Loader } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 import { MARS_CAMERAS } from "../../lib/constants";
-import { MarsLightbox } from "../details/MarsLightbox";
+import { MarsLightbox } from "./MarsLightbox";
 
 export function MarsPanel() {
   const [selectedRover, setSelectedRover] = useState("curiosity");

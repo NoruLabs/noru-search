@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { Rocket, ExternalLink, ChevronLeft, Calendar, Search } from "lucide-react";
 import { useTechportProjects, useTechportProject } from "../../hooks/useTechport";
-import { DataCard } from "../ui/DataCard";
-import { Loader, CardSkeleton } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader, CardSkeleton } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 
 export function TechportPanel() {
@@ -22,6 +22,7 @@ export function TechportPanel() {
       const sorted = [...data.projects].sort(
         (a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
       );
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDetailIds(sorted.slice(0, 18).map((p) => p.projectId));
     }
   }, [data]);

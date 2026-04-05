@@ -18,10 +18,7 @@ export async function GET(request: NextRequest) {
   ];
 
   const today = new Date();
-  const weekAgo = new Date(today);
-  weekAgo.setDate(today.getDate() - 7);
   const todayStr = today.toISOString().split("T")[0];
-  const weekAgoStr = weekAgo.toISOString().split("T")[0];
 
   const results: Record<string, unknown> = {};
   const errors: Record<string, string> = {};

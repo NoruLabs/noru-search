@@ -3,9 +3,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Search, Play, Pause, Music, Download, Volume2 } from "lucide-react";
 import { useSpaceSounds } from "../../hooks/useSounds";
-import { DataCard } from "../ui/DataCard";
-import { Loader, CardSkeleton } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader, CardSkeleton } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 
 /** Fetches the asset manifest and returns the first playable audio URL. */
@@ -41,10 +41,10 @@ function SoundCard({
   onPlay: (nasaId: string, manifestUrl: string) => void;
   onPause: () => void;
 }) {
+  const [downloading, setDownloading] = useState(false);
+
   const meta = item.data?.[0];
   if (!meta) return null;
-
-  const [downloading, setDownloading] = useState(false);
 
   const handleDownload = async () => {
     setDownloading(true);

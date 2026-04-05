@@ -1,7 +1,7 @@
 "use client";
 
 import { Globe, Thermometer, Orbit, Scale, Star, Calendar } from "lucide-react";
-import { Modal } from "../ui/Modal";
+import { Modal } from "../../components/ui/Modal";
 import type { Exoplanet } from "../../lib/types";
 
 function getHabitabilityBreakdown(planet: Exoplanet) {

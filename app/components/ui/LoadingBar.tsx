@@ -8,7 +8,9 @@ export function LoadingBar({ isLoading }: { isLoading: boolean }) {
 
   useEffect(() => {
     if (isLoading) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProgress(0);
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setVisible(true);
       let current = 0;
       const interval = setInterval(() => {
@@ -17,6 +19,7 @@ export function LoadingBar({ isLoading }: { isLoading: boolean }) {
       }, 150);
       return () => clearInterval(interval);
     } else if (visible) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProgress(100);
       const timer = setTimeout(() => {
         setVisible(false);

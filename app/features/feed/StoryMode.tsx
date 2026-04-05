@@ -38,6 +38,7 @@ export function StoryMode() {
 
   useEffect(() => {
     try {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDismissed(getUIPrefs().dismissedStories);
     } catch {}
   }, []);

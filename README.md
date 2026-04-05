@@ -1,153 +1,62 @@
 # Noru Search
 
-> A space data explorer — browse NASA datasets, space news, and real-time space weather from a single interface.
+A space data explorer application that lets you browse NASA datasets, space news, and real-time space weather from a single interface. 
 
-**Live:** [norusearch.live](https://www.norusearch.live)  
-**License:** [MIT](LICENSE)
-
----
+Live: https://www.norusearch.live
 
 ## Features
 
-- **Universal search** across all datasets with history and saved searches
-- **Feed dashboard** — APOD hero, daily briefing, risk meter, alert conditions, NEOs, and space news carousel
-- **Story Mode** — narrative weekly summary of space activity
-- **Compare Mode** — side-by-side asteroid comparison
-- **Alert rules** — custom threshold alerts for hazardous asteroids and solar flares
-- **Charts** — exoplanet discovery trends, NEO size/velocity charts, space weather charts
-- **Asteroid timeline** — visual timeline of close approaches
-- **PWA-ready** — service worker and web app manifest included
-- **Dark / light theme** with responsive layout (mobile, tablet, desktop)
-
----
-
-## Quick Start
-
-```bash
-git clone https://github.com/NoruLabs/noru-search.git
-cd noru-search
-npm install
-```
-
-Create `.env.local` in the project root:
-
-```env
-NASA_API_KEY=your_nasa_api_key
-```
-
-Get a free key at [api.nasa.gov](https://api.nasa.gov). Without one the app falls back to `DEMO_KEY` (30 req/hour, 50 req/day).
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
-> **Production build:**
-> ```bash
-> npm run build && npm start
-> ```
-
----
-
-## Datasets
-
-| Tab | Source | What You Get |
-|-----|--------|--------------|| **Feed** | NASA + [Spaceflight News API](https://api.spaceflightnewsapi.net/v4/) | APOD hero, daily briefing, risk meter, alert conditions, space news carousel, NEOs |
-| **APOD** | NASA Planetary API | Astronomy Picture of the Day — images, YouTube embeds, and direct videos; date picker; gallery |
-| **Asteroids** | NASA NeoWs | Near-Earth objects, hazard indicators, timeline, compare mode, charts |
-| **Mars Rovers** | NASA Mars Photos API | Curiosity, Opportunity, Spirit — filter by sol and camera |
-| **Exoplanets** | NASA Exoplanet Archive | Confirmed exoplanets with discovery-year trends |
-| **Space Weather** | NASA DONKI | Solar flares, CMEs, geomagnetic storms, risk score |
-| **InSight** | NASA InSight API | Mars surface weather from the InSight lander |
-| **NASA Media** | NASA Image & Video Library | Searchable image and video archive |
-| **Sounds** | NASA open data | Audio recordings from space missions |
-| **TechPort** | NASA TechPort | Active and completed NASA technology projects |
-
----
-
-## Project Structure
-
-```
-noru-search/
-├── app/
-│   ├── page.tsx              # Root page — tab routing, search, feed
-│   ├── layout.tsx            # Root layout, fonts, providers
-│   ├── globals.css           # Tailwind + CSS custom properties (design tokens)
-│   ├── api/
-│   │   ├── nasa/             # Server-side proxy routes (API key never reaches client)
-│   │   │   ├── apod/         # Astronomy Picture of the Day
-│   │   │   ├── neo/          # Near-Earth objects
-│   │   │   ├── mars/         # Mars rover photos
-│   │   │   ├── exoplanets/   # NASA Exoplanet Archive
-│   │   │   ├── feed/         # Combined daily feed
-│   │   │   ├── insight/      # InSight Mars weather
-│   │   │   ├── media/        # NASA Image & Video Library
-│   │   │   ├── sounds/       # NASA Sounds
-│   │   │   ├── techport/     # TechPort projects
-│   │   │   └── weather/      # DONKI space weather
-│   │   └── space-news/       # Spaceflight News API (no key required)
-│   ├── components/
-│   │   ├── Header.tsx        # Navigation tabs + mobile menu
-│   │   ├── SearchBar.tsx     # Debounced search with history
-│   │   ├── datasets/         # One panel per dataset + Feed, DailyBriefing,
-│   │   │                     #   RiskMeter, AlertConditions, StoryMode, CompareMode
-│   │   ├── charts/           # Recharts wrappers (NEO, weather, exoplanets)
-│   │   ├── details/          # Lightboxes and drill-down views
-│   │   └── ui/               # Shared primitives (DataCard, Modal, Loader …)
-│   ├── hooks/                # One TanStack React Query hook per dataset
-│   └── lib/
-│       ├── api.ts            # Axios client + error helpers
-│       ├── constants.ts      # TAB_CONFIG, rover/camera lists
-│       ├── types.ts          # All TypeScript interfaces
-│       ├── scoring.ts        # Space weather risk score engine
-│       └── storage.ts        # localStorage helpers (saved searches, alerts)
-└── public/
-    ├── manifest.json         # PWA manifest
-    └── sw.js                 # Service worker
-```
-
----
+- Search and filter across multiple space data sources.
+- View the Astronomy Picture of the Day (APOD) and NASA image library.
+- Explore Near Earth Objects (NEO) such as asteroids with a timeline and hazard alerts.
+- Check Mars Rover photos and weather data from Insight.
+- Discover Exoplanet trends and compare space objects.
+- Listen to NASA sound records and read the daily briefing.
+- Save your search history and bookmark favorites.
 
 ## Tech Stack
 
-| | |
-|---|---|
-| **Framework** | Next.js 16.1 (App Router, Turbopack) |
-| **Language** | TypeScript 5 |
-| **UI** | React 19, Tailwind CSS 4 |
-| **Data fetching** | TanStack React Query 5, Axios |
-| **Charts** | Recharts 3 |
-| **Icons** | Lucide React |
-| **Linting** | ESLint 9 (eslint-config-next) |
+- Framework: Next.js (App Router)
+- UI Library: React
+- Language: TypeScript
+- Styling: Tailwind CSS
 
----
+## Folder Structure
 
-## Environment Variables
+This application uses a Feature-Driven Architecture to keep the code organized and easy to maintain:
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `NASA_API_KEY` | No | NASA Open APIs key. Falls back to `DEMO_KEY` if unset. Get one free at [api.nasa.gov](https://api.nasa.gov). |
+- app/api/: Server-side edge functions handling API requests and caching.
+- app/features/: Domain-specific components (e.g., neo, apod, mars, exoplanets).
+- app/components/: Reusable UI pieces, layouts, and modals.
+- app/hooks/: Global state management and data fetching.
+- app/lib/: Shared constants, types, and utility functions.
 
----
+## Getting Started
 
-## Scripts
+### Prerequisites
 
-```bash
-npm run dev     # Development server (Turbopack)
-npm run build   # Production build
-npm start       # Serve production build
-npm run lint    # ESLint
-```
+- Node.js 18 or later.
 
----
+### Installation
+
+1. Copy the repository to your local machine.
+
+2. Install the necessary dependencies:
+   npm install
+
+3. (Optional) Create a .env.local file in the main folder to add your NASA API key. If you do not provide one, the app will use a default demo key:
+   NASA_API_KEY=your_api_key_here
+   You can get a free key at https://api.nasa.gov
+
+4. Start the application:
+   npm run dev
+
+The app will start running at http://localhost:3000
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup steps, branch naming, coding standards, and the PR process.
-
----
+Please read the CONTRIBUTING.md file for details on our code of conduct and the process for submitting pull requests.
 
 ## License
 
-[MIT](LICENSE)
+This project is licensed under the MIT License. See the LICENSE file for details.

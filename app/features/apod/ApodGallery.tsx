@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Calendar, ExternalLink, X } from "lucide-react";
 import { useApodRange } from "../../hooks/useApod";
-import { Loader } from "../ui/Loader";
+import { Loader } from "../../components/ui/Loader";
 import type { ApodData } from "../../lib/types";
 
 function getWeekRange(offset: number): { start: string; end: string } {

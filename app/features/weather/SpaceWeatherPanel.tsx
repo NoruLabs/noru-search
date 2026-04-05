@@ -8,15 +8,22 @@ import {
   useSolarEnergeticParticles,
   useInterplanetaryShocks,
 } from "../../hooks/useSpaceWeather";
-import { DataCard } from "../ui/DataCard";
-import { Loader, CardSkeleton } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader, CardSkeleton } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
-import {
-  FlareIntensityChart,
-  FlareTimelineChart,
-} from "../charts/WeatherCharts";
+import dynamic from "next/dynamic";
 import { Calendar, Search, X } from "lucide-react";
+
+const FlareIntensityChart = dynamic(() => import("./WeatherCharts").then(mod => mod.FlareIntensityChart), {
+  ssr: false,
+  loading: () => <CardSkeleton />
+});
+
+const FlareTimelineChart = dynamic(() => import("./WeatherCharts").then(mod => mod.FlareTimelineChart), {
+  ssr: false,
+  loading: () => <CardSkeleton />
+});
 
 type WeatherCategory = "flares" | "cme" | "storms" | "sep" | "ips";
 

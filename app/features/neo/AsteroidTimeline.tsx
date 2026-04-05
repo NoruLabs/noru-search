@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Calendar, AlertTriangle, Shield, ChevronLeft, ChevronRight, Zap } from "lucide-react";
 import { useNeoFeed } from "../../hooks/useNeo";
-import { DataCard } from "../ui/DataCard";
+import { DataCard } from "../../components/ui/DataCard";
 import type { NeoObject, CloseApproach } from "../../lib/types";
 
 function formatSpeed(kmh: string): string {
@@ -29,15 +29,27 @@ interface DayData {
 
 export function AsteroidTimeline() {
   const [weekOffset, setWeekOffset] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
-  const today = new Date();
-  const startDate = new Date(today);
-  startDate.setDate(today.getDate() + weekOffset * 7);
-  const endDate = new Date(startDate);
-  endDate.setDate(startDate.getDate() + 6);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
-  const startStr = startDate.toISOString().split("T")[0];
-  const endStr = endDate.toISOString().split("T")[0];
+  const { today, startDate, endDate, startStr, endStr } = useMemo(() => {
+    const d = new Date();
+    const start = new Date(d);
+    start.setDate(d.getDate() + weekOffset * 7);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 6);
+    return {
+      today: d,
+      startDate: start,
+      endDate: end,
+      startStr: start.toISOString().split("T")[0],
+      endStr: end.toISOString().split("T")[0],
+    };
+  }, [weekOffset]);
 
   const { data: neos, isLoading } = useNeoFeed(startStr, endStr);
 
@@ -79,12 +91,12 @@ export function AsteroidTimeline() {
       });
     }
     return result;
-  }, [neos, startStr]);
+  }, [neos, startStr, startDate]);
 
   const isCurrentWeek = weekOffset === 0;
   const todayStr = today.toISOString().split("T")[0];
 
-  if (isLoading) {
+  if (!mounted || isLoading) {
     return (
       <div className="space-y-3">
         <div className="flex items-center gap-2">

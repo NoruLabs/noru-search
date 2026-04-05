@@ -5,6 +5,7 @@ import {
   useRef,
   useEffect,
   useCallback,
+  useMemo,
 } from "react";
 import {
   Telescope,
@@ -23,9 +24,9 @@ import {
   useSolarFlares,
   useGeomagneticStorms,
 } from "../../hooks/useSpaceWeather";
-import { FeedSkeleton } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
-import { FeedStats } from "../ui/StatsBar";
+import { FeedSkeleton } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
+import { FeedStats } from "../../components/ui/StatsBar";
 import { DailyBriefing } from "./DailyBriefing";
 import { SpaceWeatherRiskMeter } from "./RiskMeter";
 import { AlertConditionsPanel } from "./AlertConditions";
@@ -116,20 +117,21 @@ function FeedNewsSection() {
   const rafRef = useRef<number>(0);
   const SPEED = 0.5; // px per frame
 
-  const items: NewsItem[] = (() => {
+  const items: NewsItem[] = useMemo(() => {
     if (!data) return [];
-    const all: NewsItem[] = [
+    return [
       ...data.articles.map((a) => ({ ...a, _type: "article" as const })),
       ...data.blogs.map((b) => ({ ...b, _type: "blog" as const })),
       ...data.reports.map((r) => ({ ...r, _type: "report" as const })),
     ];
-    return all;
-  })();
+  }, [data]);
 
   const animate = useCallback(() => {
     const track = trackRef.current;
     if (!track || paused) {
-      rafRef.current = requestAnimationFrame(animate);
+      if (animateRef.current) {
+        rafRef.current = requestAnimationFrame(animateRef.current);
+      }
       return;
     }
     scrollPos.current += SPEED;
@@ -138,8 +140,16 @@ function FeedNewsSection() {
       scrollPos.current -= halfWidth;
     }
     track.style.transform = `translateX(-${scrollPos.current}px)`;
-    rafRef.current = requestAnimationFrame(animate);
+    if (animateRef.current) {
+      rafRef.current = requestAnimationFrame(animateRef.current);
+    }
   }, [paused]);
+
+  const animateRef = useRef(animate);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
+    animateRef.current = animate;
+  }, [animate]);
 
   useEffect(() => {
     rafRef.current = requestAnimationFrame(animate);
