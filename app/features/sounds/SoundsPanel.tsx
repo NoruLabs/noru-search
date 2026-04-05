@@ -41,10 +41,10 @@ function SoundCard({
   onPlay: (nasaId: string, manifestUrl: string) => void;
   onPause: () => void;
 }) {
+  const [downloading, setDownloading] = useState(false);
+
   const meta = item.data?.[0];
   if (!meta) return null;
-
-  const [downloading, setDownloading] = useState(false);
 
   const handleDownload = async () => {
     setDownloading(true);

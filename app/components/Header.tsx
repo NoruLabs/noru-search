@@ -32,14 +32,12 @@ const TAB_ICONS: Record<DatasetTab, React.ReactNode> = {
 };
 
 interface HeaderProps {
-  onLogoClick?: () => void;
   activeTab: DatasetTab | null;
   onTabChange: (tab: DatasetTab) => void;
   onHomeClick: () => void;
 }
 
 export function Header({
-  onLogoClick,
   activeTab,
   onTabChange,
   onHomeClick,

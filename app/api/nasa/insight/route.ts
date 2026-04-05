@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import axios from "axios";
 
 const NASA_API_KEY = process.env.NASA_API_KEY || "DEMO_KEY";
 const NASA_BASE = "https://api.nasa.gov";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const { data } = await axios.get(`${NASA_BASE}/insight_weather/`, {
       params: {

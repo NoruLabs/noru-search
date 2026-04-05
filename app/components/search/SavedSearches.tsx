@@ -15,7 +15,6 @@ import {
   removeSavedSearch,
   type SavedSearch,
 } from "../../lib/storage";
-import { formatRelativeTime } from "../../lib/scoring";
 import type { DatasetTab } from "../../lib/types";
 
 interface SavedSearchesPanelProps {
@@ -39,6 +38,7 @@ export function SavedSearchesPanel({
   const [saveName, setSaveName] = useState("");
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setSearches(getSavedSearches());
   }, []);
 

@@ -71,6 +71,7 @@ export function AlertConditionsPanel({
   const [evaluations, setEvaluations] = useState<AlertEvaluation[]>([]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRules(getAlertRules());
   }, []);
 
@@ -82,6 +83,7 @@ export function AlertConditionsPanel({
         flares,
         storms,
       });
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setEvaluations(evals);
     }
   }, [rules, hazardousNeoCount, totalNeoCount, flares, storms]);

@@ -88,7 +88,6 @@ function HomeContent() {
     <div className="flex min-h-screen flex-col bg-bg-primary">
       <LoadingBar isLoading={isFetching} />
       <Header
-        onLogoClick={handleGoHome}
         activeTab={view !== "feed" && view !== "search" ? view : null}
         onTabChange={handleTabChange}
         onHomeClick={handleGoHome}

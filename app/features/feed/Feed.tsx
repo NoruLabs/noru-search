@@ -129,7 +129,9 @@ function FeedNewsSection() {
   const animate = useCallback(() => {
     const track = trackRef.current;
     if (!track || paused) {
-      rafRef.current = requestAnimationFrame(animate);
+      if (animateRef.current) {
+        rafRef.current = requestAnimationFrame(animateRef.current);
+      }
       return;
     }
     scrollPos.current += SPEED;
@@ -138,8 +140,16 @@ function FeedNewsSection() {
       scrollPos.current -= halfWidth;
     }
     track.style.transform = `translateX(-${scrollPos.current}px)`;
-    rafRef.current = requestAnimationFrame(animate);
+    if (animateRef.current) {
+      rafRef.current = requestAnimationFrame(animateRef.current);
+    }
   }, [paused]);
+
+  const animateRef = useRef(animate);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/immutability
+    animateRef.current = animate;
+  }, [animate]);
 
   useEffect(() => {
     rafRef.current = requestAnimationFrame(animate);

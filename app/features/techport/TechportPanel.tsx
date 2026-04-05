@@ -22,6 +22,7 @@ export function TechportPanel() {
       const sorted = [...data.projects].sort(
         (a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
       );
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setDetailIds(sorted.slice(0, 18).map((p) => p.projectId));
     }
   }, [data]);

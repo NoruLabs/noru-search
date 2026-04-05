@@ -32,6 +32,7 @@ export function AsteroidTimeline() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -90,7 +91,7 @@ export function AsteroidTimeline() {
       });
     }
     return result;
-  }, [neos, startStr]);
+  }, [neos, startStr, startDate]);
 
   const isCurrentWeek = weekOffset === 0;
   const todayStr = today.toISOString().split("T")[0];

@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import axios from "axios";
 
-const EXOPLANET_BASE = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync";
+const EXOPLANET_BASE = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync";    
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const limit = searchParams.get("limit") || "50";
-  const offset = searchParams.get("offset") || "0";
   const search = searchParams.get("search") || "";
 
   try {
