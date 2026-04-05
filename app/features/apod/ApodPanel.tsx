@@ -3,11 +3,11 @@
 import { useState, useMemo } from "react";
 import { RefreshCw, ExternalLink, Grid, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { useApod } from "../../hooks/useApod";
-import { DataCard } from "../ui/DataCard";
-import { Loader } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
-import { ApodGallery } from "../details/ApodGallery";
+import { ApodGallery } from "./ApodGallery";
 
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",

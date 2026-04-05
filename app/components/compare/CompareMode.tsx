@@ -18,7 +18,7 @@ import {
   toggleCompareItem,
   clearCompareItems,
 } from "../../lib/storage";
-import type { Exoplanet, NeoObject } from "../../lib/types";
+import type { Exoplanet } from "../../lib/types";
 
 type CompareType = "exoplanets" | "neo";
 
@@ -33,7 +33,7 @@ function ExoplanetCompare() {
   const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
-    setSelectedIds(getCompareItems("exoplanets"));
+    const initEx = () => setSelectedIds(getCompareItems("exoplanets")); initEx();
   }, []);
 
   const selected = (planets ?? []).filter((p) => selectedIds.includes(p.pl_name));
@@ -181,7 +181,7 @@ function NeoCompare() {
   const [showPicker, setShowPicker] = useState(false);
 
   useEffect(() => {
-    setSelectedIds(getCompareItems("neo"));
+    const initNeo = () => setSelectedIds(getCompareItems("neo")); initNeo();
   }, []);
 
   const selected = (neos ?? []).filter((n) => selectedIds.includes(n.id));

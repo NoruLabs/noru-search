@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react";
 import { Rocket, ExternalLink, ChevronLeft, Calendar, Search } from "lucide-react";
 import { useTechportProjects, useTechportProject } from "../../hooks/useTechport";
-import { DataCard } from "../ui/DataCard";
-import { Loader, CardSkeleton } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader, CardSkeleton } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 
 export function TechportPanel() {

@@ -3,16 +3,16 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { useExoplanets } from "../../hooks/useExoplanets";
-import { DataCard } from "../ui/DataCard";
-import { Loader } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 import dynamic from "next/dynamic";
-import { ExoplanetDetail } from "../details/ExoplanetDetail";
-import { CompareMode } from "./CompareMode";
+import { ExoplanetDetail } from "./ExoplanetDetail";
+import { CompareMode } from "../../components/compare/CompareMode";
 import type { Exoplanet } from "../../lib/types";
 
-const ExoplanetTrends = dynamic(() => import("../charts/ExoplanetTrends").then(mod => mod.ExoplanetTrends), {
+const ExoplanetTrends = dynamic(() => import("./ExoplanetTrends").then(mod => mod.ExoplanetTrends), {
   ssr: false,
   loading: () => <Loader />
 });

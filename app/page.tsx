@@ -8,15 +8,15 @@ import { Footer } from "./components/Footer";
 import { useAppSearchState, ViewMode } from "./hooks/useAppSearchState";
 
 // Dynamically import dataset panels to reduce initial bundle size
-const Feed = dynamic(() => import("./components/datasets/Feed").then((mod) => mod.Feed));
-const ApodPanel = dynamic(() => import("./components/datasets/ApodPanel").then((mod) => mod.ApodPanel));
+const Feed = dynamic(() => import("./features/feed/Feed").then((mod) => mod.Feed));
+const ApodPanel = dynamic(() => import("./features/apod/ApodPanel").then((mod) => mod.ApodPanel));
 const NeoPanel = dynamic(() => import("./features/neo/NeoPanel").then((mod) => mod.NeoPanel));
-const ExoplanetsPanel = dynamic(() => import("./components/datasets/ExoplanetsPanel").then((mod) => mod.ExoplanetsPanel));
-const SpaceWeatherPanel = dynamic(() => import("./components/datasets/SpaceWeatherPanel").then((mod) => mod.SpaceWeatherPanel));
-const InsightPanel = dynamic(() => import("./components/datasets/InsightPanel").then((mod) => mod.InsightPanel));
-const MediaPanel = dynamic(() => import("./components/datasets/MediaPanel").then((mod) => mod.MediaPanel));
-const SoundsPanel = dynamic(() => import("./components/datasets/SoundsPanel").then((mod) => mod.SoundsPanel));
-const TechportPanel = dynamic(() => import("./components/datasets/TechportPanel").then((mod) => mod.TechportPanel));
+const ExoplanetsPanel = dynamic(() => import("./features/exoplanets/ExoplanetsPanel").then((mod) => mod.ExoplanetsPanel));
+const SpaceWeatherPanel = dynamic(() => import("./features/weather/SpaceWeatherPanel").then((mod) => mod.SpaceWeatherPanel));
+const InsightPanel = dynamic(() => import("./features/insight/InsightPanel").then((mod) => mod.InsightPanel));
+const MediaPanel = dynamic(() => import("./features/media/MediaPanel").then((mod) => mod.MediaPanel));
+const SoundsPanel = dynamic(() => import("./features/sounds/SoundsPanel").then((mod) => mod.SoundsPanel));
+const TechportPanel = dynamic(() => import("./features/techport/TechportPanel").then((mod) => mod.TechportPanel));
 
 import { SearchResultsSkeleton, SearchHistory, SearchFiltersPanel } from "./components/search/SearchResults";
 const SearchResults = dynamic(() => import("./components/search/SearchResults").then((mod) => mod.SearchResults));

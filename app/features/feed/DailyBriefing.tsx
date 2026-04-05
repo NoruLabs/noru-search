@@ -14,7 +14,7 @@ import { useFeed } from "../../hooks/useFeed";
 import { useSpaceNews } from "../../hooks/useSpaceNews";
 import { useSolarFlares, useCoronalMassEjections, useGeomagneticStorms } from "../../hooks/useSpaceWeather";
 import { calculateRisk, type RiskLevel } from "../../lib/scoring";
-import { DataCard } from "../ui/DataCard";
+import { DataCard } from "../../components/ui/DataCard";
 import type { DatasetTab, NeoObject, SolarFlare } from "../../lib/types";
 
 interface DailyBriefingProps {

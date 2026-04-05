@@ -3,9 +3,9 @@
 import { useState } from "react";
 import { Search, Image as ImageIcon, Video, Filter, X } from "lucide-react";
 import { useNasaMedia } from "../../hooks/useNasaMedia";
-import { DataCard } from "../ui/DataCard";
-import { Loader, CardSkeleton } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
+import { DataCard } from "../../components/ui/DataCard";
+import { Loader, CardSkeleton } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
 import { getApiErrorMessage } from "../../lib/api";
 
 type MediaFilter = "image" | "video";

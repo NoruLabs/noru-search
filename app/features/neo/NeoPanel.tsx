@@ -10,7 +10,7 @@ import { getApiErrorMessage } from "../../lib/api";
 import dynamic from "next/dynamic";
 import { AsteroidDetail } from "./AsteroidDetail";
 import { AsteroidTimeline } from "./AsteroidTimeline";
-import { CompareMode } from "../../components/datasets/CompareMode";
+import { CompareMode } from "../../components/compare/CompareMode";
 import type { NeoObject } from "../../lib/types";
 
 const NeoDistanceChart = dynamic(() => import("./NeoCharts").then(mod => mod.NeoDistanceChart), { 

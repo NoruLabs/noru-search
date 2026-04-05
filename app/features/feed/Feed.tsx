@@ -24,9 +24,9 @@ import {
   useSolarFlares,
   useGeomagneticStorms,
 } from "../../hooks/useSpaceWeather";
-import { FeedSkeleton } from "../ui/Loader";
-import { ErrorState } from "../ui/ErrorState";
-import { FeedStats } from "../ui/StatsBar";
+import { FeedSkeleton } from "../../components/ui/Loader";
+import { ErrorState } from "../../components/ui/ErrorState";
+import { FeedStats } from "../../components/ui/StatsBar";
 import { DailyBriefing } from "./DailyBriefing";
 import { SpaceWeatherRiskMeter } from "./RiskMeter";
 import { AlertConditionsPanel } from "./AlertConditions";
