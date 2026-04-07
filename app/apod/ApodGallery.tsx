@@ -1,10 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Calendar, ExternalLink, X } from "lucide-react";
-import { useApodRange } from "../../hooks/useApod";
-import { Loader } from "../../components/ui/Loader";
-import type { ApodData } from "../../lib/types";
+import { useApodRange } from "../hooks/useApod";
+import { Modal } from "../components/ui/Modal";
+import type { ApodData } from "../lib/types";
 
 function getWeekRange(offset: number): { start: string; end: string } {
   const end = new Date();
@@ -38,26 +38,7 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-bg-primary/80 backdrop-blur-sm">
-      <div className="relative mx-4 flex max-h-[90vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-border bg-bg-primary shadow-2xl">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border p-4">
-          <div>
-            <h2 className="text-lg font-semibold text-text-primary">
-              APOD Gallery
-            </h2>
-            <p className="text-xs text-text-muted">
-              Browse Astronomy Picture of the Day archive
-            </p>
-          </div>
-          <button
-            onClick={onClose}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-border text-text-muted transition-colors hover:text-text-primary"
-          >
-            <X size={16} />
-          </button>
-        </div>
-
+    <Modal isOpen={isOpen} onClose={onClose} title="APOD Gallery" size="full">
         {/* Week navigation */}
         <div className="flex items-center justify-between border-b border-border px-4 py-3">
           <button
@@ -69,7 +50,7 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
           </button>
           <div className="flex items-center gap-1.5 text-sm text-text-secondary">
             <Calendar size={14} />
-            {range.start} — {range.end}
+            {range.start} â€” {range.end}
           </div>
           <button
             onClick={() => setWeekOffset((o) => Math.max(0, o - 1))}
@@ -83,11 +64,7 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-4">
-          {isLoading ? (
-            <div className="flex h-64 items-center justify-center">
-              <Loader text="Loading gallery..." />
-            </div>
-          ) : selected ? (
+          {isLoading ? null : selected ? (
             /* Expanded view */
             <div className="space-y-4 animate-fade-in">
               <button
@@ -103,7 +80,7 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
                 </h3>
                 <p className="text-xs text-text-muted">
                   {selected.date}
-                  {selected.copyright && ` · © ${selected.copyright}`}
+                  {selected.copyright && ` Â· Â© ${selected.copyright}`}
                 </p>
               </div>
               {selected.media_type === "image" ? (
@@ -158,7 +135,7 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
                     }}
                     className="text-xs text-text-muted transition-colors hover:text-text-primary"
                   >
-                    Open in main view →
+                    Open in main view â†’
                   </button>
                 )}
               </div>
@@ -180,7 +157,7 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
                         <img
                           src={apod.url}
                           alt={apod.title}
-                          className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                          className="h-full w-full object-cover"
                           loading="lazy"
                         />
                       </div>
@@ -194,16 +171,16 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
                             <img
                               src={thumb}
                               alt={apod.title}
-                              className="h-full w-full object-cover transition-transform group-hover:scale-105"
+                              className="h-full w-full object-cover"
                               loading="lazy"
                             />
                             <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                              <span className="text-2xl">▶</span>
+                              <span className="text-2xl">â–¶</span>
                             </div>
                           </div>
                         ) : (
                           <div className="flex aspect-square items-center justify-center bg-bg-card text-text-muted">
-                            <span className="text-2xl">▶</span>
+                            <span className="text-2xl">â–¶</span>
                           </div>
                         );
                       })()
@@ -218,7 +195,7 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
                           muted
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                          <span className="text-2xl">▶</span>
+                          <span className="text-2xl">â–¶</span>
                         </div>
                       </div>
                     )}
@@ -235,7 +212,7 @@ export function ApodGallery({ isOpen, onClose, onSelectDate }: ApodGalleryProps)
             </div>
           )}
         </div>
-      </div>
-    </div>
+    </Modal>
   );
 }
+

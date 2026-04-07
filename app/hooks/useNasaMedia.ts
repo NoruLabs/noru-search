@@ -1,23 +1,42 @@
-import { useQuery } from "@tanstack/react-query";
-import { api, getApiErrorMessage } from "../lib/api";
-import type { NasaMediaSearchResponse } from "../lib/types";
+import { useQuery } from '@tanstack/react-query';
+import type { NasaMediaItem, NasaMediaResponse } from '../lib/types';
 
-export function useNasaMedia(
-  query: string = "space",
-  options?: { mediaType?: string; page?: number; yearStart?: string; yearEnd?: string }
-) {
-  return useQuery<NasaMediaSearchResponse>({
-    queryKey: ["nasa-media", query, options],
-    queryFn: async () => {
-      const params: Record<string, string | number> = { q: query };
-      if (options?.mediaType) params.media_type = options.mediaType;
-      if (options?.page) params.page = options.page;
-      if (options?.yearStart) params.year_start = options.yearStart;
-      if (options?.yearEnd) params.year_end = options.yearEnd;
-      const { data } = await api.get("/media", { params });
-      return data;
+export function useNasaMedia(query: string) {
+  return useQuery({
+    queryKey: ['nasa-media', query],
+    queryFn: async (): Promise<NasaMediaItem[]> => {
+      const currentYear = new Date().getFullYear();
+      // If query is empty, just fetch the most recent images overall
+      const queryParam = query.trim() ? `q=${encodeURIComponent(query)}&` : "";
+
+      let res = await fetch(`https://images-api.nasa.gov/search?${queryParam}media_type=image&year_start=${currentYear - 2}`);
+      if (!res.ok) throw new Error("Failed to fetch NASA media");
+      let data: NasaMediaResponse = await res.json();
+
+      // If very few results found in the last 2 years, fallback to all-time
+      if (data.collection.items.length < 10) {
+         res = await fetch(`https://images-api.nasa.gov/search?${queryParam}media_type=image`);
+         if (!res.ok) throw new Error("Failed to fetch fallback NASA media");
+         data = await res.json();
+      }
+
+      return data.collection.items
+        .map(item => {
+          const info = item.data[0];
+          const thumbnail = item.links?.find(l => l.rel === "preview")?.href;
+          
+          return {
+            nasa_id: info.nasa_id,
+            title: info.title,
+            description: info.description,
+            date_created: info.date_created,
+            media_type: info.media_type,
+            thumbnail_url: thumbnail,
+          };
+        })
+        .filter(item => item.thumbnail_url)
+        .sort((a, b) => new Date(b.date_created).getTime() - new Date(a.date_created).getTime());
     },
-    staleTime: 24 * 60 * 60 * 1000,
-    meta: { errorMessage: getApiErrorMessage },
+    staleTime: 1000 * 60 * 60, // 1 hour
   });
 }

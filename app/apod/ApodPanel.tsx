@@ -1,12 +1,10 @@
-"use client";
+﻿"use client";
 
 import { useState, useMemo } from "react";
 import { RefreshCw, ExternalLink, Grid, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
-import { useApod } from "../../hooks/useApod";
-import { DataCard } from "../../components/ui/DataCard";
-import { Loader } from "../../components/ui/Loader";
-import { ErrorState } from "../../components/ui/ErrorState";
-import { getApiErrorMessage } from "../../lib/api";
+import { useApod } from "../hooks/useApod";
+import { DataCard } from "../components/ui/DataCard";
+import { ErrorState } from "../components/ui/ErrorState";
 import { ApodGallery } from "./ApodGallery";
 
 const MONTHS = [
@@ -181,10 +179,10 @@ export function ApodPanel() {
     date || undefined
   );
 
-  if (isLoading) return <Loader text="Loading today's astronomy picture..." />;
+  if (isLoading) return null;
   if (error)
     return (
-      <ErrorState message={getApiErrorMessage(error)} onRetry={() => refetch()} />
+      <ErrorState message={error.message || "An unexpected error occurred."} onRetry={() => refetch()} />
     );
   if (!data) return null;
 
@@ -223,7 +221,7 @@ export function ApodPanel() {
             </h2>
             <p className="mt-1 text-sm text-text-muted">
               {data.date}
-              {data.copyright && ` · © ${data.copyright}`}
+              {data.copyright && ` Â· Â© ${data.copyright}`}
             </p>
           </div>
 
@@ -291,3 +289,4 @@ export function ApodPanel() {
     </div>
   );
 }
+

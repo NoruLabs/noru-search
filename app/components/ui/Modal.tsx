@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useCallback, useRef } from "react";
 import { X } from "lucide-react";
@@ -137,3 +137,4 @@ export function Modal({
     </div>
   );
 }
+

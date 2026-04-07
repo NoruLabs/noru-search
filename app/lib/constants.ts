@@ -9,13 +9,8 @@ export interface TabConfig {
 
 export const TAB_CONFIG: TabConfig[] = [
   { id: "apod",       label: "APOD",          description: "Astronomy Picture of the Day",  color: "var(--c-apod)" },
-  { id: "media",      label: "NASA Media",    description: "Images & Videos",               color: "var(--c-media)" },
-  { id: "sounds",     label: "Sounds",        description: "Audio from Space",              color: "var(--c-sounds)" },
-  { id: "neo",        label: "Asteroids",     description: "Near-Earth Objects",            color: "var(--c-neo)" },
-  { id: "techport",   label: "TechPort",      description: "Technology Projects",           color: "var(--c-techport)" },
-  { id: "exoplanets", label: "Exoplanets",    description: "Discovered Worlds",             color: "var(--c-exo)" },
-  { id: "weather",    label: "Space Weather", description: "Solar Activity & Storms",       color: "var(--c-weather)" },
-  { id: "insight",    label: "InSight",       description: "Mars Surface Conditions",       color: "var(--c-insight)" },
+  { id: "news",       label: "Space News",    description: "Latest Spaceflight Details",    color: "var(--c-weather)" },
+  { id: "nasa-media", label: "NASA Media",    description: "NASA Image and Video Library",  color: "var(--c-asteroids)" }
 ];
 
 /** Get a tab's accent color by ID */
@@ -23,16 +18,3 @@ export function getTabColor(id: DatasetTab): string {
   return TAB_CONFIG.find((t) => t.id === id)?.color ?? "var(--accent)";
 }
 
-export const MARS_ROVERS = ["curiosity", "opportunity", "spirit"] as const;
-
-export const MARS_CAMERAS: Record<string, string> = {
-  FHAZ: "Front Hazard Avoidance",
-  RHAZ: "Rear Hazard Avoidance",
-  MAST: "Mast Camera",
-  CHEMCAM: "Chemistry & Camera",
-  MAHLI: "Mars Hand Lens Imager",
-  MARDI: "Mars Descent Imager",
-  NAVCAM: "Navigation Camera",
-  PANCAM: "Panoramic Camera",
-  MINITES: "Mini-TES",
-};

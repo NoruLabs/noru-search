@@ -1,66 +1,44 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { usePathname } from "next/navigation";
+import Link from "next/link";
 import {
-  Globe,
-  Moon,
-  Orbit,
   Sun,
+  Moon,
   Telescope,
-  Thermometer,
-  ImageIcon,
-  Music,
-  Rocket,
   Menu,
   X,
+  Newspaper,
+  Image as ImageIcon,
 } from "lucide-react";
-import { Sun as SunIcon } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import type { DatasetTab } from "../lib/types";
 import { TAB_CONFIG } from "../lib/constants";
 
 const TAB_ICONS: Record<DatasetTab, React.ReactNode> = {
   apod: <Telescope size={14} />,
-  neo: <Orbit size={14} />,
-  exoplanets: <Globe size={14} />,
-  weather: <SunIcon size={14} />,
-  insight: <Thermometer size={14} />,
-  media: <ImageIcon size={14} />,
-  sounds: <Music size={14} />,
-  techport: <Rocket size={14} />,
+  "nasa-media": <ImageIcon size={14} />,
+  news: <Newspaper size={14} />
 };
 
-interface HeaderProps {
-  activeTab: DatasetTab | null;
-  onTabChange: (tab: DatasetTab) => void;
-  onHomeClick: () => void;
-}
-
-export function Header({
-  activeTab,
-  onTabChange,
-  onHomeClick,
-}: HeaderProps) {
+export function Header() {
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleTabClick = (tab: DatasetTab) => {
-    onTabChange(tab);
-    setMobileMenuOpen(false);
-  };
+  const pathname = usePathname();
+  const activeTab = pathname.split('/')[1] as DatasetTab | undefined;
 
   return (
     <header className="header-bar sticky top-0 z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <div className="flex h-12 items-center gap-4">
           {/* Brand */}
-          <button
-            onClick={onHomeClick}
+          <Link
+            href="/"
             className="header-tab flex shrink-0 items-center gap-2 !opacity-70 hover:!opacity-100 transition-opacity"
-            data-active={false}
+            data-active={pathname === "/"}
           >
-            <Image
+            <img
               src="/noru-icon.png"
               alt="Noru Search logo"
               width={20}
@@ -75,7 +53,7 @@ export function Header({
                 search
               </span>
             </div>
-          </button>
+          </Link>
 
           {/* Desktop Tab navigation */}
           <nav
@@ -86,9 +64,9 @@ export function Header({
             {TAB_CONFIG.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
-                <button
+                <Link
                   key={tab.id}
-                  onClick={() => handleTabClick(tab.id)}
+                  href={`/${tab.id}`}
                   className="header-tab"
                   data-active={isActive}
                   aria-selected={isActive}
@@ -96,7 +74,7 @@ export function Header({
                 >
                   <span className="shrink-0">{TAB_ICONS[tab.id]}</span>
                   <span className="hidden lg:inline">{tab.label}</span>
-                </button>
+                </Link>
               );
             })}
           </nav>
@@ -131,9 +109,10 @@ export function Header({
             {TAB_CONFIG.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
-                <button
+                <Link
                   key={tab.id}
-                  onClick={() => handleTabClick(tab.id)}
+                  href={`/${tab.id}`}
+                  onClick={() => setMobileMenuOpen(false)}
                   className={`flex flex-col items-center gap-1 rounded-xl px-2 py-2.5 text-[11px] font-medium transition-colors ${
                     isActive
                       ? "bg-accent text-accent-text"
@@ -144,7 +123,7 @@ export function Header({
                 >
                   {TAB_ICONS[tab.id]}
                   <span>{tab.label}</span>
-                </button>
+                </Link>
               );
             })}
           </nav>
@@ -153,3 +132,4 @@ export function Header({
     </header>
   );
 }
+

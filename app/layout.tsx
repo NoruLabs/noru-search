@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Sora, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { QueryProvider } from "./components/QueryProvider";
-import { ServiceWorkerRegistrar } from "./components/ServiceWorkerRegistrar";
+import { Header } from "./components/Header";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -22,9 +22,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Noru Search — Universal Space Data Browser",
+  title: "Noru Search - Universal Space Data Browser",
   description:
-    "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos — all in one place.",
+    "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos â€” all in one place.",
   keywords: [
     "NASA",
     "space",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Noru Labs", url: "https://github.com/NoruLabs" }],
   openGraph: {
-    title: "Noru Search — Universal Space Data Browser",
+    title: "Noru Search â€” Universal Space Data Browser",
     description:
       "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
     type: "website",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Noru Search — Universal Space Data Browser",
+    title: "Noru Search â€” Universal Space Data Browser",
     description:
       "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
   },
@@ -82,11 +82,14 @@ export default function RootLayout({
         </a>
         <ThemeProvider>
           <QueryProvider>
-            <ServiceWorkerRegistrar />
-            {children}
+            <div className="flex min-h-screen flex-col bg-bg-primary">
+              <Header />
+              {children}
+            </div>
           </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+

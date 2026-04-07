@@ -1,4 +1,4 @@
-import { AlertCircle, RefreshCw } from "lucide-react";
+﻿import { AlertCircle, RefreshCw } from "lucide-react";
 
 interface ErrorStateProps {
   message: string;
@@ -27,3 +27,4 @@ export function ErrorState({ message, onRetry }: ErrorStateProps) {
     </div>
   );
 }
+
