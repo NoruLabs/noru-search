@@ -35,19 +35,30 @@ export function ApodPreview() {
         <Link href="/apod" className="absolute inset-0 z-10" aria-label="View APOD details" />
         
         <div className="absolute inset-0 bg-black flex items-center justify-center pointer-events-none z-0">
-          {data.media_type === "video" ? (
-            <iframe
-              src={data.url.replace("?rel=0", "") + "?autoplay=0&controls=0&showinfo=0&modestbranding=1"}
-              title={data.title}
-              className="absolute inset-0 h-full w-full object-cover opacity-75"
-              allowFullScreen
-            />
-          ) : (
+          {data.media_type === "image" ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={data.url}
               alt={data.title}
               className="absolute inset-0 h-full w-full object-cover opacity-90"
+            />
+          ) : data.url.includes("youtube.com") || data.url.includes("youtu.be") ? (
+            <iframe
+              src={data.url.replace("?rel=0", "") + (data.url.includes("?") ? "&" : "?") + "autoplay=1&mute=1&controls=0&showinfo=0&modestbranding=1&loop=1"}
+              title={data.title}
+              className="absolute text-transparent inset-0 h-full w-[150%] md:w-[120%] -ml-[25%] md:-ml-[10%] object-cover scale-150 opacity-75 pointer-events-none"
+              allow="autoplay; encrypted-media"
+              allowFullScreen
+            />
+          ) : (
+            <video
+              src={data.url}
+              className="absolute inset-0 h-full w-full object-cover opacity-75"
+              autoPlay
+              loop
+              muted
+              playsInline
+              poster={data.thumbnail_url}
             />
           )}
         </div>

@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { QueryProvider } from "./components/QueryProvider";
 import { Header } from "./components/Header";
+import { BackgroundSwirl } from "./components/BackgroundSwirl";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -75,14 +76,15 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body
-        className={`${sora.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sora.variable} ${geistSans.variable} ${geistMono.variable} antialiased bg-bg-primary text-text-primary`}
       >
         <a href="#main-content" className="skip-to-content">
           Skip to content
         </a>
         <ThemeProvider>
           <QueryProvider>
-            <div className="flex min-h-screen flex-col bg-bg-primary">
+            <BackgroundSwirl />
+            <div className="flex min-h-screen flex-col bg-transparent relative z-10">
               <Header />
               {children}
             </div>

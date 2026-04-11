@@ -11,6 +11,7 @@ import {
   X,
   Newspaper,
   Image as ImageIcon,
+  Radar,
 } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
 import type { DatasetTab } from "../lib/types";
@@ -19,7 +20,8 @@ import { TAB_CONFIG } from "../lib/constants";
 const TAB_ICONS: Record<DatasetTab, React.ReactNode> = {
   apod: <Telescope size={14} />,
   "nasa-media": <ImageIcon size={14} />,
-  news: <Newspaper size={14} />
+  news: <Newspaper size={14} />,
+  asteroids: <Radar size={14} />
 };
 
 export function Header() {

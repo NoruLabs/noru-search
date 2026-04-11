@@ -30,7 +30,7 @@ export type SpaceNewsBlog = SpaceNewsBase;
 
 export type SpaceNewsReport = SpaceNewsBase;
 
-export type DatasetTab = "apod" | "nasa-media" | "news";
+export type DatasetTab = "apod" | "nasa-media" | "news" | "asteroids";
 
 // NASA Image and Video Library
 export interface NasaMediaItem {
@@ -59,5 +59,36 @@ export interface NasaMediaResponse {
       }[];
     }[];
   };
+}
+
+export interface AsteroidResponse {
+  element_count: number;
+  near_earth_objects: Record<string, Asteroid[]>;
+}
+
+export interface Asteroid {
+  id: string;
+  name: string;
+  nasa_jpl_url: string;
+  absolute_magnitude_h: number;
+  is_potentially_hazardous_asteroid: boolean;
+  is_sentry_object: boolean;
+  estimated_diameter: {
+    meters: {
+      estimated_diameter_min: number;
+      estimated_diameter_max: number;
+    };
+  };
+  close_approach_data: {
+    close_approach_date: string;
+    close_approach_date_full: string;
+    relative_velocity: {
+      kilometers_per_hour: string;
+    };
+    miss_distance: {
+      lunar: string;
+      kilometers: string;
+    };
+  }[];
 }
 

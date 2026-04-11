@@ -100,7 +100,7 @@ export function SpaceNewsPanel({ limit = 6, showViewAll = false, layout = "grid"
             onClick={handleLoadMore}
             className="px-6 py-2 bg-bg-card hover:bg-bg-hover text-text-primary border border-border rounded-lg text-sm font-medium transition-colors"
           >
-            ?
+            ↓
           </button>
         </div>
       )}

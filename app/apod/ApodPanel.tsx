@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useState, useMemo } from "react";
-import { RefreshCw, ExternalLink, Grid, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
+import { RefreshCw, ExternalLink, ChevronLeft, ChevronRight, Calendar } from "lucide-react";
 import { useApod } from "../hooks/useApod";
 import { DataCard } from "../components/ui/DataCard";
 import { ErrorState } from "../components/ui/ErrorState";
@@ -174,7 +174,6 @@ function ApodDatePicker({ value, onChange }: { value: string; onChange: (d: stri
 
 export function ApodPanel() {
   const [date, setDate] = useState<string>("");
-  const [showGallery, setShowGallery] = useState(false);
   const { data, isLoading, error, refetch, isFetching } = useApod(
     date || undefined
   );
@@ -187,33 +186,27 @@ export function ApodPanel() {
   if (!data) return null;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6 animate-fade-in">
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 animate-fade-in">
       {/* Controls */}
       <div className="flex flex-wrap items-center gap-3">
-        <ApodDatePicker value={date} onChange={setDate} />
-        <button
-          onClick={() => {
-            setDate("");
-            refetch();
-          }}
-          disabled={isFetching}
-          className="flex items-center gap-2 rounded-xl border border-border px-4 py-2 text-sm text-text-secondary transition-all hover:border-border-hover hover:text-text-primary active:scale-95 disabled:opacity-50"
-        >
-          <RefreshCw size={14} className={isFetching ? "animate-spin" : ""} />
-          Today
-        </button>
-        <button
-          onClick={() => setShowGallery(true)}
-          className="flex items-center gap-2 rounded-xl border border-border px-4 py-2 text-sm text-text-secondary transition-all hover:border-border-hover hover:text-text-primary active:scale-95"
-        >
-          <Grid size={14} />
-          Gallery
-        </button>
-      </div>
+          <ApodDatePicker value={date} onChange={setDate} />
+          <button
+            onClick={() => {
+              setDate("");
+              refetch();
+            }}
+            disabled={isFetching}
+            className="flex items-center gap-2 rounded-xl border border-border px-4 py-2 text-sm text-text-secondary transition-all hover:border-border-hover hover:text-text-primary active:scale-95 disabled:opacity-50"
+          >
+            <RefreshCw size={14} className={isFetching ? "animate-spin" : ""} />
+            Today
+          </button>
+        </div>
 
-      {/* Content */}
-      <DataCard>
-        <div className="space-y-5">
+      <div className="flex w-full flex-col gap-6 lg:flex-row lg:items-start">
+        <div className="flex-1 min-w-0">
+          <DataCard>
+            <div className="space-y-5">
           {/* Title & Date */}
           <div>
             <h2 className="text-xl font-semibold text-text-primary">
@@ -221,7 +214,7 @@ export function ApodPanel() {
             </h2>
             <p className="mt-1 text-sm text-text-muted">
               {data.date}
-              {data.copyright && ` Â· Â© ${data.copyright}`}
+              {data.copyright && <> &middot; &copy; {data.copyright}</>}
             </p>
           </div>
 
@@ -279,13 +272,15 @@ export function ApodPanel() {
           )}
         </div>
       </DataCard>
+      </div>
 
-      {/* Gallery */}
-      <ApodGallery
-        isOpen={showGallery}
-        onClose={() => setShowGallery(false)}
-        onSelectDate={(d) => setDate(d)}
-      />
+      {/* Gallery (Sidebar on desktop) */}
+      <div className="w-full lg:w-96 shrink-0">
+        <ApodGallery
+          onSelectDate={(d) => setDate(d)}
+        />
+      </div>
+      </div>
     </div>
   );
 }

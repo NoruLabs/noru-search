@@ -58,7 +58,7 @@ export function NasaMediaPanel() {
       {/* No results state */}
       {!isLoading && !error && data && data.length === 0 && searchTerm !== "" && (
         <div className="text-center py-12 text-text-muted text-sm glass-card rounded-xl">
-          No images found for "{searchTerm}". Try another cosmic keyword.
+          No images found for &quot;{searchTerm}&quot;. Try another cosmic keyword.
         </div>
       )}
 
