@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight, Calendar, ExternalLink } from "lucide-react";
 import { useApodRange } from "../hooks/useApod";
 import { DataCard } from "../components/ui/DataCard";
+import { Modal } from "../components/ui/Modal";
 import type { ApodData } from "../lib/types";
 
 function getRange(totalDays: number): { start: string; end: string } {
@@ -47,98 +48,20 @@ export function ApodGallery({ onSelectDate }: ApodGalleryProps) {
 
         {/* Content */}
         <div className="p-4">
-          {isLoading ? null : selected ? (
-            /* Expanded view */
-            <div className="space-y-4 animate-fade-in">
-              <button
-                onClick={() => setSelected(null)}
-                className="flex items-center gap-1 text-xs text-text-muted transition-colors hover:text-text-primary"
-              >
-                <ChevronLeft size={12} />
-                Back to grid
-              </button>
-              <div>
-                <h3 className="text-lg font-semibold text-text-primary">
-                  {selected.title}
-                </h3>
-                <p className="text-xs text-text-muted">
-                  {selected.date}
-                  {selected.copyright && <> &middot; &copy; {selected.copyright}</>}
-                </p>
-              </div>
-              {selected.media_type === "image" ? (
-                <img
-                  src={selected.url}
-                  alt={selected.title}
-                  className="w-full rounded-lg object-cover"
-                />
-              ) : selected.url.includes("youtube.com") || selected.url.includes("youtu.be") ? (
-                <div className="aspect-video overflow-hidden rounded-lg bg-black">
-                  <iframe
-                    src={selected.url}
-                    title={selected.title}
-                    className="h-full w-full"
-                    allowFullScreen
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                  />
-                </div>
-              ) : (
-                <div className="overflow-hidden rounded-lg bg-black">
-                  <video
-                    src={selected.url}
-                    controls
-                    className="w-full"
-                    preload="metadata"
-                    poster={selected.thumbnail_url}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-              )}
-              <p className="text-sm leading-relaxed text-text-secondary">
-                {selected.explanation}
-              </p>
-              <div className="flex gap-3">
-                {selected.hdurl && (
-                  <a
-                    href={selected.hdurl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs text-text-muted transition-colors hover:text-text-primary"
-                  >
-                    View HD <ExternalLink size={10} />
-                  </a>
-                )}
-                {onSelectDate && (
-                  <button
-                    onClick={() => {
-                      onSelectDate(selected.date);
-                    }}
-                    className="text-xs text-text-muted transition-colors hover:text-text-primary"
-                  >
-                    Open in main view &rarr;
-                  </button>
-                )}
-              </div>
-            </div>
-          ) : (
-            /* Thumbnail grid */
-            <div className="grid grid-cols-2 gap-4">
+          {isLoading ? null : (
+            /* Thumbnail list */
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {images
                 ?.slice()
                 .reverse()
                 .map((apod) => (
                   <button
                     key={apod.date}
-                    onClick={() => {
-                      if (onSelectDate) onSelectDate(apod.date);
-                      else setSelected(apod);
-                    }}
+                    onClick={() => setSelected(apod)}
                     className="group overflow-hidden relative rounded-lg border border-border bg-bg-card transition-all hover:border-border-hover hover:ring-2 hover:ring-accent"
                   >
                     {apod.media_type === "image" ? (
-                      <div className="aspect-square overflow-hidden">
+                      <div className="aspect-video overflow-hidden">
                         <img
                           src={apod.url}
                           alt={apod.title}
@@ -152,30 +75,23 @@ export function ApodGallery({ onSelectDate }: ApodGalleryProps) {
                         const thumb = apod.thumbnail_url ||
                           (ytMatch ? `https://img.youtube.com/vi/${ytMatch[1]}/hqdefault.jpg` : undefined);
                         return thumb ? (
-                          <div className="relative aspect-square overflow-hidden">
+                          <div className="relative aspect-video overflow-hidden">
                             <img
                               src={thumb}
                               alt={apod.title}
                               className="h-full w-full object-cover"
                               loading="lazy"
                             />
-                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
-                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-md shadow-lg group-hover:scale-110 transition-transform">
-                                <span className="text-white text-lg ml-1">&#9654;</span>
-                              </div>
-                            </div>
                           </div>
                         ) : (
-                          <div className="flex aspect-square items-center justify-center bg-bg-card/50 text-text-muted group-hover:bg-bg-card transition-colors">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent/20 backdrop-blur-md shadow-lg group-hover:scale-110 transition-transform">
-                              <span className="text-accent text-lg ml-1">&#9654;</span>
-                            </div>
+                          <div className="flex aspect-video items-center justify-center bg-bg-card/50 text-text-muted group-hover:bg-bg-card transition-colors">
+                            <span className="text-xs">Video content</span>
                           </div>
                         );
                       })()
                     ) : (
                       /* Direct video (mp4 etc) */
-                      <div className="relative aspect-square overflow-hidden bg-black">
+                      <div className="relative aspect-video overflow-hidden bg-black">
                         <video
                           src={apod.url}
                           className="h-full w-full object-cover"
@@ -183,18 +99,13 @@ export function ApodGallery({ onSelectDate }: ApodGalleryProps) {
                           poster={apod.thumbnail_url}
                           muted
                         />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 group-hover:bg-black/20 transition-colors">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-md shadow-lg group-hover:scale-110 transition-transform">
-                            <span className="text-white text-lg ml-1">&#9654;</span>
-                          </div>
-                        </div>
                       </div>
                     )}
-                    <div className="p-2">
-                      <p className="line-clamp-1 text-xs font-medium text-text-primary">
+                    <div className="p-3 text-left">
+                      <p className="line-clamp-1 text-sm font-medium text-text-primary">
                         {apod.title}
                       </p>
-                      <p className="text-[10px] text-text-muted">
+                      <p className="text-xs text-text-muted mt-1">
                         {formatDateShort(apod.date)}
                       </p>
                     </div>
@@ -204,7 +115,7 @@ export function ApodGallery({ onSelectDate }: ApodGalleryProps) {
           )}
           
           {/* Load More Button */}
-          {!isLoading && !selected && images && (
+          {!isLoading && images && (
             <div className="mt-6 flex justify-center pb-2">
               <button
                 onClick={() => setDaysLoaded((prev) => prev + 7)}
@@ -216,6 +127,87 @@ export function ApodGallery({ onSelectDate }: ApodGalleryProps) {
             </div>
           )}
         </div>
+
+        {/* Modal for Expanded View */}
+        <Modal 
+          isOpen={!!selected} 
+          onClose={() => setSelected(null)}
+          title={selected?.title}
+          size="xl"
+        >
+          {selected && (
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-text-muted px-4">
+                {selected.date}
+                {selected.copyright && <> &middot; &copy; {selected.copyright}</>}
+              </p>
+              
+              {selected.media_type === "image" ? (
+                <div className="flex w-full justify-center bg-black/5 rounded-lg">
+                  <img
+                    src={selected.url}
+                    alt={selected.title}
+                    className="max-w-full rounded-lg object-contain"
+                    style={{ maxHeight: '55vh' }}
+                  />
+                </div>
+              ) : selected.url.includes("youtube.com") || selected.url.includes("youtu.be") ? (
+                <div className="flex w-full justify-center">
+                  <div className="w-full max-w-4xl aspect-video overflow-hidden rounded-lg bg-black">
+                    <iframe
+                      src={selected.url}
+                      title={selected.title}
+                      className="h-full w-full"
+                      allowFullScreen
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="flex w-full justify-center flex-col items-center">
+                  <div className="w-full max-w-4xl overflow-hidden rounded-lg bg-black">
+                    <video
+                      src={selected.url}
+                      controls
+                      className="w-full max-h-[55vh]"
+                      preload="metadata"
+                      poster={selected.thumbnail_url}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+              )}
+              <p className="text-sm leading-relaxed text-text-secondary mt-4 px-4 text-justify sm:text-left">
+                {selected.explanation}
+              </p>
+              <div className="flex gap-3 pt-2 px-4 pb-4">
+                {selected.hdurl && (
+                  <a
+                    href={selected.hdurl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-accent-soft px-4 py-2 text-sm font-medium text-accent transition-all hover:opacity-80"
+                  >
+                    View Full HD <ExternalLink size={14} />
+                  </a>
+                )}
+                {onSelectDate && (
+                  <button
+                    onClick={() => {
+                      onSelectDate(selected.date);
+                      setSelected(null);
+                    }}
+                    className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-text-secondary transition-all hover:border-border-hover hover:text-text-primary"
+                  >
+                    Open in Main Panel
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </Modal>
     </DataCard>
   );
 }

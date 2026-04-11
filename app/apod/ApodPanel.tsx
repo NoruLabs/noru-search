@@ -203,8 +203,8 @@ export function ApodPanel() {
           </button>
         </div>
 
-      <div className="flex w-full flex-col gap-6 lg:flex-row lg:items-start">
-        <div className="flex-1 min-w-0">
+      <div className="flex w-full flex-col gap-6">
+        <div className="w-full">
           <DataCard>
             <div className="space-y-5">
           {/* Title & Date */}
@@ -274,8 +274,8 @@ export function ApodPanel() {
       </DataCard>
       </div>
 
-      {/* Gallery (Sidebar on desktop) */}
-      <div className="w-full lg:w-96 shrink-0">
+      {/* Gallery (Below on all screens) */}
+      <div className="w-full">
         <ApodGallery
           onSelectDate={(d) => setDate(d)}
         />

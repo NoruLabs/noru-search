@@ -1,5 +1,5 @@
 "use client"
-
+// i got this background from 21st.dev lol
 import { useTheme } from "@/app/components/ThemeProvider";
 import { useEffect, useState } from "react";
 import { DitheringShader } from "@/app/components/ui/dithering-shader";

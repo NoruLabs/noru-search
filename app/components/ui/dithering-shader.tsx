@@ -1,5 +1,5 @@
 "use client"
-
+// i got this background from 21st.dev lol
 import type React from "react"
 import { useEffect, useRef } from "react"
 
