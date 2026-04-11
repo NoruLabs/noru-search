@@ -29,19 +29,19 @@ export default function GibsClient() {
   });
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 h-[calc(100vh-80px)] flex flex-col animate-fade-in">
+    <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 py-4 h-[calc(100svh-64px)] md:h-[calc(100vh-80px)] flex flex-col animate-fade-in overflow-hidden">
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4 shrink-0">
         <div>
-          <h1 className="text-2xl font-bold text-text-primary tracking-tight flex items-center gap-2">
-            <MapIcon className="text-accent" /> Earth Viewer (GIBS)
+          <h1 className="text-xl md:text-2xl font-bold text-text-primary tracking-tight flex items-center gap-2">
+            <MapIcon className="text-accent w-5 h-5 md:w-6 md:h-6" /> Earth Viewer (GIBS)
           </h1>
           <p className="text-text-secondary text-sm mt-1 max-w-xl">
             NASA Global Imagery Browse Services. Observe environmental layers like active fires, storms, sea ice, and atmospheric conditions.
           </p>
         </div>
 
-        <div className="flex flex-col gap-1 sm:items-end shrink-0">
-          <label className="text-xs text-text-muted font-medium uppercase tracking-wide flex items-center gap-1">
+        <div className="flex flex-row md:flex-col gap-2 items-center md:items-end shrink-0 w-full sm:w-auto mt-2 sm:mt-0">
+          <label className="text-xs text-text-muted font-medium uppercase tracking-wide flex items-center gap-1 shrink-0">
             <Calendar size={12} /> Target Date
           </label>
           <input
@@ -49,12 +49,12 @@ export default function GibsClient() {
             value={date}
             onChange={(e) => setDate(e.target.value)}
             max={new Date().toISOString().split('T')[0]}
-            className="bg-bg-card/50 border border-border text-sm rounded-md px-3 py-2 text-text-primary focus:ring-1 focus:ring-accent outline-none hover:border-border-hover transition-colors"
+            className="w-full sm:w-auto bg-bg-card/50 border border-border text-sm rounded-md px-3 py-2 text-text-primary focus:ring-1 focus:ring-accent outline-none hover:border-border-hover transition-colors"
           />
         </div>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-2 shrink-0 scrollbar-none mb-2">
+      <div className="-mx-3 px-3 sm:mx-0 sm:px-0 flex gap-2 overflow-x-auto pb-3 shrink-0 scrollbar-none mb-1">
         {LAYERS.map((l) => {
           const Icon = l.icon;
           const isActive = activeLayer === l.id;
@@ -85,7 +85,7 @@ export default function GibsClient() {
         </button>
       </div>
 
-      <DataCard className="flex-1 w-full relative min-h-[400px] overflow-hidden p-0 border-border/80">
+      <DataCard className="flex-1 w-full relative min-h-[300px] overflow-hidden p-0 border-border/80 rounded-xl mb-4 sm:mb-0">
         <GibsMap layer={activeLayer} date={date} />
       </DataCard>
     </div>
