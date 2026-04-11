@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { QueryProvider } from "./components/QueryProvider";
 import { Header } from "./components/Header";
+import { Footer } from "./components/Footer";
 import { BackgroundSwirl } from "./components/BackgroundSwirl";
 
 const sora = Sora({
@@ -88,6 +89,7 @@ export default function RootLayout({
             <div className="flex min-h-screen flex-col bg-transparent relative z-10">
               <Header />
               {children}
+              <Footer />
             </div>
           </QueryProvider>
         </ThemeProvider>
