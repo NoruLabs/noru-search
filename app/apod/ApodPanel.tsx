@@ -178,7 +178,36 @@ export function ApodPanel() {
     date || undefined
   );
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 animate-pulse">
+        <div className="flex gap-3">
+          <div className="h-10 w-48 bg-bg-card rounded-xl" />
+          <div className="h-10 w-24 bg-bg-card rounded-xl" />
+        </div>
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="lg:w-2/3 xl:w-3/4 flex flex-col gap-6">
+            <div className="w-full aspect-[16/9] rounded-3xl bg-bg-card glass-card" />
+            <div className="space-y-4">
+              <div className="h-8 w-1/3 bg-bg-card rounded-md" />
+              <div className="space-y-2">
+                <div className="h-4 w-full bg-bg-card rounded-md" />
+                <div className="h-4 w-11/12 bg-bg-card rounded-md" />
+                <div className="h-4 w-3/4 bg-bg-card rounded-md" />
+              </div>
+            </div>
+          </div>
+          <div className="lg:w-1/3 xl:w-1/4">
+            <div className="h-12 w-full bg-bg-card rounded-xl mb-4" />
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-2">
+              <div className="h-32 bg-bg-card rounded-2xl" />
+              <div className="h-32 bg-bg-card rounded-2xl" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   if (error)
     return (
       <ErrorState message={error.message || "An unexpected error occurred."} onRetry={() => refetch()} />

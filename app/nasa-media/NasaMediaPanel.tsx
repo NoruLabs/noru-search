@@ -6,16 +6,16 @@ import { useNasaMedia } from "../hooks/useNasaMedia";
 import { DataCard } from "../components/ui/DataCard";
 import { ErrorState } from "../components/ui/ErrorState";
 
-export function NasaMediaPanel() {
+export function NasaMediaPanel({ limit, hideHeader }: { limit?: number, hideHeader?: boolean } = {}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchInput, setSearchInput] = useState("");
-  const [itemsToShow, setItemsToShow] = useState(8);
+  const [itemsToShow, setItemsToShow] = useState(limit || 8);
   const { data, isLoading, error } = useNasaMedia(searchTerm);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setSearchTerm(searchInput.trim());
-    setItemsToShow(8); // Reset pagination on new search
+    setItemsToShow(limit || 8); // Reset pagination on new search
   };
 
   const displayItems = data ? data.slice(0, itemsToShow) : [];
@@ -28,7 +28,8 @@ export function NasaMediaPanel() {
   return (
     <section className="space-y-6 animate-fade-in">
       {/* Search Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {!hideHeader && (
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-center gap-2 text-text-primary">
           <div className="bg-bg-card p-1.5 rounded-md">
             <ImageIcon size={20} className="text-accent" />
@@ -52,6 +53,8 @@ export function NasaMediaPanel() {
         </form>
       </div>
 
+      )}
+
       {/* Error state */}
       {error && <ErrorState message={error.message} />}
 
@@ -65,6 +68,19 @@ export function NasaMediaPanel() {
       {!isLoading && !error && data && data.length === 0 && searchTerm === "" && (
         <div className="text-center py-12 text-text-muted text-sm glass-card rounded-xl">
           No recent images found. Try searching for a specific term like mars or apollo.
+        </div>
+      )}
+
+      {/* Results Gallery loading state */}
+      {isLoading && (
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 xl:grid-cols-4 animate-pulse">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className="bg-bg-card rounded-2xl p-3 flex flex-col h-full gap-3">
+              <div className="w-full aspect-square rounded-xl bg-bg-primary" />
+              <div className="h-4 bg-bg-primary rounded w-3/4" />
+              <div className="h-3 bg-bg-primary rounded w-1/2" />
+            </div>
+          ))}
         </div>
       )}
 
@@ -91,13 +107,13 @@ export function NasaMediaPanel() {
                 </div>
                 <h3 className="font-bold text-sm text-text-primary line-clamp-2 mt-auto">{item.title}</h3>
                 <p className="text-[10px] text-text-muted mt-2">
-                  {new Date(item.date_created).toLocaleDateString()}
+                  {new Date(item.date_created).toLocaleDateString(undefined, { timeZone: 'UTC' })}
                 </p>
               </DataCard>
             ))}
           </div>
 
-          {hasMore && (
+          {!limit && hasMore && (
             <div className="flex justify-center mt-6 pt-4">
               <button
                 onClick={handleLoadMore}
@@ -108,8 +124,8 @@ export function NasaMediaPanel() {
             </div>
           )}
         </>
-      )}
-    </section>
+      
+    )}</section>
   );
 }
 

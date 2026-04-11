@@ -48,7 +48,13 @@ export function ApodGallery({ onSelectDate }: ApodGalleryProps) {
 
         {/* Content */}
         <div className="p-4">
-          {isLoading ? null : (
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 animate-pulse">
+              {Array.from({ length: daysLoaded }).map((_, i) => (
+                <div key={i} className="aspect-video w-full rounded-lg bg-bg-card" />
+              ))}
+            </div>
+          ) : (
             /* Thumbnail list */
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {images

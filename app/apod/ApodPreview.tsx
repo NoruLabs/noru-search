@@ -8,7 +8,17 @@ import { ErrorState } from "../components/ui/ErrorState";
 export function ApodPreview() {
   const { data, isLoading, error } = useApod();
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <section className="space-y-4 animate-pulse">
+        <div className="flex items-center justify-between">
+          <div className="h-6 w-1/3 bg-bg-card rounded" />
+          <div className="h-4 w-16 bg-bg-card rounded" />
+        </div>
+        <div className="relative isolate overflow-hidden rounded-2xl border border-border/50 bg-bg-card aspect-[16/9] w-full" />
+      </section>
+    );
+  }
   if (error) return <ErrorState message={error.message} />;
   if (!data) return null;
 

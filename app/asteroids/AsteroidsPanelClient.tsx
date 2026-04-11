@@ -21,8 +21,29 @@ export function AsteroidsPanel() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-20">
-        <div className="w-8 h-8 rounded-full border-2 border-accent border-r-transparent animate-spin" />
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 animate-pulse">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="glass-card rounded-2xl p-5 flex flex-col h-full gap-4">
+            <div className="flex justify-between items-start mb-2">
+              <div className="h-5 bg-bg-card rounded w-1/2"></div>
+              <div className="h-4 bg-bg-card rounded w-4"></div>
+            </div>
+            <div className="flex gap-4">
+              <div className="flex flex-col gap-1 w-1/2">
+                <div className="h-3 bg-bg-card rounded w-20"></div>
+                <div className="h-4 bg-bg-card rounded w-16"></div>
+              </div>
+              <div className="flex flex-col gap-1 w-1/2">
+                <div className="h-3 bg-bg-card rounded w-20"></div>
+                <div className="h-4 bg-bg-card rounded w-16"></div>
+              </div>
+            </div>
+            <div className="flex justify-between items-center mt-auto pt-4 border-t border-border/50">
+              <div className="h-4 bg-bg-card rounded w-24"></div>
+              <div className="h-6 bg-bg-card rounded-full w-24"></div>
+            </div>
+          </div>
+        ))}
       </div>
     );
   }

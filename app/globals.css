@@ -626,3 +626,4 @@ select:focus-visible,
     padding-top: env(safe-area-inset-top);
   }
 }
+@keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(calc(-100% - 1rem)); } }\n.animate-marquee { animation: marquee 30s linear infinite; }
