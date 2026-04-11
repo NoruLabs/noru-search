@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Newspaper, ArrowRight } from "lucide-react";
 import { useSpaceNews } from "../hooks/useSpaceNews";
 import { ErrorState } from "../components/ui/ErrorState";
@@ -78,12 +79,13 @@ export function SpaceNewsPanel({ limit = 6, showViewAll = false, layout = "grid"
                       className="flex flex-col h-full bg-bg-card p-4 cursor-pointer"
                     >
                       {item.image_url && (
-                        <div className="w-full h-40 overflow-hidden rounded-xl mb-3">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
+                        <div className="w-full h-40 overflow-hidden rounded-xl mb-3 relative">
+                          <Image
                             src={item.image_url}
-                            alt=""
-                            className="w-full h-full object-cover"
+                            alt={item.title}
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            className="object-cover"
                           />
                         </div>
                       )}
@@ -105,7 +107,7 @@ export function SpaceNewsPanel({ limit = 6, showViewAll = false, layout = "grid"
                 ))}
               </CarouselContent>
               <CarouselNavigation
-                className="absolute left-[-5%] sm:left-[-2%] w-[110%] sm:w-[104%] top-1/2 flex items-center justify-between pointer-events-none -translate-y-1/2"
+                className="relative top-auto left-auto translate-y-0 w-full mt-4 flex items-center justify-center gap-4 pointer-events-none"
                 classNameButton="pointer-events-auto bg-zinc-800 *:stroke-white hover:bg-zinc-700 dark:bg-zinc-200 dark:*:stroke-zinc-800"
                 alwaysShow={true}
               />
@@ -119,12 +121,15 @@ export function SpaceNewsPanel({ limit = 6, showViewAll = false, layout = "grid"
             className={layout === "compact" ? "flex-1 flex flex-col p-4" : ""}
           >
             {item.image_url && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img 
-                src={item.image_url} 
-                alt="" 
-                className={`w-full object-cover mb-3 rounded-xl ${layout === "compact" ? "h-32 lg:h-36" : "h-40"}`} 
-              />
+              <div className={`relative w-full mb-3 rounded-xl overflow-hidden ${layout === "compact" ? "h-32 lg:h-36" : "h-40"}`}>
+                <Image 
+                  src={item.image_url} 
+                  alt={item.title} 
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover" 
+                />
+              </div>
             )}
             <div className="flex flex-col flex-1">
               <div className="flex items-center justify-between gap-2 mb-2">      

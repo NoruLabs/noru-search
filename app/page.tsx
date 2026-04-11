@@ -1,11 +1,28 @@
 ﻿"use client";
 
+import dynamic from "next/dynamic";
 import { ApodPreview } from "./apod/ApodPreview";
-import { SpaceNewsPanel } from "./news/SpaceNewsPanel";
-import { NasaMediaPanel } from "./nasa-media/NasaMediaPanel";
-import TechPortPage from "./techport/page";
-import ExoplanetsPage from "./exoplanets/page";
-import AsteroidsPage from "./asteroids/page";
+
+// Usamos carga dinámica (Lazy Loading) para componentes de abajo del scroll inicial
+const SpaceNewsPanel = dynamic(() => import("./news/SpaceNewsPanel").then(mod => mod.SpaceNewsPanel), { 
+  ssr: true,
+  loading: () => <div className="h-64 w-full animate-pulse bg-bg-card/50 rounded-xl" /> // Placeholder mientras carga
+});
+
+const NasaMediaPanel = dynamic(() => import("./nasa-media/NasaMediaPanel").then(mod => mod.NasaMediaPanel), { 
+  ssr: true,
+  loading: () => <div className="h-64 w-full animate-pulse bg-bg-card/50 rounded-xl" />
+});
+
+const TechPortPage = dynamic(() => import("./techport/page"), { 
+  ssr: true,
+  loading: () => <div className="h-64 w-full animate-pulse bg-bg-card/50 rounded-xl" />
+});
+
+const ExoplanetsPage = dynamic(() => import("./exoplanets/page"), { 
+  ssr: true,
+  loading: () => <div className="h-64 w-full animate-pulse bg-bg-card/50 rounded-xl" />
+});
 
 export default function Home() {
   return (
