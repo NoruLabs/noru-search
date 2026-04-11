@@ -19,7 +19,7 @@ export default function ExoplanetsPage({ limit, hideHeader }: { limit?: number, 
   ];
 
   return (
-    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-6 animate-fade-in">
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 py-4 md:py-6 animate-fade-in w-full overflow-hidden">
       {!hideHeader && (<div className="mb-6">
         <h1 className="text-2xl font-bold text-text-primary tracking-tight">Exoplanets Explorer</h1>
         <p className="text-text-secondary text-sm mt-1 max-w-2xl">
@@ -28,7 +28,7 @@ export default function ExoplanetsPage({ limit, hideHeader }: { limit?: number, 
       </div>
       )}
 
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none mb-6">
+      <div className="-mx-4 px-4 sm:mx-0 sm:px-0 flex gap-2 overflow-x-auto pb-2 scrollbar-none mb-6">
         {filters.map(f => {
           const isActive = filter === f.id;
           return (
