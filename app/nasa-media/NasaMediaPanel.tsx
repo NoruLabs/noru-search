@@ -73,12 +73,11 @@ export function NasaMediaPanel({ limit, hideHeader }: { limit?: number, hideHead
 
       {/* Results Gallery loading state */}
       {isLoading && (
-        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 xl:grid-cols-4 animate-pulse">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className="bg-bg-card rounded-2xl p-3 flex flex-col h-full gap-3">
-              <div className="w-full aspect-square rounded-xl bg-bg-primary" />
-              <div className="h-4 bg-bg-primary rounded w-3/4" />
-              <div className="h-3 bg-bg-primary rounded w-1/2" />
+        <div className="grid gap-4 grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
+          {Array.from({ length: limit || 8 }).map((_, i) => (
+             <div key={i} className={`flex flex-col h-48 bg-bg-card/40 rounded-xl p-3 animate-pulse ${limit && i === 3 ? 'hidden md:flex' : ''} ${limit && i === 4 ? 'hidden xl:flex' : ''}`}>
+              <div className="w-full flex-grow bg-border/20 rounded-lg mb-3" />
+              <div className="h-3 bg-border/20 rounded w-2/3" />
             </div>
           ))}
         </div>

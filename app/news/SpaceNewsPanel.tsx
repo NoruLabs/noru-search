@@ -25,7 +25,31 @@ export function SpaceNewsPanel({ limit = 6, showViewAll = false, layout = "grid"
   const { data, isLoading, error } = useSpaceNews();
   const [itemsToShow, setItemsToShow] = useState(limit);
 
-  if (isLoading) return null;
+  if (isLoading) {
+    return (
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-text-primary">
+            <div className="bg-bg-card p-1.5 rounded-md">
+              <Newspaper size={16} className="text-text-secondary" />
+            </div>
+            <h2 className="text-sm font-semibold tracking-wide">Latest Spaceflight News</h2>
+          </div>
+        </div>
+        <div className={layout === "compact" ? "flex flex-col gap-4 mt-3 h-full" : layout === "carousel" ? "flex gap-4 overflow-hidden mt-3 h-[280px]" : "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-3"}>
+          {[1, 2, 3].map((i) => (
+            <div key={i} className={`flex flex-col h-full bg-bg-card/40 rounded-xl p-4 animate-pulse ${layout === 'carousel' ? `w-full md:w-1/2 lg:w-1/3 shrink-0 ${i > 1 ? 'hidden md:flex' : 'flex'} ${i > 2 ? 'lg:flex hidden' : ''}` : ''}`}>
+              <div className={`w-full bg-border/20 rounded-xl mb-3 shrink-0 ${layout === "compact" ? "h-32 lg:h-36" : "h-40"}`} />
+              <div className="h-4 w-16 bg-border/20 rounded-full mb-3" />
+              <div className="h-4 w-3/4 bg-border/20 rounded mb-2" />
+              <div className="h-4 w-full bg-border/20 rounded" />
+            </div>
+          ))}
+        </div>
+      </section>
+    );
+  }
+
   if (error) return <ErrorState message={error.message} />;
 
   if (!data || (data.articles.length === 0 && data.blogs.length === 0 && data.reports.length === 0)) {
