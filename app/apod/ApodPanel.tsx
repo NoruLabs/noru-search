@@ -180,7 +180,7 @@ export function ApodPanel() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 animate-pulse">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 md:animate-pulse">
         <div className="flex gap-3">
           <div className="h-10 w-48 bg-bg-card rounded-xl" />
           <div className="h-10 w-24 bg-bg-card rounded-xl" />

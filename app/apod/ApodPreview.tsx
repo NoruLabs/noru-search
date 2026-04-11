@@ -19,7 +19,7 @@ export function ApodPreview() {
             <h2 className="text-sm font-semibold tracking-wide">Astronomy Picture of the Day</h2>
           </div>
         </div>
-        <div className="relative block overflow-hidden rounded-2xl mt-3 aspect-video md:aspect-[21/9] bg-bg-card/40 border border-border/50 animate-pulse">
+        <div className="relative block overflow-hidden rounded-2xl mt-3 aspect-video md:aspect-[21/9] bg-bg-card/40 border border-border/50 md:animate-pulse">
            <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full md:w-3/4 lg:w-2/3 flex flex-col items-start">
              <div className="h-6 md:h-8 w-3/4 bg-border/20 rounded mb-2" />
              <div className="h-3 w-1/4 bg-border/20 rounded mb-3" />
