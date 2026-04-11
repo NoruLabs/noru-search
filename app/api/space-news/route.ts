@@ -1,13 +1,55 @@
 import { NextResponse } from "next/server";
-import axios from "axios";
 
 const BASE = "https://api.spaceflightnewsapi.net/v4";
 
-/**
- * Space News API route: fetches latest articles, blogs, and reports
- * from Space Flight News API (no API key). Cached for daily refresh.
- */
-export const revalidate = 86400; // 24 hours
+export const revalidate = 3600; // Cache for 1 hour
+
+// Small asynchronous pause to avoid overwhelming the API firewall with requests connected at the exact same millisecond
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Helper for fetching with graceful fallback
+async function fetchWithRetry(
+  url: string,
+  params: Record<string, string> = {},
+  delayMs: number = 0,
+) {
+  if (delayMs > 0) await delay(delayMs);
+
+  const query = new URLSearchParams(params).toString();
+  const fullUrl = query ? `${url}?${query}` : url;
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 6000); // 6 seconds max instead of 10s
+
+    // We use fetch instead of axios to leverage native Next.js caching
+    const res = await fetch(fullUrl, {
+      next: { revalidate: 3600 },
+      headers: { Accept: "application/json" },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      console.warn(`[space-news] Non-200 response from ${url}: ${res.status}`);
+      return [];
+    }
+
+    const data = await res.json();
+    return data.results ?? [];
+  } catch (error: unknown) {
+    if (error instanceof Error && error.name === "AbortError") {
+      console.error(`[space-news] Fetch request to ${url} timed out.`);
+    } else {
+      console.error(
+        `[space-news] Fetch error for ${url}:`,
+        error instanceof Error ? error.message : error,
+      );
+    }
+    return [];
+  }
+}
 
 export async function GET() {
   const yesterday = new Date();
@@ -15,54 +57,45 @@ export async function GET() {
   const publishedAtGte = yesterday.toISOString();
 
   try {
-    const [articlesRes, blogsRes, reportsRes] = await Promise.all([
-      axios.get(`${BASE}/articles/`, {
-        params: {
-          _limit: 20,
-          published_at_gte: publishedAtGte,
-        },
-        timeout: 15000,
-      }),
-      axios.get(`${BASE}/blogs/`, {
-        params: { _limit: 8 },
-        timeout: 10000,
-      }),
-      axios.get(`${BASE}/reports/`, {
-        params: { _limit: 5 },
-        timeout: 10000,
-      }),
+    // Stagger the start imperceptibly (100ms, 200ms) to prevent
+    // the Cloudflare/Spaceflight firewall from rejecting connections (Connect Timeout).
+    const [articles, blogs, reports] = await Promise.all([
+      fetchWithRetry(
+        `${BASE}/articles/`,
+        { limit: "20", published_at_gte: publishedAtGte },
+        0,
+      ),
+      fetchWithRetry(`${BASE}/blogs/`, { limit: "10" }, 100),
+      fetchWithRetry(`${BASE}/reports/`, { limit: "10" }, 200),
     ]);
 
-    const articles = articlesRes.data?.results ?? [];
-    const blogs = blogsRes.data?.results ?? [];
-    const reports = reportsRes.data?.results ?? [];
+    let finalArticles = articles;
 
-    // If filtered articles are too few, fetch without date filter
-    if (articles.length < 5) {
-      const fallback = await axios.get(`${BASE}/articles/`, {
-        params: { _limit: 20 },
-        timeout: 15000,
+    // If there are too few articles, do a quick fallback
+    if (finalArticles.length < 5) {
+      const fallbackArticles = await fetchWithRetry(`${BASE}/articles/`, {
+        limit: "30",
       });
-      const fallbackResults = fallback.data?.results ?? [];
-      if (fallbackResults.length > articles.length) {
-        return NextResponse.json({
-          articles: fallbackResults,
-          blogs,
-          reports,
-        });
+      if (fallbackArticles.length > finalArticles.length) {
+        finalArticles = fallbackArticles;
       }
     }
 
     return NextResponse.json({
-      articles,
+      articles: finalArticles,
       blogs,
       reports,
     });
   } catch (err) {
-    console.error("[space-news]", err);
+    console.error("[space-news] Unexpected global error", err);
     return NextResponse.json(
-      { error: "Failed to load space news", articles: [], blogs: [], reports: [] },
-      { status: 502 }
+      {
+        error: "Failed to load space news",
+        articles: [],
+        blogs: [],
+        reports: [],
+      },
+      { status: 500 },
     );
   }
 }

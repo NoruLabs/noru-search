@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 interface ModalProps {
@@ -20,6 +21,11 @@ export function Modal({
 }: ModalProps) {
   const dialogRef = useRef<HTMLDivElement | null>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -74,39 +80,39 @@ export function Modal({
     };
   }, [isOpen, handleKeyDown]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const sizeClasses = {
     sm: "max-w-md",
     md: "max-w-xl",
     lg: "max-w-3xl",
     xl: "max-w-5xl",
-    full: "max-w-[95vw]",
+    full: "w-[90vw] sm:max-w-6xl",
   };
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 pt-[5vh] sm:pt-[10vh]"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
       role="dialog"
       aria-modal="true"
       aria-label={title || "Dialog"}
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#23262A]/50 backdrop-blur-md animate-fade-in"
+        className="fixed inset-0 bg-[#23262A]/60 backdrop-blur-sm animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Content */}
+      {/* Content Container */}
       <div
         ref={dialogRef}
         tabIndex={-1}
-        className={`relative w-full ${sizeClasses[size]} glass-card rounded-2xl shadow-2xl animate-fade-in-scale outline-none`}
+        className={`relative flex flex-col w-full ${sizeClasses[size]} max-h-[90vh] bg-bg-primary rounded-2xl shadow-2xl animate-fade-in-scale outline-none overflow-hidden border border-border`}
       >
-        {/* Header */}
+        {/* Header (Fixed) */}
         {title && (
-          <div className="flex items-center justify-between border-b border-border/40 px-6 py-4">
+          <div className="flex-shrink-0 flex items-center justify-between border-b border-border/40 bg-bg-primary px-6 py-4">
             <h2 className="text-base font-semibold text-text-primary">
               {title}
             </h2>
@@ -124,16 +130,20 @@ export function Modal({
         {!title && (
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-xl glass text-text-muted transition-all hover:text-text-primary"
+            className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-xl bg-black/50 text-white backdrop-blur-md transition-all hover:bg-black/70"
             aria-label="Close dialog"
           >
             <X size={16} />
           </button>
         )}
 
-        {/* Body */}
-        <div className={title ? "p-6" : "p-0"}>{children}</div>
+        {/* Body (Scrollable) */}
+        <div className={`overflow-y-auto flex-1 ${title ? "p-6" : "p-0"}`}>
+          {children}
+        </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
+

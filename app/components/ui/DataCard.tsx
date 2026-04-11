@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 
 interface DataCardProps {
   children: ReactNode;
@@ -22,3 +22,4 @@ export function DataCard({ children, className = "", onClick, accentColor }: Dat
     </div>
   );
 }
+

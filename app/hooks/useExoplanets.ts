@@ -1,32 +1,22 @@
+"use client";
+
 import { useQuery } from "@tanstack/react-query";
-import { api, getApiErrorMessage } from "../lib/api";
-import type { Exoplanet } from "../lib/types";
+import { DataCard } from "../components/ui/DataCard";
+import { Telescope, Flame, Snowflake, Clock, Globe } from "lucide-react";
+import { useState } from "react";
 
-export function useExoplanets(limit?: number, offset: number = 0) {
-  return useQuery<Exoplanet[]>({
-    queryKey: ["exoplanets", limit, offset],
-    queryFn: async () => {
-      const params: Record<string, string | number> = {};
-      if (limit) params.limit = limit;
-      if (offset) params.offset = offset;
-      const { data } = await api.get("/exoplanets", { params });
-      return data;
-    },
-    staleTime: 24 * 60 * 60 * 1000,
-    meta: { errorMessage: getApiErrorMessage },
-  });
-}
+// The NASA Exoplanet Archive TAP API endpoint
+// https://exoplanetarchive.ipac.caltech.edu/docs/TAP/usingTAP.html
+const TAP_API_URL = "https://exoplanetarchive.ipac.caltech.edu/TAP/sync";
 
-export function useExoplanetSearch(searchTerm: string) {
-  return useQuery<Exoplanet[]>({
-    queryKey: ["exoplanet-search", searchTerm],
+export function useExoplanets(filter: string) {
+  return useQuery({
+    queryKey: ["exoplanets", filter],
     queryFn: async () => {
-      const { data } = await api.get("/exoplanets", {
-        params: { search: searchTerm },
-      });
-      return data;
+      const res = await fetch(`/api/exoplanets?filter=${filter}`);
+      if (!res.ok) throw new Error("Failed to fetch exoplanets");
+      return res.json();
     },
-    enabled: searchTerm.length >= 2,
-    meta: { errorMessage: getApiErrorMessage },
+    staleTime: 1000 * 60 * 60, // 1 hour
   });
 }

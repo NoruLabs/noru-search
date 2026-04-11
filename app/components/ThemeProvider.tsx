@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import {
   createContext,
@@ -67,3 +67,4 @@ export function useTheme() {
   }
   return context;
 }
+

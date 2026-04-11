@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { Sora, Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "./components/ThemeProvider";
 import { QueryProvider } from "./components/QueryProvider";
-import { ServiceWorkerRegistrar } from "./components/ServiceWorkerRegistrar";
+import { Header } from "./components/Header";
+import { BackgroundSwirl } from "./components/BackgroundSwirl";
 
 const sora = Sora({
   variable: "--font-sora",
@@ -22,9 +23,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Noru Search — Universal Space Data Browser",
+  title: "Noru Search - Universal Space Data Browser",
   description:
-    "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos — all in one place.",
+    "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos â€” all in one place.",
   keywords: [
     "NASA",
     "space",
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Noru Labs", url: "https://github.com/NoruLabs" }],
   openGraph: {
-    title: "Noru Search — Universal Space Data Browser",
+    title: "Noru Search â€” Universal Space Data Browser",
     description:
       "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
     type: "website",
@@ -46,7 +47,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Noru Search — Universal Space Data Browser",
+    title: "Noru Search â€” Universal Space Data Browser",
     description:
       "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
   },
@@ -75,18 +76,22 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>
       <body
-        className={`${sora.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${sora.variable} ${geistSans.variable} ${geistMono.variable} antialiased bg-bg-primary text-text-primary`}
       >
         <a href="#main-content" className="skip-to-content">
           Skip to content
         </a>
         <ThemeProvider>
           <QueryProvider>
-            <ServiceWorkerRegistrar />
-            {children}
+            <BackgroundSwirl />
+            <div className="flex min-h-screen flex-col bg-transparent relative z-10">
+              <Header />
+              {children}
+            </div>
           </QueryProvider>
         </ThemeProvider>
       </body>
     </html>
   );
 }
+
