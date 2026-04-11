@@ -10,12 +10,24 @@ export function ApodPreview() {
 
   if (isLoading) {
     return (
-      <section className="space-y-4 animate-pulse">
+      <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <div className="h-6 w-1/3 bg-bg-card rounded" />
-          <div className="h-4 w-16 bg-bg-card rounded" />
+          <div className="flex items-center gap-2 text-text-primary">
+            <div className="bg-bg-card p-1.5 rounded-md">
+              <Telescope size={16} className="text-text-secondary" />
+            </div>
+            <h2 className="text-sm font-semibold tracking-wide">Astronomy Picture of the Day</h2>
+          </div>
         </div>
-        <div className="relative isolate overflow-hidden rounded-2xl border border-border/50 bg-bg-card aspect-[16/9] w-full" />
+        <div className="relative block overflow-hidden rounded-2xl mt-3 aspect-video md:aspect-[21/9] bg-bg-card/40 border border-border/50 animate-pulse">
+           <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full md:w-3/4 lg:w-2/3 flex flex-col items-start">
+             <div className="h-6 md:h-8 w-3/4 bg-border/20 rounded mb-2" />
+             <div className="h-3 w-1/4 bg-border/20 rounded mb-3" />
+             <div className="h-4 w-full bg-border/20 rounded mb-1" />
+             <div className="h-4 w-4/5 bg-border/20 rounded mb-4" />
+             <div className="h-8 w-24 bg-border/20 rounded-md" />
+           </div>
+        </div>
       </section>
     );
   }

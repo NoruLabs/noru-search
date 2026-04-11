@@ -19,16 +19,16 @@ export default function TechPortPage({ limit, hideHeader }: { limit?: number, hi
       )}
 
       {isLoading ? (
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, i) => (
-            <DataCard key={i} className="flex flex-col gap-4 h-64 border border-border/50">
-              <div className="h-6 w-3/4 bg-bg-card animate-pulse rounded-md" />
-              <div className="h-24 w-full bg-bg-card animate-pulse rounded-md mb-auto" />
-              <div className="mt-auto flex justify-between">
-                <div className="h-4 w-1/4 bg-bg-card animate-pulse rounded-md" />
-                <div className="h-4 w-1/4 bg-bg-card animate-pulse rounded-md" />
+        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-3">
+          {Array.from({ length: limit || 6 }).map((_, i) => (
+            <div key={i} className={`flex flex-col h-64 bg-bg-card/40 rounded-xl overflow-hidden animate-pulse border border-border/50 ${limit && i > 1 ? 'hidden md:flex' : ''} ${limit && i > 2 ? 'hidden lg:flex' : ''}`}>
+              <div className="h-32 w-full bg-border/20 shrink-0" />
+              <div className="p-4 flex flex-col flex-1 mt-2">
+                <div className="h-4 w-3/4 bg-border/20 rounded mb-3" />
+                <div className="h-3 w-full bg-border/20 rounded mb-2" />
+                <div className="h-3 w-5/6 bg-border/20 rounded mt-auto" />
               </div>
-            </DataCard>
+            </div>
           ))}
         </div>
       ) : error ? (
