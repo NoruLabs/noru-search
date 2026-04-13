@@ -27,7 +27,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Noru Search - Universal Space Data Browser",
   description:
-    "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos â€” all in one place.",
+    "Free & open-source space data explorer application that lets you browse NASA datasets, space news, and real-time space data from a single interface.",
   keywords: [
     "NASA",
     "space",
@@ -41,17 +41,17 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Noru Labs", url: "https://github.com/NoruLabs" }],
   openGraph: {
-    title: "Noru Search â€” Universal Space Data Browser",
+    title: "Noru Search - Universal Space Data Browser",
     description:
-      "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
+      "Free & open-source space data explorer application that lets you browse NASA datasets, space news, and real-time space data from a single interface.",
     type: "website",
     siteName: "Noru Search",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Noru Search â€” Universal Space Data Browser",
+    title: "Noru Search - Universal Space Data Browser",
     description:
-      "Browse NASA datasets, discover exoplanets, track asteroids, and explore Mars rover photos.",
+      "Free & open-source space data explorer application that lets you browse NASA datasets, space news, and real-time space data from a single interface.",
   },
   metadataBase: new URL("https://noru-search.vercel.app"),
   icons: {
