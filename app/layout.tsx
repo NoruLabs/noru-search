@@ -54,8 +54,17 @@ export const metadata: Metadata = {
     description:
       "Free & open-source space data explorer application that lets you browse NASA datasets, space news, and real-time space data from a single interface.",
     url: "https://noru-search.vercel.app",
-    type: "website",
     siteName: "Noru Search",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Noru Search Preview Image",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
@@ -65,6 +74,7 @@ export const metadata: Metadata = {
     },
     description:
       "Free & open-source space data explorer application that lets you browse NASA datasets, space news, and real-time space data from a single interface.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
