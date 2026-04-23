@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
   if (filter === "far") condition = "sy_dist > 1000";
   if (filter === "recent") order = "disc_year DESC";
 
-  const queryStr = `SELECT TOP 20 pl_name, hostname, disc_year, pl_rade, pl_bmasse, pl_eqt, sy_dist, discoverymethod, pl_orbper FROM pscomppars ${
+  const queryStr = `SELECT pl_name, hostname, disc_year, pl_rade, pl_bmasse, pl_eqt, sy_dist, discoverymethod, pl_orbper FROM pscomppars ${
     condition ? "WHERE " + condition + " AND " : "WHERE "
   } disc_year IS NOT NULL ORDER BY ${order}`;
 

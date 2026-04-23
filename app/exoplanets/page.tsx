@@ -7,6 +7,7 @@ import { DataCard } from '../components/ui/DataCard';
 
 export default function ExoplanetsPage({ limit, hideHeader }: { limit?: number, hideHeader?: boolean } = {}) {
   const [filter, setFilter] = useState('all');
+  const [itemsToShow, setItemsToShow] = useState(limit || 12);
   const { data, isLoading, error } = useExoplanets(filter);
 
   const filters = [
@@ -34,7 +35,10 @@ export default function ExoplanetsPage({ limit, hideHeader }: { limit?: number, 
           return (
             <button
               key={f.id}
-              onClick={() => setFilter(f.id)}
+              onClick={() => {
+                setFilter(f.id);
+                setItemsToShow(limit || 12);
+              }}
               className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all shrink-0 border ${
                 isActive
                   ? 'bg-bg-card border-text-primary/40 text-text-primary shadow-sm'
@@ -72,9 +76,10 @@ export default function ExoplanetsPage({ limit, hideHeader }: { limit?: number, 
           Error loading exoplanet data.
         </div>
       ) : (
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-3">
-          {data?.slice(0, limit || data.length).map((planet: any, i: number) => (
-            <DataCard key={i} className="flex flex-col h-full hover:border-border-hover transition-colors border border-border/50 p-5 shadow-none hover:shadow-sm">
+        <>
+          <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mt-3">
+            {data?.slice(0, itemsToShow).map((planet: any, i: number) => (
+              <DataCard key={i} className="flex flex-col h-full hover:border-border-hover transition-colors border border-border/50 p-5 shadow-none hover:shadow-sm">
                <div className="flex items-start justify-between mb-4">
                  <div>
                    <h3 className="font-bold text-base text-text-primary line-clamp-1">{planet.pl_name}</h3>
@@ -109,7 +114,19 @@ export default function ExoplanetsPage({ limit, hideHeader }: { limit?: number, 
                </div>
             </DataCard>
           ))}
-        </div>
+          </div>
+
+          {!limit && data && data.length > itemsToShow && (
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => setItemsToShow((prev) => prev + 12)}
+                className="px-6 py-2 bg-bg-card hover:bg-bg-card-hover text-text-primary border border-border rounded-lg text-sm font-medium transition-colors"
+              >
+                ↓
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
