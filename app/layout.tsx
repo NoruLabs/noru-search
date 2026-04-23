@@ -25,7 +25,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Noru Search - Universal Space Data Browser",
+  title: {
+    default: "Noru Search - Universal Space Data Browser",
+    template: "%s | Noru Search",
+  },
   description:
     "Free & open-source space data explorer application that lets you browse NASA datasets, space news, and real-time space data from a single interface.",
   keywords: [
@@ -40,20 +43,43 @@ export const metadata: Metadata = {
     "astronomy",
   ],
   authors: [{ name: "Noru Labs", url: "https://github.com/NoruLabs" }],
+  creator: "Noru Labs",
+  publisher: "Noru Labs",
+  metadataBase: new URL("https://noru-search.vercel.app"),
   openGraph: {
-    title: "Noru Search - Universal Space Data Browser",
+    title: {
+      default: "Noru Search - Universal Space Data Browser",
+      template: "%s | Noru Search",
+    },
     description:
       "Free & open-source space data explorer application that lets you browse NASA datasets, space news, and real-time space data from a single interface.",
-    type: "website",
+    url: "https://noru-search.vercel.app",
     siteName: "Noru Search",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Noru Search Preview Image",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Noru Search - Universal Space Data Browser",
+    title: {
+      default: "Noru Search - Universal Space Data Browser",
+      template: "%s | Noru Search",
+    },
     description:
       "Free & open-source space data explorer application that lets you browse NASA datasets, space news, and real-time space data from a single interface.",
+    images: ["/og-image.png"],
   },
-  metadataBase: new URL("https://noru-search.vercel.app"),
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: [
       { url: "/noru-icon.ico", sizes: "any" },

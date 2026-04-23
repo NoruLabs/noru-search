@@ -1,10 +1,12 @@
 'use client';
 
+import { useState } from 'react';
 import { useTechPort } from '../hooks/useTechPort';
 import { Cpu, ExternalLink } from 'lucide-react';
 import { DataCard } from '../components/ui/DataCard';
 
 export default function TechPortPage({ limit, hideHeader }: { limit?: number, hideHeader?: boolean }) {
+  const [itemsToShow, setItemsToShow] = useState(limit || 12);
   const { data, isLoading, error } = useTechPort();
 
   return (
@@ -36,9 +38,10 @@ export default function TechPortPage({ limit, hideHeader }: { limit?: number, hi
           Error loading TechPort data.
         </div>
       ) : (
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-3">
-          {data?.slice(0, limit || data.length).map((project: any) => (
-            <a 
+        <>
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-3">
+            {data?.slice(0, itemsToShow).map((project: any) => (
+              <a 
               key={project.projectId || project.id}
               href={`https://techport.nasa.gov/view/${project.projectId || project.id}`}
               target="_blank"
@@ -98,7 +101,19 @@ export default function TechPortPage({ limit, hideHeader }: { limit?: number, hi
               </DataCard>
             </a>
           ))}
-        </div>
+          </div>
+
+          {!limit && data && data.length > itemsToShow && (
+            <div className="flex justify-center mt-8">
+              <button
+                onClick={() => setItemsToShow((prev) => prev + 12)}
+                className="px-6 py-2 bg-bg-card hover:bg-bg-card-hover text-text-primary border border-border rounded-lg text-sm font-medium transition-colors"
+              >
+                ↓
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

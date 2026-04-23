@@ -21,11 +21,15 @@ export async function GET(request: NextRequest) {
       return dateB - dateA;
     });
 
-    // Return the top 12 results after sorting
-    const topProjects = projects.slice(0, 12);
+    // Return the top 150 results after sorting
+    const topProjects = projects.slice(0, 150);
     
-    // Fetch detailed info for these top projects
-    const detailedProjects = await Promise.all(topProjects.map(async (p: any) => {
+    // Fetch detailed info for these top projects in chunks to avoid overwhelming the API
+    const detailedProjects = [];
+    const chunkSize = 25;
+    for (let i = 0; i < topProjects.length; i += chunkSize) {
+      const chunk = topProjects.slice(i, i + chunkSize);
+      const detailedChunk = await Promise.all(chunk.map(async (p: any) => {
       const id = p.projectId || p.id;
       try {
         const detailRes = await fetch(`https://techport.nasa.gov/api/projects/${id}`, {
@@ -63,6 +67,8 @@ export async function GET(request: NextRequest) {
       }
       return p;
     }));
+      detailedProjects.push(...detailedChunk);
+    }
 
     return NextResponse.json(detailedProjects);
   } catch (error) {
